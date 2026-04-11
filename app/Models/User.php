@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -19,9 +20,14 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nome',
         'email',
+        'cpf',
+        'telefone',
+        'data_nascimento',
         'password',
+        'ativo',
+        'admin',
     ];
 
     /**
@@ -32,6 +38,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'cpf',
     ];
 
     /**
@@ -44,6 +51,14 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'data_nascimento' => 'datetime',
+            'ativo' => 'boolean',
+            'admin' => 'boolean',
         ];
+    }
+
+    public function permissoes(): HasManyThrough
+    {
+        return $this->hasManyThrough(Permissao::class, UserPermissao::class);
     }
 }
