@@ -13,11 +13,19 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nome');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
+            $table->string('cpf')->unique();
             $table->string('password');
+            $table->string('telefone')->unique()->nullable();
+            $table->date('data_nascimento')->nullable();
+
+            $table->boolean('ativo');
+            $table->boolean('admin');
+
+            $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
+
             $table->timestamps();
         });
 
@@ -35,6 +43,23 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        Schema::create('permissoes', function (Blueprint $table) {
+            $table->id();
+            $table->string('nome');
+            $table->timestamps();
+        });
+
+        Schema::create('users_permissoes', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('permissao_id');
+
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('permissao_id')->references('id')->on('permissoes');
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -45,5 +70,7 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('permissoes');
+        Schema::dropIfExists('users_permissoes');
     }
 };

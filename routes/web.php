@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrganizacaoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    });
+    
+Route::group(['prefix' => '/manager', 'as' => 'manager.'], function () {
+    Route::get('/organization', [OrganizacaoController::class, 'index'])->name('organization.index');
 });
 
 require __DIR__.'/auth.php';
