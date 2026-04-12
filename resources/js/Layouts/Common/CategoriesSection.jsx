@@ -64,7 +64,7 @@ export default function CategoriesSlider() {
     };
 
     return (
-        <section className="w-full py-16 mx-auto bg-gray-50">
+        <section className="w-full py-16 mx-auto bg-gray-50 max-md:px-4">
             <div className="mx-auto max-w-6xl">
                 <div className="flex items-center justify-between">
                     <div>
