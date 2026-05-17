@@ -22,9 +22,6 @@ class User extends Authenticatable
     protected $fillable = [
         'nome',
         'email',
-        'cpf',
-        'telefone',
-        'data_nascimento',
         'password',
         'ativo',
         'admin',
@@ -51,14 +48,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'data_nascimento' => 'datetime',
             'ativo' => 'boolean',
             'admin' => 'boolean',
         ];
-    }
-
-    public function permissoes(): HasManyThrough
-    {
-        return $this->hasManyThrough(Permissao::class, UserPermissao::class);
     }
 }
