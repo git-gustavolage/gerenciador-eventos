@@ -1,7 +1,6 @@
 import { InputRadio } from "@/Components/Inputs/InputRadio";
 import { Input } from "@/Components/Inputs/Input";
 import useData from "@/Hooks/useData";
-import GuestLayout from "@/Layouts/GuestLayout";
 import { useState } from "react";
 import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -9,6 +8,7 @@ import { store } from "@/Actions/Eventos/store";
 import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { toast } from "sonner";
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -48,7 +48,7 @@ export default function Index() {
     };
 
     return (
-        <GuestLayout>
+        <AuthenticatedLayout>
             <div className="w-full flex justify-center">
                 <form
                     onSubmit={(e) => handleSubmit(e)}
@@ -87,7 +87,7 @@ export default function Index() {
                     )}
                 </form>
             </div>
-        </GuestLayout>
+        </AuthenticatedLayout>
     );
 }
 
