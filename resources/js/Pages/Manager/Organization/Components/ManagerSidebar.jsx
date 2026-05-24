@@ -2,7 +2,8 @@ import ResponsiveSidebar from "@/Layouts/Common/Sidebar/ResponsiveSidebar"
 import SideBarLink from "@/Layouts/Common/Sidebar/SidebarLink"
 import { CalendarIcon, CertificateIcon, GearIcon, HouseIcon, LaptopIcon, LayoutIcon, StarIcon, TargetIcon, TicketIcon, UserIcon, UsersIcon } from "@phosphor-icons/react"
 
-export default function Sidebar() {
+export default function ManagerSidebar() {
+
     return (
         <ResponsiveSidebar>
             <div className="flex flex-col gap-8">
@@ -14,7 +15,6 @@ export default function Sidebar() {
         </ResponsiveSidebar>
     )
 }
-
 
 function SidebarModule({ title = "", children }) {
     return (

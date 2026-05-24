@@ -41,8 +41,6 @@ export default function GuestLayout({ title = "", children }) {
                             {children}
                         </div>
                     </main>
-
-                    <Footer />
                 </div>
             </div>
         </>
