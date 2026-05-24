@@ -22,19 +22,20 @@ CREATE TABLE localidades (
 
 CREATE TABLE eventos (
 	id bigint(20) primary key not null auto_increment,
-	id_localidade bigint(20) not null,
+	id_localidade bigint(20),
 	titulo varchar(255) not null,
 	descricao varchar(255) not null,
-    banner_path varchar(255),
 	formato varchar(255) not null,
-	data_inicio datetime not null,
-	data_fim datetime not null,
+	categorias varchar(255) not null,
+    banner_path varchar(255),
+	data_inicio datetime,
+	data_fim datetime,
 	data_inicio_inscricoes datetime,
 	data_fim_inscricoes datetime,
     limite_inscricoes int,
 	is_publicado tinyint(1) not null default 0,
 	is_cancelado tinyint(1) not null default 0,
-	
+
 	CONSTRAINT eventos_id_localidade_foreign FOREIGN KEY (id_localidade)
 	REFERENCES localidades(id) ON DELETE RESTRICT
 );
@@ -48,7 +49,7 @@ CREATE TABLE ingressos (
 	quantidade_total int null, -- null = ilimitado
 	data_inicio_vendas datetime,
 	data_fim_vendas datetime,
-	
+
 	CONSTRAINT ingressos_id_evento_foreign FOREIGN KEY (id_evento)
 	REFERENCES eventos(id) ON DELETE CASCADE
 );
@@ -90,7 +91,7 @@ CREATE TABLE inscricoes (
 
 	CONSTRAINT inscricoes_id_participante_foreign FOREIGN KEY (id_participante)
 	REFERENCES users(id) ON DELETE CASCADE,
-	
+
 	CONSTRAINT inscricoes_id_ingresoo_foreign FOREIGN KEY (id_ingresoo)
 	REFERENCES ingressos(id) ON DELETE CASCADE
 );
@@ -100,10 +101,10 @@ CREATE TABLE inscricoes_atividades (
 	id_inscricao bigint(20) not null,
 	id_atividade bigint(20) not null,
 	data date not null,
-	
+
 	CONSTRAINT inscricoes_atividades_id_inscricao_foreign FOREIGN KEY(id_inscricao)
 	REFERENCES inscricoes(id) ON DELETE CASCADE,
-	
+
 	CONSTRAINT inscricoes_atividades_id_atividade_foreign FOREIGN KEY (id_atividade)
 	REFERENCES atividades(id) ON DELETE CASCADE
 );
@@ -133,10 +134,10 @@ CREATE TABLE presencas (
 	id_inscricao bigint(20) not null,
 	id_atividade bigint(20) not null,
 	data datetime null default null,
-	
+
 	CONSTRAINT presencas_id_inscricao_foreign FOREIGN KEY (id_inscricao)
 	REFERENCES inscricoes(id) ON DELETE CASCADE,
-	
+
 	CONSTRAINT presencas_id_atividade_foreign FOREIGN KEY (id_atividade)
 	REFERENCES atividades(id) ON DELETE CASCADE
 );
@@ -148,7 +149,7 @@ CREATE TABLE certificados (
     emitido_em datetime,
 	carga_horaria_em_minutos int not null,
 
-	CONSTRAINT certificados_id_participante_foreign FOREIGN KEY (id_participante) 
+	CONSTRAINT certificados_id_participante_foreign FOREIGN KEY (id_participante)
 	REFERENCES participantes(id) ON DELETE SET NULL,
 
 	CONSTRAINT certificados_id_atividade_foreign FOREIGN KEY (id_atividade)

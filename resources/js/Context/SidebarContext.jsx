@@ -8,12 +8,10 @@ export const useSidebarContext = () => {
     return { open, setOpen };
 }
 
-export default function SidebarContextProvider({ open = false, children }) {
-
-    const [_open, setOpen] = useState < boolean > (open);
+export default function SidebarContextProvider({ open = false, setOpen = () => { }, children }) {
 
     return (
-        <SidebarContext.Provider value={{ open: _open, setOpen }}>
+        <SidebarContext.Provider value={{ open, setOpen }}>
             {children}
         </SidebarContext.Provider>
     )
