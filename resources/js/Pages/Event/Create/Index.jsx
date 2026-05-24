@@ -52,7 +52,7 @@ export default function Index() {
             <div className="w-full flex justify-center">
                 <form
                     onSubmit={(e) => handleSubmit(e)}
-                    className="w-[80%] max-md:w-full flex items-center justify-center py-6 px-4 flex-col gap-8"
+                    className="w-[80%] max-w-4xl max-md:w-full flex items-center justify-center py-6 px-4 flex-col gap-8"
                 >
                     <div className="w-full flex flex-col gap-2">
                         <div className="flex items-center justify-between">

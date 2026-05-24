@@ -64,29 +64,19 @@ export default function CategoriesSlider() {
     };
 
     return (
-        <section className="w-full py-16 mx-auto bg-gray-50 max-md:px-4">
+        <section className="w-full py-32 max-md:py-16 mx-auto bg-gray-50 max-md:px-4">
             <div className="mx-auto max-w-6xl">
                 <div className="flex items-center justify-between">
                     <div>
-                        <h2 className="text-4xl font-bold text-neutral-800">
-                            Categorias
-                        </h2>
-                        <p className="mt-1 text-sm text-neutral-500">
-                            Explore eventos por categoria
-                        </p>
+                        <h2 className="text-4xl font-bold text-neutral-800">Categorias</h2>
+                        <p className="mt-1 text-sm text-neutral-500">Explore eventos por categoria</p>
                     </div>
 
                     <div className="flex gap-2">
-                        <button
-                            onClick={prev}
-                            className="rounded-full border p-2 hover:bg-neutral-100 bg-white"
-                        >
+                        <button onClick={prev} className="rounded-full border p-2 hover:bg-neutral-100 bg-white">
                             <CaretLeftIcon size={20} />
                         </button>
-                        <button
-                            onClick={next}
-                            className="rounded-full border p-2 hover:bg-neutral-100 bg-white"
-                        >
+                        <button onClick={next} className="rounded-full border p-2 hover:bg-neutral-100 bg-white">
                             <CaretRightIcon size={20} />
                         </button>
                     </div>
