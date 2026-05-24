@@ -6,6 +6,7 @@ import { Input } from "@/Components/Inputs/Input";
 import PrimaryButton from "@/Components/PrimaryButton";
 import GuestLayout from "@/Layouts/GuestLayout";
 import { Link, useForm } from "@inertiajs/react";
+import { useState } from "react";
 
 export default function Login() {
     const { data, setData, post, processing, errors, reset } = useForm({
@@ -13,6 +14,8 @@ export default function Login() {
         password: "",
         remember: false,
     });
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const submit = (e) => {
         e.preventDefault();
@@ -106,7 +109,7 @@ export default function Login() {
 
                             <Input
                                 id="password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={data.password}
                                 className="mt-1 block w-full"
@@ -122,7 +125,8 @@ export default function Login() {
                                 <input
                                     id="showpassword"
                                     type="checkbox"
-                                    className="rounded border-neutral-300 text-emerald-500 focus:ring-emerald-400"
+                                    onChange={(e) => setShowPassword(e.target.checked)}
+                                    className="rounded-sm border-neutral-300 text-emerald-500 focus:ring-emerald-400"
                                 />
 
                                 <label htmlFor="showpassword" className="text-sm text-neutral-600 cursor-pointer">
