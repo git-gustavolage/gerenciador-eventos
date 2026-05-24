@@ -4,59 +4,55 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create("users", function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
-            $table->string('email')->unique();
-            $table->string('cpf')->unique();
-            $table->string('password');
-            $table->string('telefone')->unique()->nullable();
-            $table->date('data_nascimento')->nullable();
+            $table->string("nome");
+            $table->string("email")->unique();
+            $table->string("password");
 
-            $table->boolean('ativo');
-            $table->boolean('admin');
+            $table->boolean("ativo")->default(true);
+            $table->boolean("admin")->default(false);
 
-            $table->timestamp('email_verified_at')->nullable();
+            $table->timestamp("email_verified_at")->nullable();
             $table->rememberToken();
 
             $table->timestamps();
         });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
+        Schema::create("password_reset_tokens", function (Blueprint $table) {
+            $table->string("email")->primary();
+            $table->string("token");
+            $table->timestamp("created_at")->nullable();
         });
 
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
+        Schema::create("sessions", function (Blueprint $table) {
+            $table->string("id")->primary();
+            $table->foreignId("user_id")->nullable()->index();
+            $table->string("ip_address", 45)->nullable();
+            $table->text("user_agent")->nullable();
+            $table->longText("payload");
+            $table->integer("last_activity")->index();
         });
 
-        Schema::create('permissoes', function (Blueprint $table) {
+        Schema::create("permissoes", function (Blueprint $table) {
             $table->id();
-            $table->string('nome');
+            $table->string("nome");
             $table->timestamps();
         });
 
-        Schema::create('users_permissoes', function (Blueprint $table) {
+        Schema::create("users_permissoes", function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('permissao_id');
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedBigInteger("permissao_id");
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('permissao_id')->references('id')->on('permissoes');
+            $table->foreign("user_id")->references("id")->on("users");
+            $table->foreign("permissao_id")->references("id")->on("permissoes");
 
             $table->timestamps();
         });
@@ -67,10 +63,10 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
-        Schema::dropIfExists('permissoes');
-        Schema::dropIfExists('users_permissoes');
+        Schema::dropIfExists("users");
+        Schema::dropIfExists("password_reset_tokens");
+        Schema::dropIfExists("sessions");
+        Schema::dropIfExists("permissoes");
+        Schema::dropIfExists("users_permissoes");
     }
 };
