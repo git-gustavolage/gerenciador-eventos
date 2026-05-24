@@ -1,3 +1,4 @@
+import ApplicationIdentity from "@/Components/ApplicationIdentity";
 import {
     InstagramLogoIcon,
     FacebookLogoIcon,
@@ -89,8 +90,9 @@ export default function Footer() {
             </div>
 
             <div className="border-t border-gray-200 py-4 px-4">
-                <div className="flex items-center justify-center text-sm text-neutral-500">
+                <div className="flex flex-col items-center justify-center text-sm text-neutral-500">
                     <p>&copy; {new Date().getFullYear()} Eventos. Todos os direitos reservados.</p>
+                    <ApplicationIdentity />
                 </div>
             </div>
         </footer>

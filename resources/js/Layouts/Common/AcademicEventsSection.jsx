@@ -6,7 +6,7 @@ import {
 
 export default function AcademicEventsSection() {
     return (
-        <section className="w-full bg-gray-50 py-16 max-md:px-4">
+        <section className="w-full bg-gray-50 py-32 max-md:py-16 max-md:px-4">
             <div className="max-w-6xl mx-auto">
                 <h2 className="text-4xl font-bold text-neutral-800">
                     Eventos Acadêmicos
