@@ -1,15 +1,13 @@
-import { CalendarIcon, ShareNetworkIcon, StarIcon, TicketIcon } from "@phosphor-icons/react";
+import { CertificateIcon, ShareNetworkIcon, StarIcon, TicketIcon } from "@phosphor-icons/react";
 
 export default function ActionsSection() {
     return (
         <section className="border-y border-gray-300 py-8 w-full flex items-center justify-center max-md:hidden">
             <div className="inline-flex items-center justify-between max-lg:grid max-lg:grid-cols-2 gap-8">
-
                 <Item Icon={TicketIcon} title="Inscreva-se" description="Inscreva-se e participe" />
                 <Item Icon={ShareNetworkIcon} title="Compartilhe" description="Compartilhe em suas redes sociais" />
                 <Item Icon={StarIcon} title="Avalie" description="Deixe avaliações nos eventos" />
-                <Item Icon={CalendarIcon} title="Certificados" description="Emita certificado de participação" />
-
+                <Item Icon={CertificateIcon} title="Certificados" description="Emita certificado de participação" />
             </div>
         </section>
     );
@@ -26,5 +24,5 @@ function Item({ Icon, title = "", description = "" }) {
                 <p className="font-medium text-neutral-500 text-sm">{description}</p>
             </div>
         </div>
-    )
+    );
 }
