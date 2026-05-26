@@ -6,6 +6,7 @@ import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
 import { Link, usePage } from "@inertiajs/react";
 import {
     CalendarBlankIcon,
+    CalendarCheckIcon,
     HouseIcon,
     ListIcon,
     SignOutIcon,
@@ -39,6 +40,16 @@ export default function Navbar() {
                                 <NavLink href={route("home")} active={route().current("home")} className="h-14">
                                     Eventos
                                 </NavLink>
+
+                                {user && (
+                                    <NavLink
+                                        href={route("manager.my-events")}
+                                        active={route().current("manager.my-events")}
+                                        className="h-14"
+                                    >
+                                        Meus Eventos
+                                    </NavLink>
+                                )}
                             </div>
                         </div>
 
@@ -49,10 +60,9 @@ export default function Navbar() {
                                         <Dropdown.Trigger>
                                             <button
                                                 type="button"
-                                                className="inline-flex items-center gap-2 rounded-sm  px-4 py-2 text-sm font-medium text-neutral-600 transition-all hover:border-neutral-300 hover:text-neutral-900"
+                                                className="inline-flex items-center gap-2 rounded-sm px-4 py-2 text-sm font-medium text-neutral-600 transition-all hover:border-neutral-300 hover:text-neutral-900"
                                             >
                                                 <UserIcon size={20} />
-
                                                 <CaretDownIcon size={12} weight="bold" />
                                             </button>
                                         </Dropdown.Trigger>
@@ -96,7 +106,6 @@ export default function Navbar() {
 
                         <div className="flex flex-col">
                             <span className="font-semibold text-neutral-900">E-IFRO</span>
-
                             <span className="text-xs text-neutral-500">Plataforma de eventos</span>
                         </div>
                     </div>
@@ -118,7 +127,6 @@ export default function Navbar() {
 
                             <div className="flex flex-col">
                                 <span className="font-medium text-neutral-900">{user.nome}</span>
-
                                 <span className="text-sm text-neutral-500">{user.email}</span>
                             </div>
                         </div>
@@ -140,6 +148,18 @@ export default function Navbar() {
                                 Eventos
                             </div>
                         </ResponsiveNavLink>
+
+                        {user && (
+                            <ResponsiveNavLink
+                                href={route("manager.my-events")}
+                                active={route().current("manager.my-events")}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <CalendarCheckIcon size={20} />
+                                    Meus Eventos
+                                </div>
+                            </ResponsiveNavLink>
+                        )}
 
                         <ResponsiveNavLink href={route("profile.edit")} active={route().current("profile.edit")}>
                             <div className="flex items-center gap-3">
