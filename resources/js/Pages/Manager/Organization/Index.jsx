@@ -1,12 +1,11 @@
-import DefaultLayout from "@/Layouts/DefaultLayout";
+import ManagerLayout from "@/Layouts/ManagerLayout";
 
 export default function Index() {
-
     return (
-        <DefaultLayout title={''}>
+        <ManagerLayout title="Geral">
             <p className="mb-[800px]">Manager/Organizacoes</p>
             <p className="mb-[800px]">Manager</p>
             <p className="mb-[800px]">Manager</p>
-        </DefaultLayout>
-    )
+        </ManagerLayout>
+    );
 }

@@ -2,11 +2,12 @@
 
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ManagerController;
 use App\Http\Controllers\OrganizacaoController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-Route::get("/", [HomeController::class, "view"])->name('home');
+Route::get("/", [HomeController::class, "view"])->name("home");
 
 Route::middleware("auth")->group(function () {
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
@@ -20,7 +21,9 @@ Route::middleware("auth")->group(function () {
         Route::post("/store", "store")->name("store");
     });
 
-    Route::group(["prefix" => "/manager", "as" => "manager."], function () {
+    Route::group(["prefix" => "/manager", "as" => "manager.", "controller" => ManagerController::class], function () {
+        Route::get("/", "view")->name("index");
+        Route::get("/general", "general")->name("general");
         Route::get("/organization", [OrganizacaoController::class, "index"])->name("organization.index");
     });
 });
