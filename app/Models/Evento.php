@@ -13,7 +13,7 @@ class Evento extends Model
     protected $fillable = [
         "titulo",
         "descricao",
-        "formato", // enum: presencial, hibirdo, remoto
+        "formato",
         "categorias",
         "banner_path",
         "data_inicio",
@@ -28,18 +28,18 @@ class Evento extends Model
     ];
 
     #[Override]
-    protected function casts()
+    protected function casts(): array
     {
         return [
-            "formato" => EventoFormatoEnum::class,
-            "categorias" => "array",
-            "data_inicio" => "datatime:d/m/Y H:i:s",
-            "data_fim" => "datatime:d/m/Y H:i:s",
-            "data_inicio_inscricoes" => "datatime:d/m/Y H:i:s",
-            "data_fim_inscricoes" => "datatime:d/m/Y H:i:s",
-            "limite_inscricoes" => "int",
-            "is_publicado" => "boolean",
-            "is_cancelado" => "boolean",
+            "formato"               => EventoFormatoEnum::class,
+            "categorias"            => "array",
+            "data_inicio"           => "datetime",  
+            "data_fim"              => "datetime", 
+            "data_inicio_inscricoes"=> "datetime", 
+            "data_fim_inscricoes"   => "datetime", 
+            "limite_inscricoes"     => "int",
+            "is_publicado"          => "boolean",
+            "is_cancelado"          => "boolean",
         ];
     }
 
