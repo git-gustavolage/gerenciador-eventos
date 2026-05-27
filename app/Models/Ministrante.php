@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Ministrante extends Model
 {
     protected $fillable = [
-        'id_atividade',
+       
         'nome',
         'email',
         'telefone',
@@ -16,8 +17,15 @@ class Ministrante extends Model
         'instituicao',
     ];
 
-    public function atividade(): BelongsTo
-    {
-        return $this->belongsTo(Atividade::class, 'id_atividade', 'id');
-    }
+    public function atividades(): BelongsToMany
+{
+    return $this->belongsToMany(
+    Atividade::class,
+    'atividade_ministrante',
+    'ministrante_id',
+    'atividade_id'
+);
+}
+
+    
 }

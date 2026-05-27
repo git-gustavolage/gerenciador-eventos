@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Actions\Evento\StoreEventoAction;
 use App\DataTransferObjects\EventoData;
 use App\Enum\EventoFormatoEnum;
+use App\Models\Evento;
+use App\Models\Ministrante;
 use Illuminate\Http\Request;
 
 class EventoController extends Controller
@@ -27,4 +29,23 @@ class EventoController extends Controller
     {
         return inertia("Event/Create/Index");
     }
+
+    public function edit(int $id)
+    {
+        $evento = Evento::query()
+            ->with(['atividades.ministrantes', 'localidade'])
+            ->where('id_user', auth('web')->id())
+            ->findOrFail($id);
+
+        $ministrantes = Ministrante::query()
+            ->where('id_user', auth('web')->id())
+            ->get(['id', 'nome', 'email']);
+
+        return inertia("Event/Edit/Index", [
+            'evento'       => $evento,
+            'ministrantes' => $ministrantes,
+        ]);
+    }
 }
+
+
