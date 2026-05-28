@@ -6,10 +6,23 @@ import { Select } from "@/Components/Inputs/Select";
 import Textarea from "@/Components/Inputs/Textarea";
 import PrimaryButton from "@/Components/PrimaryButton";
 import ManagerLayout from "@/Layouts/ManagerLayout";
+import { useForm } from "@inertiajs/react";
 import { CalendarBlankIcon, MapPinLineIcon, TextTIcon, TrendUpIcon, XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 
-export default function Index() {
+export default function Index({ event }) {
+    const { data, setData } = useForm({
+        titulo: event.titulo,
+        descricao: event.descricao,
+        formato: "",
+        data_inicio: "",
+        data_fim: "",
+        hora_inicio: "",
+        hora_fim: "",
+    });
+
+    console.log(event, data);
+
     return (
         <ManagerLayout title="Geral">
             <form className="w-full h-full flex items-center justify-center py-6 px-4 flex-col gap-16 max-w-3xl mx-auto">
@@ -25,11 +38,23 @@ export default function Index() {
                     <div className="w-full flex flex-col gap-4">
                         <div className="space-y-2">
                             <InputLabel htmlFor="titulo" value="Título do evento" />
-                            <Input id="titulo" type="text" placeholder="Título do evento" />
+                            <Input
+                                id="titulo"
+                                type="text"
+                                placeholder="Título do evento"
+                                value={data.titulo}
+                                onChange={(e) => setData("titulo", e.target.value)}
+                            />
                         </div>
                         <div className="space-y-2">
                             <InputLabel htmlFor="descricao" value="Descrição do evento" />
-                            <Textarea id="descricao" placeholder="Descrição do evento" rows={5} />
+                            <Textarea
+                                id="descricao"
+                                value={data.descricao}
+                                onChange={(e) => setData("descricao", e.target.value)}
+                                placeholder="Descrição do evento"
+                                rows={5}
+                            />
                         </div>
                     </div>
 
@@ -40,7 +65,7 @@ export default function Index() {
                     </div>
                 </fieldset>
 
-                <EventLocationSection />
+                <EventLocationSection data={data} setData={setData} />
 
                 <fieldset className="w-full flex flex-col items-center justify-center gap-8 border-t border-t-neutral-300 pt-8">
                     <h1 className="w-full font-medium text-3xl text-neutral-800 tracking-tight inline-flex gap-1 items-center">
@@ -49,11 +74,23 @@ export default function Index() {
                     </h1>
 
                     <div className="w-full flex flex-col gap-4">
-                        <DateTimeInput label="Data do início do evento" />
-                        <DateTimeInput label="Data do término do evento" />
+                        <DateTimeInput
+                            label="Data do início do evento"
+                            dateValue={data.data_inicio}
+                            onDateChange={(e) => setData("data_inicio", e.target.value)}
+                            timeValue={data.hora_inicio}
+                            onTimeChange={(e) => setData("hora_inicio", e.target.value)}
+                        />
+                        <DateTimeInput
+                            label="Data do término do evento"
+                            dateValue={data.data_fim}
+                            onDateChange={(e) => setData("data_fim", e.target.value)}
+                            timeValue={data.hora_fim}
+                            onTimeChange={(e) => setData("hora_fim", e.target.value)}
+                        />
                     </div>
 
-                    <div className="w-full text-end">
+                    <div className="w-full text-start">
                         <PrimaryButton type="submit">Salvar</PrimaryButton>
                     </div>
                 </fieldset>
@@ -62,11 +99,11 @@ export default function Index() {
     );
 }
 
-function EventLocationSection() {
+function EventLocationSection({ data, setData }) {
     const format_options = [
-        { id: 1, name: "Online" },
-        { id: 2, name: "Presencial" },
-        { id: 3, name: "Híbrido" },
+        { label: "Online", value: "online" },
+        { label: "Presencial", value: "presencial" },
+        { label: "Híbrido", value: "hibrido" },
     ];
 
     const [creatingLocation, setCreatingLocation] = useState(false);
@@ -84,7 +121,14 @@ function EventLocationSection() {
 
                     <div className="w-full flex items-center justify-center gap-4">
                         {format_options.map((format, index) => (
-                            <InputRadio key={index} label={format.name} id={format.id.toString()} selected={false} />
+                            <InputRadio
+                                key={index}
+                                label={format.label}
+                                id={format.value}
+                                value={data.formato}
+                                onClick={() => setData("formato", format.value)}
+                                selected={format.value == data.formato}
+                            />
                         ))}
                     </div>
                 </div>
