@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Ministrante extends Model
 {
     protected $fillable = [
-       
+        'id_user', // ← estava faltando
         'nome',
         'email',
         'telefone',
@@ -17,15 +17,18 @@ class Ministrante extends Model
         'instituicao',
     ];
 
-    public function atividades(): BelongsToMany
-{
-    return $this->belongsToMany(
-    Atividade::class,
-    'atividade_ministrante',
-    'ministrante_id',
-    'atividade_id'
-);
-}
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\User::class, 'id_user');
+    }
 
-    
+    public function atividades(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Atividade::class,
+            'atividade_ministrante',
+            'ministrante_id',
+            'atividade_id'
+        );
+    }
 }

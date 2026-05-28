@@ -2,28 +2,29 @@
 
 namespace App\Actions\Ministrante;
 
-use App\Exceptions\ApplicationException;
+use App\Exceptions\CreationFailedException;
+use App\Exceptions\InvalidStateException;
 use App\Models\Ministrante;
 use Exception;
 
 class DestroyMinistranteAction
 {
-    public function execute(int $id_user, int $id_ministrante)
+    public function execute(int $id_user, int $id_ministrante): void
     {
-        $this->validate($id_user, $id_ministrante);
+        $ministrante = Ministrante::query()->findOrFail($id_ministrante);
+
+        if ($ministrante->id_user !== $id_user) {
+            throw new InvalidStateException('Você não tem permissão para excluir este ministrante.');
+        }
 
         try {
-            Ministrante::delete($id_ministrante);
+            $ministrante->atividades()->detach();
+            $ministrante->delete();
         } catch (Exception $e) {
-            throw new ApplicationException('Erro ao deletar ministrante.', [
+            throw new CreationFailedException('Erro ao deletar ministrante.', [
                 'message' => $e->getMessage(),
                 'id_user' => $id_user,
             ]);
         }
-    }
-
-    private function validate(int $id_user, int $id_ministrante)
-    {
-        //validar se user perternce a organizacao do evento que possui a atividade de onde o ministrante esta cadastrado
     }
 }

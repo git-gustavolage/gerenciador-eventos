@@ -14,24 +14,21 @@ class AtividadeController extends Controller
     {
         $action->execute(auth('web')->id(), $request->validated());
 
-        return redirect()
-    ->route('atividades.store')
-    ->with('success', 'Atividade salva com sucesso!');
+        // Inertia precisa de redirect, não JSON
+        return redirect()->back()->with('success', 'Atividade criada com sucesso!');
     }
 
     public function update(int $id, UpdateAtividadeRequest $request, UpdateAtividadeAction $action)
     {
         $action->execute(auth('web')->id(), $id, $request->validated());
 
-        return redirect()
-    ->route('atividades.update')
-    ->with('success', 'Atividade salva com sucesso!');
+        return redirect()->back()->with('success', 'Atividade atualizada com sucesso!');
     }
 
     public function destroy(int $id, DestroyAtividadeAction $action)
     {
         $action->execute(auth('web')->id(), $id);
 
-        return response()->noContent();
+        return redirect()->back()->with('success', 'Atividade excluída com sucesso!');
     }
 }
