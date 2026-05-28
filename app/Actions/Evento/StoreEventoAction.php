@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\DB;
 
 class StoreEventoAction
 {
-    public function execute(int $id_user, EventoData $input)
+    public function execute(int $id_user, EventoData $input): Evento
     {
         try {
-            DB::transaction(function () use ($id_user, $input) {
+            return DB::transaction(function () use ($id_user, $input) {
                 $evento = Evento::create([
                     "titulo" => $input->titulo,
                     "descricao" => $input->descricao,
@@ -29,6 +29,8 @@ class StoreEventoAction
                     "id_evento" => $evento->id,
                     "id_user" => $id_user,
                 ]);
+
+                return $evento;
             });
         } catch (Exception $e) {
             throw new CreationFailedException("Ocorreu um erro ao criar o evento.", [
