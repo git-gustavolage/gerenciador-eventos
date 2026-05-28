@@ -37,7 +37,7 @@ function formatDateForInput(date) {
     return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// ── Field — Input com label e erro (Input do projeto não tem isso) ─────────────
+ 
 function Field({ label, error, ...props }) {
     return (
         <div className="flex flex-col gap-1.5">
@@ -52,7 +52,6 @@ function Field({ label, error, ...props }) {
     );
 }
 
-// ── Toast ─────────────────────────────────────────────────────────────────────
 function Toast({ message, onClose }) {
     useEffect(() => {
         const t = setTimeout(onClose, 3500);
@@ -249,7 +248,7 @@ export default function Index() {
             editingId: null,
             initialData: {
                 ...EMPTY_FORM,
-                id_evento: evento.id, // ✅ id_evento incluso no criar também
+                id_evento: evento.id, 
             },
         });
     }

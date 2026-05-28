@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Ministrante extends Model
 {
     protected $fillable = [
-        'id_user', // ← estava faltando
+        'id_user', 
         'nome',
         'email',
         'telefone',

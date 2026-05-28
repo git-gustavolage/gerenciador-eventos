@@ -9,6 +9,7 @@ import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { router } from "@inertiajs/react";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -44,6 +45,9 @@ export default function Index() {
         const res = await action.execute(payload);
         if (res?.success) {
             toast.info("Evento criado com sucesso!");
+              setTimeout(() => {
+        router.visit(route("manager.my-events"));
+    }, 1000);
         }
     };
 

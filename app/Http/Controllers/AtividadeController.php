@@ -14,7 +14,6 @@ class AtividadeController extends Controller
     {
         $action->execute(auth('web')->id(), $request->validated());
 
-        // Inertia precisa de redirect, não JSON
         return redirect()->back()->with('success', 'Atividade criada com sucesso!');
     }
 
