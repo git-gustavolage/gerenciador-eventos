@@ -18,7 +18,9 @@ class EventoController extends Controller
             $request->array("categorias"),
         );
 
-        $action->execute(auth('web')->id(), $input);
+        $event = $action->execute(auth("web")->id(), $input);
+
+        session(["current_event_id" => $event->id]);
 
         return response()->json(["success" => true]);
     }
