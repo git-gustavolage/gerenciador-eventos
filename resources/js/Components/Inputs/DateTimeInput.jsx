@@ -4,18 +4,32 @@ import InputLabel from "@/Components/InputLabel";
 export default function DateTimeInput({
     id = "datetime",
     label = "Data e horário",
-    dateValue = "",
-    timeValue = "",
-    onDateChange,
-    onTimeChange,
+    value = "",
+    onChange,
     disabled = false,
 }) {
+    const [dateValue = "", timeValue = ""] = value.split(" ");
+
+    function handleDateChange(date) {
+        const nextValue = `${date} ${timeValue || "00:00"}`.trim();
+
+        onChange?.(nextValue);
+    }
+
+    function handleTimeChange(time) {
+        const nextValue = `${dateValue || new Date().toISOString().split("T")[0]} ${time}`.trim();
+
+        onChange?.(nextValue);
+    }
+
     return (
         <div className="w-full space-y-2">
             <InputLabel htmlFor={`${id}_date`} value={label} />
 
             <div
-                className={`group flex items-center  overflow-hidden rounded-sm border border-neutral-300 bg-white transition-all focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-300 ${disabled ? "bg-neutral-100 opacity-70" : ""}`}
+                className={`group flex items-center overflow-hidden rounded-sm border border-neutral-300 bg-white transition-all focus-within:border-emerald-500 focus-within:ring-1 focus-within:ring-emerald-300 ${
+                    disabled ? "bg-neutral-100 opacity-70" : ""
+                }`}
             >
                 <div className="flex flex-1 items-center px-3">
                     <CalendarBlankIcon size={18} className="text-neutral-400" />
@@ -24,7 +38,7 @@ export default function DateTimeInput({
                         id={`${id}_date`}
                         type="date"
                         value={dateValue}
-                        onChange={onDateChange}
+                        onChange={(e) => handleDateChange(e.target.value)}
                         disabled={disabled}
                         className="w-full border-0 bg-transparent py-3 text-sm text-neutral-700 outline-none focus:ring-0"
                     />
@@ -39,7 +53,7 @@ export default function DateTimeInput({
                         id={`${id}_time`}
                         type="time"
                         value={timeValue}
-                        onChange={onTimeChange}
+                        onChange={(e) => handleTimeChange(e.target.value)}
                         disabled={disabled}
                         className="w-full border-0 bg-transparent py-3 text-sm text-neutral-700 outline-none focus:ring-0"
                     />
