@@ -16,9 +16,10 @@ Route::middleware("auth")->group(function () {
 });
 
 Route::middleware("auth")->group(function () {
-    Route::group(["prefix" => "/events", "as" => "events.", "controller" => EventoController::class], function () {
+    Route::group(["prefix" => "/eventos", "as" => "eventos.", "controller" => EventoController::class], function () {
         Route::get("/create", "create")->name("create");
         Route::post("/store", "store")->name("store");
+        Route::put("/update", "update")->name("update");
     });
 
     Route::group(["prefix" => "/manager", "as" => "manager.", "controller" => ManagerController::class], function () {

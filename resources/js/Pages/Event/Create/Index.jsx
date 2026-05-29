@@ -4,12 +4,13 @@ import useData from "@/Hooks/useData";
 import { useState } from "react";
 import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { store } from "@/Actions/Eventos/store";
+import { store } from "@/Actions/store";
 import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router } from "@inertiajs/react";
+import { eventos } from "@/api/routes";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -42,7 +43,7 @@ export default function Index() {
             ...data,
         };
 
-        const res = await action.execute(payload);
+        const res = await action.execute(eventos.store, payload);
         if (res?.success) {
             toast.info("Evento criado com sucesso!");
             router.visit(route("manager.index"));
