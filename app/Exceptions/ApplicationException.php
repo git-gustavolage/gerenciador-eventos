@@ -4,18 +4,22 @@ namespace App\Exceptions;
 
 use Exception;
 use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ApplicationException extends Exception
 {
-    public function __construct(?string $message = null, public array $details = [])
-    {
-        $message ??= 'Erro ao realizar ação';
+    public function __construct(
+        null|string $message = null,
+        public array $details = [],
+        protected null|Throwable $previus = null,
+    ) {
+        $message ??= "Erro ao realizar ação.";
 
-        if (! empty($details)) {
+        if (!empty($details)) {
             Log::error($message, $details);
         }
 
-        return parent::__construct($message, 0, null);
+        return parent::__construct($message, 0, $previus);
     }
 
     public function status(): int
@@ -31,8 +35,8 @@ class ApplicationException extends Exception
     public function toArray(): array
     {
         return [
-            'success' => false,
-            'message' => $this->getMessage(),
+            "success" => false,
+            "message" => $this->getMessage(),
         ];
     }
 }
