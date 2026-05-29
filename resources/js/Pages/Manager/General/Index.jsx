@@ -1,21 +1,18 @@
-import { store } from "@/Actions/store";
 import { update } from "@/Actions/update";
-import { eventos, localidades } from "@/api/routes";
+import { eventos } from "@/api/routes";
 import InputError from "@/Components/InputError";
 import InputLabel from "@/Components/InputLabel";
 import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 import { Input } from "@/Components/Inputs/Input";
 import { InputRadio } from "@/Components/Inputs/InputRadio";
-import { Select } from "@/Components/Inputs/Select";
 import Textarea from "@/Components/Inputs/Textarea";
 import PrimaryButton from "@/Components/PrimaryButton";
-import SecondaryButton from "@/Components/SecondaryButton";
 import { useAction } from "@/Hooks/useAction";
 import useData from "@/Hooks/useData";
 import ManagerLayout from "@/Layouts/ManagerLayout";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
-import { CalendarBlankIcon, MapPinLineIcon, TextTIcon, TrendUpIcon, XIcon } from "@phosphor-icons/react";
-import { useState } from "react";
+import { formatDate } from "@/util/formatDate";
+import { CalendarBlankIcon, MapPinLineIcon, TextTIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 export default function Index({ event }) {
@@ -124,6 +121,7 @@ function EventLocationSection({ event = {} }) {
 
     const [data, setData] = useData({
         formato: event.formato ?? "",
+        endereco: event.endereco,
     });
 
     const action = useAction({
@@ -146,12 +144,11 @@ function EventLocationSection({ event = {} }) {
 
         const payload = {
             formato: data.formato,
+            endereco: data.endereco,
         };
 
         await action.execute(eventos.update, payload);
     };
-
-    const [creatingLocation, setCreatingLocation] = useState(false);
 
     return (
         <form
@@ -185,65 +182,22 @@ function EventLocationSection({ event = {} }) {
                     <InputError message={action.error?.errors?.formato} />
                 </div>
 
-                {!creatingLocation && (
-                    <div className="flex flex-col gap-4">
-                        <Select id="id_localidade" label="Localidade">
-                            <option value="">Selecione</option>
-                        </Select>
+                <div className="space-y-2">
+                    <InputLabel htmlFor="endereco" value="Informe o endereço" />
 
-                        <button
-                            type="button"
-                            onClick={() => setCreatingLocation(true)}
-                            className=" w-fit text-sm font-medium text-emerald-600 hover:text-emerald-700 transition-colors"
-                        >
-                            + Cadastrar nova localidade
-                        </button>
-                    </div>
-                )}
+                    <Input
+                        id="endereco"
+                        placeholder="Endereço"
+                        value={data.endereco}
+                        onChange={(e) => {
+                            setData('endereco', e.target.value);
+                            action.clearError("endereco");
+                        }}
+                        invalid={!!data?.error?.errors?.endereco}
+                    />
+                    <InputError message={data?.error?.errors?.endereco} />
+                </div>
 
-                {creatingLocation && (
-                    <LocalidadeSubForm onClose={() => setCreatingLocation(false)} />
-                    // <div className="w-full flex flex-col gap-4 rounded-sm border border-neutral-200 p-6 bg-white">
-                    //     <div className="flex items-center justify-between">
-                    //         <div>
-                    //             <h2 className="text-sm font-semibold text-neutral-800">Nova localidade</h2>
-
-                    //             <p className="text-sm text-neutral-500">Informe os dados da localidade do evento.</p>
-                    //         </div>
-
-                    //         <button
-                    //             type="button"
-                    //             onClick={() => setCreatingLocation(false)}
-                    //             className="text-sm font-medium text-neutral-500 hover:text-neutral-700 transition-colors"
-                    //         >
-                    //             <XIcon size={20} />
-                    //         </button>
-                    //     </div>
-
-                    //     <div className="space-y-2">
-                    //         <InputLabel htmlFor="localidade_nome" value="Nome da localidade" />
-
-                    //         <Input id="localidade_nome" placeholder="Ex: Auditório Central" />
-                    //     </div>
-
-                    //     <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
-                    //         <Select id="estado" label="Estado">
-                    //             <option value="">Selecione o estado</option>
-                    //         </Select>
-
-                    //         <Select id="cidade" label="Cidade">
-                    //             <option value="">Selecione a cidade</option>
-                    //         </Select>
-                    //     </div>
-
-                    //     <div className="flex items-center justify-start gap-3 pt-2">
-                    //         <PrimaryButton type="button">Salvar localidade</PrimaryButton>
-                    //         <SecondaryButton type="button" onClick={() => setCreatingLocation(false)}>
-                    //             Voltar
-                    //         </SecondaryButton>
-                    //     </div>
-                    // </div>
-                )}
             </div>
 
             <div className="w-full">
@@ -254,10 +208,15 @@ function EventLocationSection({ event = {} }) {
 }
 
 function EventDatetimeForm({ event = {} }) {
+    console.log(event);
+    
     const [data, setData] = useData({
-        data_inicio: event.data_inicio ?? "",
-        data_fim: event.data_fim ?? "",
+        data_inicio: formatDate(event.data_inicio, "DD/MM/YYYY HH:MM:ss", "YYYY-MM-DD HH:mm:ss") ?? "",
+        data_fim: formatDate(event.data_fim, "DD/MM/YYYY HH:MM:ss", "YYYY-MM-DD HH:mm:ss") ?? "",
     });
+
+    console.log(data);
+    
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(update),
@@ -297,94 +256,22 @@ function EventDatetimeForm({ event = {} }) {
 
             <div className="w-full flex flex-col gap-4">
                 <DateTimeInput
+                    id="data_inicio"
                     label="Data do início do evento"
                     value={data.data_inicio}
                     onChange={(e) => setData("data_inicio", e.target.value)}
                 />
 
                 <DateTimeInput
+                    id="data_fim"
                     label="Data do término do evento"
                     value={data.data_fim}
-                    onchange={(e) => setData("data_fim", e.target.value)}
+                    onChange={(e) => setData("data_fim", e.target.value)}
                 />
             </div>
 
             <div className="w-full text-start">
                 <PrimaryButton disabled={disabled}>{action.loading ? "Enviando..." : "Salvar"}</PrimaryButton>
-            </div>
-        </form>
-    );
-}
-
-function LocalidadeSubForm({ open, onClose }) {
-    const [data, setData] = useData({});
-
-    const action = useAction({
-        actionFn: store,
-        onSuccess: (res) => {
-            if (!res.success) {
-                toast.error("Erro ao cadastrar localidade. Tente novamente.");
-            }
-        },
-        onError: (err) => {
-            toast.error(err.message);
-        },
-    });
-
-    const disabled = action.loading;
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (disabled) return;
-
-        const payload = {};
-
-        await action.execute(localidades.store, payload);
-    };
-
-    return (
-        <form
-            onSubmit={handleSubmit}
-            className="w-full flex flex-col gap-4 rounded-sm border border-neutral-200 p-6 bg-white"
-        >
-            <div className="flex items-center justify-between">
-                <div>
-                    <h2 className="text-sm font-semibold text-neutral-800">Nova localidade</h2>
-
-                    <p className="text-sm text-neutral-500">Informe os dados da localidade do evento.</p>
-                </div>
-
-                <button
-                    type="button"
-                    onClick={onClose}
-                    className="text-sm font-medium text-neutral-500 hover:text-neutral-700 transition-colors"
-                >
-                    <XIcon size={20} />
-                </button>
-            </div>
-
-            <div className="space-y-2">
-                <InputLabel htmlFor="localidade_nome" value="Nome da localidade" />
-
-                <Input id="localidade_nome" placeholder="Ex: Auditório Central" />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
-                <Select id="estado" label="Estado">
-                    <option value="">Selecione o estado</option>
-                </Select>
-
-                <Select id="cidade" label="Cidade">
-                    <option value="">Selecione a cidade</option>
-                </Select>
-            </div>
-
-            <div className="flex items-center justify-start gap-3 pt-2">
-                <PrimaryButton type="button">Salvar localidade</PrimaryButton>
-                <SecondaryButton type="button" onClick={() => setCreatingLocation(false)}>
-                    Voltar
-                </SecondaryButton>
             </div>
         </form>
     );

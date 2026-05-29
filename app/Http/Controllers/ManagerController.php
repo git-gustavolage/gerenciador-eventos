@@ -11,7 +11,7 @@ class ManagerController extends Controller
         $event = $this->getCurrentEvent();
 
         if (!$event) {
-            return redirect()->route("events.create");
+            return redirect()->route("eventos.create");
         }
 
         return inertia("Manager/Index", [
@@ -24,7 +24,7 @@ class ManagerController extends Controller
         $event = $this->getCurrentEvent();
 
         if (!$event) {
-            return redirect()->route("events.create");
+            return redirect()->route("eventos.create");
         }
 
         return inertia("Manager/General/Index", [
