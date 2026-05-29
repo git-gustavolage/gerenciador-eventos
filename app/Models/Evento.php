@@ -16,6 +16,7 @@ class Evento extends Model
         "formato", // enum: presencial, hibirdo, remoto
         "categorias",
         "banner_path",
+        "endereco",
         "data_inicio",
         "data_fim",
         "data_inicio_inscricoes",
