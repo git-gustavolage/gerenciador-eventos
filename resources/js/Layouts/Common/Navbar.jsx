@@ -43,8 +43,8 @@ export default function Navbar() {
 
                                 {user && (
                                     <NavLink
-                                        href={route("manager.my-events")}
-                                        active={route().current("manager.my-events")}
+                                        href={route("organizador.index")}
+                                        active={route().current("organizador.index")}
                                         className="h-14"
                                     >
                                         Meus Eventos
@@ -151,8 +151,8 @@ export default function Navbar() {
 
                         {user && (
                             <ResponsiveNavLink
-                                href={route("manager.my-events")}
-                                active={route().current("manager.my-events")}
+                                href={route("organizador.index")}
+                                active={route().current("organizador.index")}
                             >
                                 <div className="flex items-center gap-3">
                                     <CalendarCheckIcon size={20} />

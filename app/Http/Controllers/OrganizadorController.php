@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evento;
+use App\Support\CurrentEvent;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class OrganizadorController extends Controller
 {
-    public function dashboard()
+    public function view()
     {
         $userId = auth('web')->id();
 
@@ -63,13 +65,26 @@ class OrganizadorController extends Controller
                 ];
             });
 
-        return inertia('Organizador/Dashboard', [
+        return inertia('Organizador/Index', [
             'stats' => [
                 'total_eventos'             => $totalEventos,
                 'eventos_publicados_ativos' => $eventosPublicadosAtivos,
                 'total_inscricoes'          => $totalInscricoes,
             ],
             'eventos' => $eventos,
+        ]);
+    }
+
+    public function general(Request $request)
+    {
+        $event = CurrentEvent::get($request->input('id'));
+
+        if (!$event) {
+            return redirect()->route("eventos.create");
+        }
+
+        return inertia("Organizador/Evento/General/Index", [
+            "event" => $event,
         ]);
     }
 }

@@ -20,6 +20,7 @@ return new class extends Migration {
             $table->longText("descricao")->nullable();
             $table->string("formato"); // enum: presencial, hibrido, remoto
             $table->longText("categorias");
+            $table->string("endereco")->nullable();
             $table->string("banner_path")->nullable();
 
             $table->datetime("data_inicio")->nullable();

@@ -2,7 +2,7 @@ import { router } from "@inertiajs/react";
 
 export default function NewEventSection() {
     const handleNewEvent = () => {
-        router.visit(route("events.create"));
+        router.visit(route("eventos.create"));
     };
 
     return (
