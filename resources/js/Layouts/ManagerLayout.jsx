@@ -1,9 +1,13 @@
+import NavLink from "@/Components/NavLink";
 import ManagerSidebar from "@/Pages/Organizador/Components/ManagerSidebar";
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { ListIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
 export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarOpen = true, children }) {
+    
+    const user = usePage().props.auth.user;
+    
     const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 
     return (
@@ -19,13 +23,19 @@ export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarO
                         >
                             <ListIcon size={20} />
                         </button>
+
+                        <div className="hidden md:flex gap-8 h-14 ps-8">
+                            <NavLink href={route("home")} active={route().current("home")} className="h-14">
+                                Início
+                            </NavLink>
+                        </div>
                     </div>
                 </header>
 
-                <main className="inline-flex w-full h-full flex-1">
+                <main className="inline-flex w-full min-h-[calc(100dvh-56px)] flex-1">
                     <ManagerSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
 
-                    <div className="w-full">{children}</div>
+                    <div className="w-full flex-1">{children}</div>
                 </main>
             </div>
         </>

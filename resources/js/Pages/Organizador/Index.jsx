@@ -68,7 +68,7 @@ function EmptyState() {
                 Crie seu primeiro evento e comece a gerenciar inscrições.
             </p>
             <Link
-                href={safeRoute("events.create")}
+                href={safeRoute("eventos.create")}
                 className="mt-6 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 transition-colors"
             >
                 <PlusIcon size={16} weight="bold" />

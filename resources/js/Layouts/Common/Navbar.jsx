@@ -9,12 +9,13 @@ import {
     CalendarCheckIcon,
     HouseIcon,
     ListIcon,
+    PlusIcon,
     SignOutIcon,
     UserCircleIcon,
     UserIcon,
     XIcon,
 } from "@phosphor-icons/react";
-import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr";
+import { CaretDownIcon, PlusCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
 export default function Navbar() {
@@ -27,28 +28,48 @@ export default function Navbar() {
             <nav className="sticky top-0 z-40 border-b border-neutral-200 bg-white/90 backdrop-blur max-h-14">
                 <div className="px-6 max-md:px-4">
                     <div className="flex h-14 items-center justify-between">
-                        <div className="flex items-center gap-10">
+                        <div className="w-full flex items-center gap-10">
                             <Link href="/" className="flex items-center gap-3">
                                 <ApplicationLogo className="block h-9 w-auto fill-current text-gray-800" />
                             </Link>
 
-                            <div className="hidden md:flex gap-8 h-14">
-                                <NavLink href={route("home")} active={route().current("home")} className="h-14">
-                                    Início
-                                </NavLink>
+                            <div className="w-full flex items-center justify-between">
+                                <div className="hidden md:flex gap-8 h-14">
+                                    <NavLink href={route("home")} active={route().current("home")} className="h-14">
+                                        Início
+                                    </NavLink>
 
-                                <NavLink href={route("home")} active={route().current("home")} className="h-14">
-                                    Eventos
-                                </NavLink>
+                                    <NavLink href={route("home")} active={false} className="h-14">
+                                        Eventos
+                                    </NavLink>
+                                </div>
 
                                 {user && (
-                                    <NavLink
-                                        href={route("organizador.index")}
-                                        active={route().current("organizador.index")}
-                                        className="h-14"
-                                    >
-                                        Meus Eventos
-                                    </NavLink>
+                                    <div className="hidden md:flex gap-8 h-14 me-4">
+                                        <NavLink
+                                            href={route("eventos.create")}
+                                            active={route().current("eventos.create")}
+                                        >
+                                            <span className="inline-flex gap-2 items-center">
+                                                <PlusIcon size={20} />
+                                                Criar
+                                            </span>
+                                        </NavLink>
+
+                                        <NavLink
+                                            href={route("organizador.index")}
+                                            active={route().current("organizador.index")}
+                                            className="h-14"
+                                        >
+                                            Meus Eventos
+                                        </NavLink>
+                                    </div>
+                                )}
+
+                                {!user && (
+                                    <div className="hidden md:flex gap-8 h-14 me-4">
+                                        <NavLink href={route("login")}>Entrar</NavLink>
+                                    </div>
                                 )}
                             </div>
                         </div>

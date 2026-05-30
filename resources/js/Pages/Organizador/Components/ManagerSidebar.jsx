@@ -1,4 +1,4 @@
-import ResponsiveSidebar from "@/Layouts/Common/Sidebar/ResponsiveSidebar";
+import Overlay from "@/Components/Overlay";
 import SideBarLink from "@/Layouts/Common/Sidebar/SidebarLink";
 import {
     CalendarIcon,
@@ -14,14 +14,22 @@ import {
 
 export default function ManagerSidebar({ open, setOpen }) {
     return (
-        <ResponsiveSidebar open={open} setOpen={setOpen}>
-            <div className="flex flex-col gap-8">
-                <Manage />
-                <BeforeEvent />
-                <AfterEvent />
-                <Configuration />
+        <aside>
+            <div
+                className={`min-h-[calc(100%-56px)] h-full bg-white border-r border-neutral-300 transition-all duration-300 overflow-hidden z-10 md:relative md:h-full fixed left-0 ${open ? "w-[290px] min-w-[290px]" : "w-0"}`}
+            >
+                <div className="w-[290px] min-w-[310px] h-full p-4">
+                    <div className="flex flex-col gap-8">
+                        <Manage />
+                        <BeforeEvent />
+                        <AfterEvent />
+                        <Configuration />
+                    </div>
+                </div>
             </div>
-        </ResponsiveSidebar>
+
+            <Overlay value={open} setValue={setOpen} />
+        </aside>
     );
 }
 
@@ -42,7 +50,10 @@ function Manage() {
                 <span>Início</span>
             </SideBarLink>
 
-            <SideBarLink href={route("organizador.evento.general")} active={route().current("organizador.evento.general")}>
+            <SideBarLink
+                href={route("organizador.evento.general")}
+                active={route().current("organizador.evento.general")}
+            >
                 <LayoutIcon size={18} />
                 <span>Informações do Evento</span>
             </SideBarLink>

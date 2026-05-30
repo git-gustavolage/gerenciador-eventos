@@ -14,6 +14,11 @@ use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
+    public function create()
+    {
+        return inertia("Event/Create/Index");
+    }
+
     public function store(Request $request, StoreEventoAction $action)
     {
         $input = new EventoData(
@@ -30,28 +35,23 @@ class EventoController extends Controller
         return response()->json(["success" => true]);
     }
 
-    public function create()
-    {
-        return inertia("Event/Create/Index");
-    }
-
     public function edit(int $id)
     {
         $evento = Evento::query()
-            ->with(['atividades.ministrantes', 'localidade'])
-            ->where('id_user', auth('web')->id())
+            ->with(["atividades.ministrantes", "localidade"])
+            ->where("id_user", auth("web")->id())
             ->findOrFail($id);
 
         $ministrantes = Ministrante::query()
-            ->where('id_user', auth('web')->id())
-            ->get(['id', 'nome', 'email']);
+            ->where("id_user", auth("web")->id())
+            ->get(["id", "nome", "email"]);
 
         return inertia("Event/Edit/Index", [
-            'evento'       => $evento,
-            'ministrantes' => $ministrantes,
+            "evento" => $evento,
+            "ministrantes" => $ministrantes,
         ]);
     }
-        
+
     public function update(UpdateEventoRequest $request, UpdateEventoAction $action)
     {
         $event = $action->execute(CurrentEvent::get()->id, $request->validated());
