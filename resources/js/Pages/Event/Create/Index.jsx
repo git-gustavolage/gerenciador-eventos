@@ -4,11 +4,13 @@ import useData from "@/Hooks/useData";
 import { useState } from "react";
 import { Container } from "@/Components/Container";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { store } from "@/Actions/Eventos/store";
+import { store } from "@/Actions/store";
 import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { router } from "@inertiajs/react";
+import { eventos } from "@/api/routes";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -41,9 +43,12 @@ export default function Index() {
             ...data,
         };
 
-        const res = await action.execute(payload);
+        const res = await action.execute(eventos.store, payload);
         if (res?.success) {
             toast.info("Evento criado com sucesso!");
+            setTimeout(() => {
+                router.visit(route("organizador.index"));
+            }, 1000);
         }
     };
 
@@ -204,10 +209,9 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
                                 onClick={() => toggleCategory(category)}
                                 className={`
                                     px-6 py-2 rounded-full border text-sm font-medium transition-all duration-200
-                                    ${
-                                        selected
-                                            ? "bg-emerald-50 ring-1 ring-emerald-200 border-emerald-500 text-emerald-800"
-                                            : "bg-white border-neutral-300 text-neutral-700 hover:border-emerald-400 hover:text-emerald-600"
+                                    ${selected
+                                        ? "bg-emerald-50 ring-1 ring-emerald-200 border-emerald-500 text-emerald-800"
+                                        : "bg-white border-neutral-300 text-neutral-700 hover:border-emerald-400 hover:text-emerald-600"
                                     }
                                 `}
                             >

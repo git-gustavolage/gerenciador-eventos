@@ -10,22 +10,19 @@ class StoreMinistranteAction
 {
     public function execute(int $id_user, array $data): void
     {
-
-        // validar user <=> atividade
-
         try {
             Ministrante::create([
-                $data['id_atividade'],
-                $data['nome'],
-                $data['email'],
-                $data['telefone'] ?? null,
-                $data['cargo'] ?? null,
-                $data['instituicao'] ?? null,
+                'id_user'      => $id_user,
+                'nome'         => $data['nome'],
+                'email'        => $data['email'] ?? null,
+                'telefone'     => $data['telefone'] ?? null,
+                'cargo'        => $data['cargo'] ?? null,
+                'instituicao'  => $data['instituicao'] ?? null,
             ]);
         } catch (Exception $e) {
             throw new CreationFailedException('Erro ao salvar novo ministrante.', [
                 'message' => $e->getMessage(),
-                'user_id' => auth('web')->id(),
+                'id_user' => $id_user,
             ]);
         }
     }

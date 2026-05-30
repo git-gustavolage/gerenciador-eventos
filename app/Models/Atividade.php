@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Override;
 
 class Atividade extends Model
@@ -21,11 +22,11 @@ class Atividade extends Model
     ];
 
     #[Override]
-    protected function casts()
+    protected function casts(): array
     {
         return [
-            'data_inicio' => 'datetime:d/m/Y H:i:s',
-            'data_fim' => 'datetime:d/m/Y H:i:s',
+            'data_inicio' => 'datetime',
+            'data_fim' => 'datetime',
             'is_cancelada' => 'boolean',
         ];
     }
@@ -35,8 +36,14 @@ class Atividade extends Model
         return $this->belongsTo(Evento::class, 'id_evento', 'id');
     }
 
-    public function ministrantes(): HasMany
-    {
-        return $this->hasMany(Ministrante::class, 'id_atividade', 'id');
-    }
+public function ministrantes(): BelongsToMany
+{
+    return $this->belongsToMany(
+    Ministrante::class,
+    'atividade_ministrante',
+    'atividade_id',
+    'ministrante_id'
+);
+}
+
 }

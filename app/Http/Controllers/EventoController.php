@@ -3,12 +3,22 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Evento\StoreEventoAction;
+use App\Actions\Evento\UpdateEventoAction;
 use App\DataTransferObjects\EventoData;
 use App\Enum\EventoFormatoEnum;
+use App\Http\Requests\Evento\UpdateEventoRequest;
+use App\Models\Evento;
+use App\Models\Ministrante;
+use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
+    public function create()
+    {
+        return inertia("Event/Create/Index");
+    }
+
     public function store(Request $request, StoreEventoAction $action)
     {
         $input = new EventoData(
@@ -18,13 +28,37 @@ class EventoController extends Controller
             $request->array("categorias"),
         );
 
-        $action->execute(auth('web')->id(), $input);
+        $event = $action->execute(auth("web")->id(), $input);
+
+        session(["current_event_id" => $event->id]);
 
         return response()->json(["success" => true]);
     }
 
-    public function create()
+    public function edit(int $id)
     {
-        return inertia("Event/Create/Index");
+        $evento = Evento::query()
+            ->with(["atividades.ministrantes", "localidade"])
+            ->where("id_user", auth("web")->id())
+            ->findOrFail($id);
+
+        $ministrantes = Ministrante::query()
+            ->where("id_user", auth("web")->id())
+            ->get(["id", "nome", "email"]);
+
+        return inertia("Event/Edit/Index", [
+            "evento" => $evento,
+            "ministrantes" => $ministrantes,
+        ]);
+    }
+
+    public function update(UpdateEventoRequest $request, UpdateEventoAction $action)
+    {
+        $event = $action->execute(CurrentEvent::get()->id, $request->validated());
+
+        return response()->json([
+            "success" => true,
+            "event" => $event,
+        ]);
     }
 }

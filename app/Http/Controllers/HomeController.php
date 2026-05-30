@@ -6,6 +6,6 @@ class HomeController extends Controller
 {
     public function view()
     {
-        return inertia("Welcome");
+        return inertia("Home/Index");
     }
 }

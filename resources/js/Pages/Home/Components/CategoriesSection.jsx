@@ -18,7 +18,7 @@ const categories = [
     { name: "Educação", icon: GraduationCapIcon, count: 0 },
 ];
 
-export default function CategoriesSlider() {
+export default function CategoriesSection() {
     const VISIBLE = useVisibleItems();
 
     const [start, setStart] = useState(0);
