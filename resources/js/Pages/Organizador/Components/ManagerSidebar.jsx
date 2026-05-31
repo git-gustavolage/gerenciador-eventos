@@ -14,9 +14,9 @@ import {
 
 export default function ManagerSidebar({ open, setOpen }) {
     return (
-        <aside className="z-50">
+        <aside className="max-md:z-50">
             <div
-                className={`min-h-[calc(100%-56px)] max-md:top-0 h-full bg-white border-r border-neutral-300 transition-all duration-300 overflow-hidden z-50 md:relative md:h-full fixed left-0 ${open ? "w-[290px]" : "w-0"}`}
+                className={`min-h-[calc(100%-56px)] max-md:top-0 h-full bg-white border-r border-neutral-300 transition-all duration-300 overflow-hidden max-md:z-50 md:relative md:h-full fixed left-0 ${open ? "w-[290px]" : "w-0"}`}
             >
                 <div className="w-[290px] min-w-[290px] h-full">
                     <div className="flex flex-col gap-8 p-4">
@@ -54,8 +54,8 @@ function Manage() {
             </SideBarLink>
 
             <SideBarLink
-                href={route("organizador.evento.general")}
-                active={route().current("organizador.evento.general")}
+                href={route("organizador.evento")}
+                active={route().current("organizador.evento")}
             >
                 <LayoutIcon size={18} />
                 <span>Informações do Evento</span>
