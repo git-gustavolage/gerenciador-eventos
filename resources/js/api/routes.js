@@ -12,4 +12,9 @@ const organizadoresRoutes = {
     destroy: (params = {}) => route("organizador.organizadores.destroy", params),
 };
 
-export { localidadesRoutes, eventosRoutes, organizadoresRoutes };
+const convitesRoutes = {
+    invite: (params = {}) => route("convites.invite", params),
+    accept: (params = {}) => route("convites.accept", params),
+};
+
+export { localidadesRoutes, eventosRoutes, organizadoresRoutes, convitesRoutes };

@@ -44,6 +44,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
+        $token = session()->pull("pending_invite_token");
+
+        if ($token) {
+            session()->forget('pending_invite_token');
+            return redirect()->route("convites.view", ["token" => $token]);
+        }
+
         return redirect(route("home", absolute: false));
     }
 }

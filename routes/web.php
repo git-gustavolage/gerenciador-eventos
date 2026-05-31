@@ -1,17 +1,18 @@
 <?php
 
-use App\Http\Controllers\AtividadeController; 
+use App\Http\Controllers\AtividadeController;
+use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\OrganizadorController;
+use App\Http\Controllers\OrganizadoresController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
 
 Route::middleware("auth")->group(function () {
-
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
     Route::patch("/profile", [ProfileController::class, "update"])->name("profile.update");
     Route::delete("/profile", [ProfileController::class, "destroy"])->name("profile.destroy");
@@ -55,6 +56,12 @@ Route::middleware("auth")->group(function () {
     Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
     Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
     Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
+
+    Route::group(["prefix" => "/convites", "as" => "convites.", "controller" => ConviteController::class], function () {
+        Route::get("/{token}", "view")->name("view")->withoutMiddleware('auth');
+        Route::post("/accept/{token}", "accept")->name("accept");
+        Route::post("/invite", "invite")->name("invite");
+    });
 });
 
 require __DIR__ . "/auth.php";
