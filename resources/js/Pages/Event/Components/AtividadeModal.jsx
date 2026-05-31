@@ -6,6 +6,7 @@ import useData from "@/Hooks/useData";
 import { PlusIcon, XIcon, ChalkboardTeacherIcon } from "@phosphor-icons/react";
 import Select from "react-select";
 import AmbienteModal from "./AmbienteModal";
+import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 
 function Field({ label, error, ...props }) {
     return (
@@ -105,20 +106,21 @@ export default function AtividadeModal({ editingId, initialData, ministrantes, a
                             {errors.descricao && <span className="text-xs text-red-500">{errors.descricao}</span>}
                         </div>
 
-                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                            <Field
+                        <div className="flex flex-col gap-1.5">
+                            <DateTimeInput
+                                id="data_inicio"
                                 label="Data de início"
-                                type="datetime-local"
                                 value={data.data_inicio}
                                 onChange={(e) => setData("data_inicio", e.target.value)}
-                                error={errors.data_inicio}
                             />
-                            <Field
+                        </div>
+                        
+                        <div className="flex flex-col gap-1.5">
+                            <DateTimeInput
+                                id="data_fim"
                                 label="Data de fim"
-                                type="datetime-local"
                                 value={data.data_fim}
                                 onChange={(e) => setData("data_fim", e.target.value)}
-                                error={errors.data_fim}
                             />
                         </div>
 
