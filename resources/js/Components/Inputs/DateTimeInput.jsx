@@ -1,5 +1,5 @@
 import { CalendarBlankIcon, ClockIcon } from "@phosphor-icons/react";
-import InputLabel from "@/Components/InputLabel";
+import InputLabel from "@/Components/Inputs/InputLabel";
 
 export default function DateTimeInput({
     id = "datetime",

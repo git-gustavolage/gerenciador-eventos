@@ -1,7 +1,9 @@
 import { update } from "@/Actions/update";
-import { eventos } from "@/api/routes";
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
+import { getCategorias } from "@/api/getCategorias";
+import { eventosRoutes } from "@/api/routes";
+import InputError from "@/Components/Inputs/InputError";
+import InputLabel from "@/Components/Inputs/InputLabel";
+import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 import { Input } from "@/Components/Inputs/Input";
 import { InputRadio } from "@/Components/Inputs/InputRadio";
@@ -32,7 +34,25 @@ function EventBasicForm({ event = {} }) {
     const [data, setData] = useData({
         titulo: event.titulo ?? "",
         descricao: event.descricao ?? "",
+        categorias: event.categorias ?? [],
     });
+
+    const categorias = getCategorias();
+
+    const toggleCategory = (category) => {
+        const alreadySelected = data.categorias.includes(category);
+
+        if (alreadySelected) {
+            setData(
+                "categorias",
+                data.categorias.filter((item) => item !== category)
+            );
+
+            return;
+        }
+
+        setData("categorias", [...data.categorias, category]);
+    };
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(update),
@@ -55,9 +75,10 @@ function EventBasicForm({ event = {} }) {
         const payload = {
             titulo: data.titulo,
             descricao: data.descricao,
+            categorias: data.categorias,
         };
 
-        await action.execute(eventos.update, payload);
+        await action.execute(eventosRoutes.update(), payload);
     };
 
     return (
@@ -86,6 +107,7 @@ function EventBasicForm({ event = {} }) {
                     />
                     <InputError message={action.error?.errors?.titulo} />
                 </div>
+
                 <div className="space-y-1">
                     <InputLabel htmlFor="descricao" value="Descrição do evento" />
                     <Textarea
@@ -101,6 +123,25 @@ function EventBasicForm({ event = {} }) {
                         invalid={!!action.error?.errors?.descricao}
                     />
                     <InputError message={action.error?.errors?.descricao} />
+                </div>
+
+                <div className="space-y-1">
+                    <InputLabel value="Categoria do evento" />
+
+                    <div className="flex flex-wrap gap-3">
+                        {categorias.map((category) => {
+                            const selected = data.categorias.includes(category);
+
+                            return (
+                                <CategoryOption
+                                    key={category}
+                                    value={category}
+                                    onSelect={() => toggleCategory(category)}
+                                    selected={selected}
+                                />
+                            );
+                        })}
+                    </div>
                 </div>
             </div>
 
@@ -146,7 +187,7 @@ function EventLocationSection({ event = {} }) {
             endereco: data.endereco,
         };
 
-        await action.execute(eventos.update, payload);
+        await action.execute(eventosRoutes.update(), payload);
     };
 
     return (
@@ -189,14 +230,13 @@ function EventLocationSection({ event = {} }) {
                         placeholder="Endereço"
                         value={data.endereco}
                         onChange={(e) => {
-                            setData('endereco', e.target.value);
+                            setData("endereco", e.target.value);
                             action.clearError("endereco");
                         }}
                         invalid={!!data?.error?.errors?.endereco}
                     />
                     <InputError message={data?.error?.errors?.endereco} />
                 </div>
-
             </div>
 
             <div className="w-full">
@@ -235,7 +275,7 @@ function EventDatetimeForm({ event = {} }) {
             data_fim: data.data_fim,
         };
 
-        await action.execute(eventos.update, payload);
+        await action.execute(eventosRoutes.update(), payload);
     };
 
     return (

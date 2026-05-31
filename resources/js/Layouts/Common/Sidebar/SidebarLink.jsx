@@ -9,6 +9,7 @@ export default function SideBarLink({ href = "/", active = false, className = ""
             target={target}
             className={`inline-flex gap-3 p-1 items-center focus:text-neutral-900 focus:font-medium focus:outline-none ${activeStyle} ${className}`}
             href={href}
+            prefetch
         >
             {children}
         </Link>

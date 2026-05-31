@@ -14,12 +14,12 @@ import {
 
 export default function ManagerSidebar({ open, setOpen }) {
     return (
-        <aside>
+        <aside className="z-50">
             <div
-                className={`min-h-[calc(100%-56px)] h-full bg-white border-r border-neutral-300 transition-all duration-300 overflow-hidden z-10 md:relative md:h-full fixed left-0 ${open ? "w-[290px] min-w-[290px]" : "w-0"}`}
+                className={`min-h-[calc(100%-56px)] max-md:top-0 h-full bg-white border-r border-neutral-300 transition-all duration-300 overflow-hidden z-50 md:relative md:h-full fixed left-0 ${open ? "w-[290px]" : "w-0"}`}
             >
-                <div className="w-[290px] min-w-[310px] h-full p-4">
-                    <div className="flex flex-col gap-8">
+                <div className="w-[290px] min-w-[290px] h-full">
+                    <div className="flex flex-col gap-8 p-4">
                         <Manage />
                         <BeforeEvent />
                         <AfterEvent />
@@ -45,7 +45,10 @@ function SidebarModule({ title = "", children }) {
 function Manage() {
     return (
         <SidebarModule title="Gerenciamento">
-            <SideBarLink href={route("organizador.index")} active={route().current("organizador.index")}>
+            <SideBarLink
+                href={route("organizador.index")}
+                active={route().current("organizador.index")}
+            >
                 <HouseIcon size={18} />
                 <span>Início</span>
             </SideBarLink>
@@ -58,9 +61,12 @@ function Manage() {
                 <span>Informações do Evento</span>
             </SideBarLink>
 
-            <SideBarLink href="/manager/people">
+            <SideBarLink
+                href={route("organizador.organizadores.view")}
+                active={route().current("organizador.organizadores.view")}
+            >
                 <UserIcon size={18} />
-                <span>Pessoal</span>
+                <span>Organizadores</span>
             </SideBarLink>
         </SidebarModule>
     );

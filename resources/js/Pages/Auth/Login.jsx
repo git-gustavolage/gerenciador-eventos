@@ -1,7 +1,7 @@
 import ApplicationIdentity from "@/Components/ApplicationIdentity";
 import ApplicationLogo from "@/Components/ApplicationLogo";
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/Inputs/InputError";
+import InputLabel from "@/Components/Inputs/InputLabel";
 import { Input } from "@/Components/Inputs/Input";
 import PrimaryButton from "@/Components/PrimaryButton";
 import GuestLayout from "@/Layouts/GuestLayout";

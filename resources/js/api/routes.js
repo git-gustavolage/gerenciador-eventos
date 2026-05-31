@@ -1,10 +1,20 @@
-const localidades = {
-    store: '',//route("localidades.store"),
+const localidadesRoutes = {
+    store: "", //safeRoute("localidades.store"),
 };
 
-const eventos = {
-    store: route("eventos.store"),
-    update: route("eventos.update"),
+const eventosRoutes = {
+    store: (params = {}) => route("eventos.store", params),
+    update: (params = {}) => route("eventos.update", params),
 };
 
-export { localidades, eventos };
+const organizadoresRoutes = {
+    index: (params = {}) => route("organizador.organizadores.index", params),
+    destroy: (params = {}) => route("organizador.organizadores.destroy", params),
+};
+
+const convitesRoutes = {
+    invite: (params = {}) => route("convites.invite", params),
+    accept: (params = {}) => route("convites.accept", params),
+};
+
+export { localidadesRoutes, eventosRoutes, organizadoresRoutes, convitesRoutes };
