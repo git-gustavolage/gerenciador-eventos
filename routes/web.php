@@ -22,6 +22,12 @@ Route::middleware("auth")->group(function () {
         Route::group(["prefix" => "/evento", "as" => "evento."], function () {
             Route::get("/general", "general")->name("general");
         });
+
+        Route::group(["prefix" => "/organizadores", "as" => "organizadores.", "controller" => OrganizadoresController::class], function () {
+            Route::get("/", "view")->name("view");
+            Route::get("/index", "index")->name("index");
+            Route::delete("/destoy/{id}", "destroy")->name("destroy");
+        });
     });
 
     Route::group(["prefix" => "/eventos", "as" => "eventos.", "controller" => EventoController::class], function () {
@@ -30,8 +36,8 @@ Route::middleware("auth")->group(function () {
         Route::put("/update", "update")->name("update");
 
         Route::prefix("/{evento}")->group(function () {
-            Route::get('/edit', 'edit')->name('edit');
-            
+            Route::get("/edit", "edit")->name("edit");
+
             Route::get("/inscricoes", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
             Route::post("/inscricoes", [InscricaoController::class, "storeEvento"])->name("inscricoes.store");
             Route::delete("/inscricoes", [InscricaoController::class, "destroyEvento"])->name("inscricoes.destroy");
