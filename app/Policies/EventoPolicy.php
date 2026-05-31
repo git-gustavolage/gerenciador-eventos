@@ -17,6 +17,6 @@ class EventoPolicy
 
     public function inviteOrganizador(User $user, Evento $evento): bool
     {
-        return $evento->organizadores()->whereKey($user->id)->exists();
+        return $evento->organizadores()->where("id_user", $user->id)->exists();
     }
 }
