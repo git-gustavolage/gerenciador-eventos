@@ -9,6 +9,7 @@ use App\Enum\EventoFormatoEnum;
 use App\Http\Requests\Evento\UpdateEventoRequest;
 use App\Models\Evento;
 use App\Models\Ministrante;
+use App\Models\Ambiente;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,7 @@ class EventoController extends Controller
     public function edit(int $id)
     {
         $evento = Evento::query()
-            ->with(["atividades.ministrantes", "localidade"])
+            ->with(["atividades.ministrantes", "local"])
             ->where("id_user", auth("web")->id())
             ->findOrFail($id);
 
@@ -46,9 +47,16 @@ class EventoController extends Controller
             ->where("id_user", auth("web")->id())
             ->get(["id", "nome", "email"]);
 
+        $idLocal = $evento->id_local;
+
+        $ambientes = Ambiente::query()
+            ->where("id_local", $idLocal)
+            ->get(["id", "nome", "capacidade"]);
+
         return inertia("Event/Edit/Index", [
             "evento" => $evento,
             "ministrantes" => $ministrantes,
+            "ambientes" => $ambientes,
         ]);
     }
 

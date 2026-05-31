@@ -8,6 +8,7 @@ use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\OrganizadorController;
 use App\Http\Controllers\OrganizadoresController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\AmbienteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
@@ -51,6 +52,10 @@ Route::middleware("auth")->group(function () {
                 Route::patch("/inscricoes/{inscricao}", [InscricaoController::class, "updateAtividade"])->name("atividades.inscricoes.update");
             });
         });
+    });
+
+    Route::group(["prefix" => "/ambientes", "as" => "ambientes.", "controller" => AmbienteController::class], function () {
+        Route::post("/store", "store")->name("store");
     });
 
     Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
