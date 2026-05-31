@@ -6,21 +6,27 @@ use App\Actions\Evento\StoreEventoAction;
 use App\Actions\Evento\UpdateEventoAction;
 use App\DataTransferObjects\EventoData;
 use App\Enum\EventoFormatoEnum;
+use App\Http\Requests\Evento\StoreEventoRequest;
 use App\Http\Requests\Evento\UpdateEventoRequest;
+use App\Http\Resources\Local\LocalResource;
 use App\Models\Evento;
 use App\Models\Ministrante;
 use App\Models\Ambiente;
+use App\Models\Local;
 use App\Support\CurrentEvent;
-use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
     public function create()
     {
-        return inertia("Event/Create/Index");
+        $locais = Local::query()->get();
+
+        return inertia("Event/Create/Index", [
+            "locais" => LocalResource::collection($locais),
+        ]);
     }
 
-    public function store(Request $request, StoreEventoAction $action)
+    public function store(StoreEventoRequest $request, StoreEventoAction $action)
     {
         $input = new EventoData(
             $request->input("titulo"),
@@ -29,9 +35,9 @@ class EventoController extends Controller
             $request->array("categorias"),
         );
 
-        $event = $action->execute(auth("web")->id(), $input);
+        $evento = $action->execute(auth("web")->id(), $input);
 
-        CurrentEvent::set($event->id);
+        CurrentEvent::set($evento->id);
 
         return response()->json(["success" => true]);
     }
