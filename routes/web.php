@@ -9,9 +9,12 @@ use App\Http\Controllers\OrganizadorController;
 use App\Http\Controllers\OrganizadoresController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AmbienteController;
+use App\Support\S3Manager;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
+
+Route::get("/midia/{path}", fn (string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
 Route::middleware("auth")->group(function () {
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
@@ -20,10 +23,7 @@ Route::middleware("auth")->group(function () {
 
     Route::group(["prefix" => "/organizador", "as" => "organizador.", "controller" => OrganizadorController::class], function () {
         Route::get("/", "view")->name("index");
-
-        Route::group(["prefix" => "/evento", "as" => "evento."], function () {
-            Route::get("/general", "general")->name("general");
-        });
+        Route::get("/evento", "evento")->name("evento");
 
         Route::group(["prefix" => "/organizadores", "as" => "organizadores.", "controller" => OrganizadoresController::class], function () {
             Route::get("/", "view")->name("view");

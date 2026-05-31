@@ -33,6 +33,7 @@ return new class extends Migration {
 
             $table->boolean("is_publicado")->default(false);
             $table->boolean("is_cancelado")->default(false);
+            $table->boolean("is_encerrado")->default(false);
 
             $table->foreign("id_user")->references("id")->on("users");
             $table->foreign("id_local")->references("id")->on("locais");
