@@ -30,7 +30,7 @@ class EventoController extends Controller
 
         $event = $action->execute(auth("web")->id(), $input);
 
-        session(["current_event_id" => $event->id]);
+        CurrentEvent::set($event->id);
 
         return response()->json(["success" => true]);
     }
