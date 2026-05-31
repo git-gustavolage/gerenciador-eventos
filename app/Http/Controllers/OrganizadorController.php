@@ -76,7 +76,7 @@ class OrganizadorController extends Controller
         ]);
     }
 
-    public function general(Request $request)
+    public function evento(Request $request)
     {
         $evento = CurrentEvent::get($request->input('id'));
 
@@ -84,7 +84,7 @@ class OrganizadorController extends Controller
             return redirect()->route("eventos.create");
         }
 
-        return inertia("Organizador/Evento/General/Index", [
+        return inertia("Organizador/Evento/Index", [
             "evento" => EventoResource::make($evento),
         ]);
     }
