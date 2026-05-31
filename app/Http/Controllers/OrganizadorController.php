@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Evento\EventoResource;
 use App\Models\Evento;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
@@ -77,14 +78,14 @@ class OrganizadorController extends Controller
 
     public function general(Request $request)
     {
-        $event = CurrentEvent::get($request->input('id'));
+        $evento = CurrentEvent::get($request->input('id'));
 
-        if (!$event) {
+        if (!$evento) {
             return redirect()->route("eventos.create");
         }
 
         return inertia("Organizador/Evento/General/Index", [
-            "event" => $event,
+            "evento" => EventoResource::make($evento),
         ]);
     }
 }

@@ -8,9 +8,12 @@ use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\OrganizadorController;
 use App\Http\Controllers\OrganizadoresController;
 use App\Http\Controllers\ProfileController;
+use App\Support\S3Manager;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
+
+Route::get("/midia/{path}", fn (string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
 Route::middleware("auth")->group(function () {
     Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
