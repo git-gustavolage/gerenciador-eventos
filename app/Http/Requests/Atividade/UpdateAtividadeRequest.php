@@ -14,14 +14,14 @@ class UpdateAtividadeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'titulo'              => ['required', 'string', 'max:255'],
-            'descricao'           => ['nullable', 'string'],
-            'local'               => ['nullable', 'string', 'max:255'],
-            'data_inicio'         => ['required', 'date'],
-            'data_fim'            => ['required', 'date', 'after_or_equal:data_inicio'],
-            'limite_participantes'=> ['nullable', 'integer', 'min:1'],
-            'ministrantes'        => ['nullable', 'array'],
-            'ministrantes.*'      => ['integer', 'exists:ministrantes,id'],
+            'id_ambiente' => ['nullable', 'integer', 'exists:ambientes,id'], // mudar para required também
+            'titulo' => ['required', 'string', 'max:255'],
+            'descricao' => ['nullable', 'string'],
+            'data_inicio' => ['required', 'date'],
+            'data_fim' => ['required', 'date', 'after_or_equal:data_inicio'],
+            'limite_participantes' => ['nullable', 'integer', 'min:1'],
+            'ministrantes' => ['nullable', 'array'],
+            'ministrantes.*' => ['integer', 'exists:ministrantes,id'],
         ];
     }
 }

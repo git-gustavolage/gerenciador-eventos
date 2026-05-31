@@ -23,7 +23,7 @@ class Evento extends Model
         "data_fim_inscricoes",
         "limite_inscricoes",
         "id_user",
-        "id_localidade",
+        "id_local",
         "is_publicado",
         "is_cancelado",
     ];
@@ -51,7 +51,7 @@ class Evento extends Model
 
     public function localidade(): BelongsTo
     {
-        return $this->belongsTo(Localidade::class, "id_localidade", "id");
+        return $this->belongsTo(Localidade::class, "id_local", "id");
     }
 
     public function organizadores(): HasMany

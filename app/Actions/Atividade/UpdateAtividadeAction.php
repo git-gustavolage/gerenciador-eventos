@@ -15,11 +15,11 @@ class UpdateAtividadeAction
 
         try {
             $atividade->update([
-                'titulo'               => $data['titulo'],
-                'descricao'            => $data['descricao'] ?? null,
-                'local'                => $data['local'] ?? null,
-                'data_inicio'          => $data['data_inicio'],
-                'data_fim'             => $data['data_fim'],
+                'titulo' => $data['titulo'],
+                'descricao' => $data['descricao'] ?? null,
+                'id_ambiente' => $data['id_ambiente'],
+                'data_inicio' => $data['data_inicio'],
+                'data_fim' => $data['data_fim'],
                 'limite_participantes' => $data['limite_participantes'] ?? null,
             ]);
 

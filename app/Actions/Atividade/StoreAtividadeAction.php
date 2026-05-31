@@ -16,13 +16,13 @@ class StoreAtividadeAction
 
         try {
             $atividade = Atividade::create([
-                'id_evento'            => $data['id_evento'],
-                'titulo'               => $data['titulo'],
-                'descricao'            => $data['descricao'] ?? null,
-                'local'                => $data['local'] ?? null,
-                'data_inicio'          => $data['data_inicio'],
-                'data_fim'             => $data['data_fim'],
-                'is_cancelada'         => false,
+                'id_evento' => $data['id_evento'],
+                'id_ambiente' => $data['id_ambiente'],
+                'titulo' => $data['titulo'],
+                'descricao' => $data['descricao'] ?? null,
+                'data_inicio' => $data['data_inicio'],
+                'data_fim' => $data['data_fim'],
+                'is_cancelada' => false,
                 'limite_participantes' => $data['limite_participantes'] ?? null,
             ]);
 
@@ -50,4 +50,3 @@ class StoreAtividadeAction
         }
     }
 }
-
