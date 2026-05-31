@@ -30,6 +30,11 @@ final readonly class CurrentEvent
         return $evento;
     }
 
+    public static function getId(): ?int
+    {
+        return session("current_event_id");
+    }
+
     public static function set(int $id): void
     {
         session(["current_event_id" => $id]);

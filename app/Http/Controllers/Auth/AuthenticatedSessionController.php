@@ -27,7 +27,14 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $token = session()->pull("pending_invite_token");
+
         $request->session()->regenerate();
+
+        if ($token) {
+            session()->forget('pending_invite_token');
+            return redirect()->route("convites.view", ["token" => $token]);
+        }
 
         return redirect()->intended(route("home", absolute: false));
     }

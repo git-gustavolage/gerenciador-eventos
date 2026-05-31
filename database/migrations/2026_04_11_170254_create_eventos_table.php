@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
 
             $table->unsignedBigInteger("id_user");
-            $table->unsignedBigInteger("id_localidade")->nullable();
+            $table->unsignedBigInteger("id_local")->nullable();
 
             $table->string("titulo");
             $table->longText("descricao")->nullable();
@@ -33,9 +33,10 @@ return new class extends Migration {
 
             $table->boolean("is_publicado")->default(false);
             $table->boolean("is_cancelado")->default(false);
+            $table->boolean("is_encerrado")->default(false);
 
             $table->foreign("id_user")->references("id")->on("users");
-            $table->foreign("id_localidade")->references("id")->on("localidades");
+            $table->foreign("id_local")->references("id")->on("locais");
 
             $table->timestamps();
         });

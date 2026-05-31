@@ -9,7 +9,7 @@ class Organizador extends Model
 {
     protected $table = "organizadores";
 
-    protected $fillable = ["id_evento", "id_user"];
+    protected $fillable = ["perfil", "id_evento", "id_user"];
 
     public function evento(): BelongsTo
     {

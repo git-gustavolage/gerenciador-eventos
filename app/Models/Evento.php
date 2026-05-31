@@ -16,31 +16,32 @@ class Evento extends Model
         "formato",
         "categorias",
         "banner_path",
-        "endereco",
         "data_inicio",
         "data_fim",
         "data_inicio_inscricoes",
         "data_fim_inscricoes",
         "limite_inscricoes",
         "id_user",
-        "id_localidade",
+        "id_local",
         "is_publicado",
         "is_cancelado",
+        "is_encerrado",
     ];
 
     #[Override]
     protected function casts(): array
     {
         return [
-            "formato"               => EventoFormatoEnum::class,
-            "categorias"            => "array",
-            "data_inicio"           => "datetime:Y-m-d H:i:s",
-            "data_fim"              => "datetime:Y-m-d H:i:s", 
-            "data_inicio_inscricoes"=> "datetime:Y-m-d H:i:s", 
-            "data_fim_inscricoes"   => "datetime:Y-m-d H:i:s", 
-            "limite_inscricoes"     => "int",
-            "is_publicado"          => "boolean",
-            "is_cancelado"          => "boolean",
+            "formato" => EventoFormatoEnum::class,
+            "categorias" => "array",
+            "data_inicio" => "datetime:Y-m-d H:i:s",
+            "data_fim" => "datetime:Y-m-d H:i:s",
+            "data_inicio_inscricoes" => "datetime:Y-m-d H:i:s",
+            "data_fim_inscricoes" => "datetime:Y-m-d H:i:s",
+            "limite_inscricoes" => "int",
+            "is_publicado" => "boolean",
+            "is_cancelado" => "boolean",
+            "is_encerrado" => "boolean",
         ];
     }
 
@@ -49,9 +50,9 @@ class Evento extends Model
         return $this->hasMany(Atividade::class, "id_evento", "id");
     }
 
-    public function localidade(): BelongsTo
+    public function local(): BelongsTo
     {
-        return $this->belongsTo(Localidade::class, "id_localidade", "id");
+        return $this->belongsTo(Local::class, "id_local", "id");
     }
 
     public function organizadores(): HasMany
