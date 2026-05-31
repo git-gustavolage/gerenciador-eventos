@@ -10,7 +10,9 @@ import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorato
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router } from "@inertiajs/react";
-import { eventos } from "@/api/routes";
+import { eventosRoutes } from "@/api/routes";
+import { getCategorias } from "@/api/getCategorias";
+import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -43,7 +45,7 @@ export default function Index() {
             ...data,
         };
 
-        const res = await action.execute(eventos.store, payload);
+        const res = await action.execute(eventosRoutes.store(), payload);
         if (res?.success) {
             toast.info("Evento criado com sucesso!");
             setTimeout(() => {
@@ -142,17 +144,7 @@ function EventFormBasicsSection({ data, setData, onNext }) {
 function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
     const format_options = ["Remoto", "Presencial", "Híbrido"];
 
-    const category_options = [
-        "Arte",
-        "Divulgação",
-        "Cultura",
-        "Tecnologia",
-        "Saúde",
-        "Exposição",
-        "Educação",
-        "Religioso",
-        "Outro",
-    ];
+    const category_options = getCategorias();
 
     const toggleCategory = (category) => {
         const alreadySelected = data.categorias.includes(category);
@@ -203,20 +195,12 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
                         const selected = data.categorias.includes(category);
 
                         return (
-                            <button
-                                type="button"
+                            <CategoryOption
                                 key={category}
-                                onClick={() => toggleCategory(category)}
-                                className={`
-                                    px-6 py-2 rounded-full border text-sm font-medium transition-all duration-200
-                                    ${selected
-                                        ? "bg-emerald-50 ring-1 ring-emerald-200 border-emerald-500 text-emerald-800"
-                                        : "bg-white border-neutral-300 text-neutral-700 hover:border-emerald-400 hover:text-emerald-600"
-                                    }
-                                `}
-                            >
-                                {category}
-                            </button>
+                                value={category}
+                                onSelect={() => toggleCategory(category)}
+                                selected={selected}
+                            />
                         );
                     })}
                 </div>
