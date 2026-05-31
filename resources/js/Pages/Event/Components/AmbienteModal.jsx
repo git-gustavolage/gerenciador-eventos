@@ -17,7 +17,6 @@ export default function AmbienteModal({ id_local, onClose, onSuccess }) {
     const action = useAction({
         actionFn: store,
         onSuccess: (res) => {
-            console.log(res);
             if (res?.success) {
                 toast.success("Ambiente cadastrado com sucesso!");
                 onSuccess(res.ambiente);
