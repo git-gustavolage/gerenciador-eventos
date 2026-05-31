@@ -32,7 +32,6 @@ Route::middleware("auth")->group(function () {
 
         Route::prefix("/{evento}")->group(function () {
             Route::get('/edit', 'edit')->name('edit');
-            Route::post("/ambientes", [AmbienteController::class, "store"])->name("ambientes.store");
 
             Route::get("/inscricoes", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
             Route::post("/inscricoes", [InscricaoController::class, "storeEvento"])->name("inscricoes.store");
@@ -46,6 +45,10 @@ Route::middleware("auth")->group(function () {
                 Route::patch("/inscricoes/{inscricao}", [InscricaoController::class, "updateAtividade"])->name("atividades.inscricoes.update");
             });
         });
+    });
+
+    Route::group(["prefix" => "/ambientes", "as" => "ambientes.", "controller" => AmbienteController::class], function () {
+        Route::post("/store", "store")->name("store");
     });
 
     Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");

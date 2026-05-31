@@ -1,14 +1,7 @@
 import { useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import ManagerLayout from "@/Layouts/ManagerLayout";
-import {
-    PlusIcon,
-    CalendarBlankIcon,
-    UsersIcon,
-    ClockIcon,
-    CheckCircleIcon,
-    XIcon,
-} from "@phosphor-icons/react";
+import { PlusIcon, CalendarBlankIcon, UsersIcon, ClockIcon, CheckCircleIcon, XIcon } from "@phosphor-icons/react";
 
 import AtividadeCard from "../Components/AtividadeCard";
 import AtividadeModal from "../Components/AtividadeModal";
@@ -50,8 +43,8 @@ function Toast({ message, onClose }) {
 function StatCard({ icon: Icon, label, value, accent }) {
     const styles = {
         emerald: { icon: "bg-emerald-50 text-emerald-600", value: "text-emerald-700", bar: "bg-emerald-500" },
-        blue:    { icon: "bg-blue-50 text-blue-600",       value: "text-blue-700",   bar: "bg-blue-500"    },
-        violet:  { icon: "bg-violet-50 text-violet-600",   value: "text-violet-700", bar: "bg-violet-500"  },
+        blue: { icon: "bg-blue-50 text-blue-600", value: "text-blue-700", bar: "bg-blue-500" },
+        violet: { icon: "bg-violet-50 text-violet-600", value: "text-violet-700", bar: "bg-violet-500" },
     };
     const s = styles[accent];
     return (
@@ -78,7 +71,7 @@ export default function Index() {
     function openNew() {
         setModalAtividade({
             editingId: null,
-            initialData: { ...EMPTY_FORM, id_evento: evento.id },
+            initialData: { ...EMPTY_FORM, id_evento: evento.id, id_local: evento.id_local },
         });
     }
 
@@ -86,14 +79,15 @@ export default function Index() {
         setModalAtividade({
             editingId: atividade.id,
             initialData: {
-                id_evento:            evento.id,
-                titulo:               atividade.titulo ?? "",
-                descricao:            atividade.descricao ?? "",
-                id_ambiente:          atividade.id_ambiente ?? "",
-                data_inicio:          formatDateForInput(atividade.data_inicio),
-                data_fim:             formatDateForInput(atividade.data_fim),
+                id_evento: evento.id,
+                id_local: evento.id_local,
+                titulo: atividade.titulo ?? "",
+                descricao: atividade.descricao ?? "",
+                id_ambiente: atividade.id_ambiente ?? "",
+                data_inicio: formatDateForInput(atividade.data_inicio),
+                data_fim: formatDateForInput(atividade.data_fim),
                 limite_participantes: atividade.limite_participantes ?? "",
-                ministrantes:         atividade.ministrantes?.map((m) => m.id) ?? [],
+                ministrantes: atividade.ministrantes?.map((m) => m.id) ?? [],
             },
         });
     }
@@ -113,9 +107,7 @@ export default function Index() {
                     <div className="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
                         <div className="flex flex-wrap items-center justify-between gap-4">
                             <div>
-                                <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
-                                    {evento.titulo}
-                                </h1>
+                                <h1 className="text-3xl font-bold tracking-tight text-neutral-900">{evento.titulo}</h1>
                                 <p className="mt-1 text-sm text-neutral-500">
                                     Gerencie atividades, horários e ministrantes
                                 </p>
@@ -132,9 +124,19 @@ export default function Index() {
 
                 <div className="mx-auto flex max-w-6xl flex-col gap-8 px-6 py-8 max-md:px-4">
                     <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                        <StatCard icon={CalendarBlankIcon} label="Total de atividades" value={evento.atividades?.length || 0} accent="emerald" />
-                        <StatCard icon={UsersIcon}         label="Ministrantes"        value={ministrantes.length}            accent="blue" />
-                        <StatCard icon={ClockIcon}         label="Atividades ativas"   value={evento.atividades?.filter((a) => !a.is_cancelada)?.length || 0} accent="violet" />
+                        <StatCard
+                            icon={CalendarBlankIcon}
+                            label="Total de atividades"
+                            value={evento.atividades?.length || 0}
+                            accent="emerald"
+                        />
+                        <StatCard icon={UsersIcon} label="Ministrantes" value={ministrantes.length} accent="blue" />
+                        <StatCard
+                            icon={ClockIcon}
+                            label="Atividades ativas"
+                            value={evento.atividades?.filter((a) => !a.is_cancelada)?.length || 0}
+                            accent="violet"
+                        />
                     </div>
 
                     <div className="flex flex-col gap-4">
@@ -144,7 +146,9 @@ export default function Index() {
                                     <CalendarBlankIcon size={30} weight="duotone" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-neutral-800">Nenhuma atividade ainda</h3>
-                                <p className="mt-1 text-sm text-neutral-500">Clique em "Nova atividade" para começar.</p>
+                                <p className="mt-1 text-sm text-neutral-500">
+                                    Clique em "Nova atividade" para começar.
+                                </p>
                                 <button
                                     onClick={openNew}
                                     className="mt-5 inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700"
@@ -155,7 +159,12 @@ export default function Index() {
                         )}
 
                         {evento.atividades?.map((atividade) => (
-                            <AtividadeCard key={atividade.id} atividade={atividade} onEdit={() => openEdit(atividade)} onDestroy={() => handleDestroy(atividade.id)} />
+                            <AtividadeCard
+                                key={atividade.id}
+                                atividade={atividade}
+                                onEdit={() => openEdit(atividade)}
+                                onDestroy={() => handleDestroy(atividade.id)}
+                            />
                         ))}
                     </div>
                 </div>
@@ -169,7 +178,11 @@ export default function Index() {
                     ministrantes={ministrantes}
                     ambientes={ambientes}
                     onClose={() => setModalAtividade(null)}
-                    onSuccess={(msg) => { setModalAtividade(null); setToast(msg); router.reload({ only: ["evento"] }); }}
+                    onSuccess={(msg) => {
+                        setModalAtividade(null);
+                        setToast(msg);
+                        router.reload({ only: ["evento"] });
+                    }}
                 />
             )}
 

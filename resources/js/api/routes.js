@@ -7,4 +7,8 @@ const eventos = {
     update: route("eventos.update"),
 };
 
-export { localidades, eventos };
+const ambientesRoutes = {
+    store: (params) => route("ambientes.store", params),
+};
+
+export { localidades, eventos, ambientesRoutes };

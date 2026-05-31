@@ -8,17 +8,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Ambiente extends Model
 {
-  protected $fillable = [
-    'nome',
-    'capacidade',
-    'id_local',
-  ];
-  public function local(): BelongsTo
-  {
-    return $this->belongsTo(Local::class, 'id_local', 'id');
-  }
-  public function atividades(): HasMany
-  {
-    return $this->hasMany(Atividade::class, 'id_ambiente', 'id');
-  }
+    protected $fillable = ["nome", "capacidade", "id_local"];
+
+    public function local(): BelongsTo
+    {
+        return $this->belongsTo(Local::class, "id_local", "id");
+    }
+
+    public function atividades(): HasMany
+    {
+        return $this->hasMany(Atividade::class, "id_ambiente", "id");
+    }
 }

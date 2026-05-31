@@ -39,25 +39,24 @@ class EventoController extends Controller
     public function edit(int $id)
     {
         $evento = Evento::query()
-            ->with(['atividades.ministrantes', 'localidade'])
-            ->where('id_user', auth('web')->id())
+            ->with(["atividades.ministrantes", "local"])
+            ->where("id_user", auth("web")->id())
             ->findOrFail($id);
 
         $ministrantes = Ministrante::query()
-            ->where('id_user', auth('web')->id())
-            ->get(['id', 'nome', 'email']);
+            ->where("id_user", auth("web")->id())
+            ->get(["id", "nome", "email"]);
 
-        $idLocal = $evento->id_local ?? $evento->id_localidade ?? null;
+        $idLocal = $evento->id_local;
 
         $ambientes = Ambiente::query()
-            ->where('id_local', $idLocal)
-            ->orWhereNull('id_local') // !!! Remover qando tiver criando local
-            ->get(['id', 'nome', 'capacidade']);
+            ->where("id_local", $idLocal)
+            ->get(["id", "nome", "capacidade"]);
 
         return inertia("Event/Edit/Index", [
-            'evento' => $evento,
-            'ministrantes' => $ministrantes,
-            'ambientes' => $ambientes,
+            "evento" => $evento,
+            "ministrantes" => $ministrantes,
+            "ambientes" => $ambientes,
         ]);
     }
 

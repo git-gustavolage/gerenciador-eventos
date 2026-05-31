@@ -16,7 +16,6 @@ class Evento extends Model
         "formato",
         "categorias",
         "banner_path",
-        "endereco",
         "data_inicio",
         "data_fim",
         "data_inicio_inscricoes",
@@ -49,9 +48,9 @@ class Evento extends Model
         return $this->hasMany(Atividade::class, "id_evento", "id");
     }
 
-    public function localidade(): BelongsTo
+    public function local(): BelongsTo
     {
-        return $this->belongsTo(Localidade::class, "id_local", "id");
+        return $this->belongsTo(Local::class, "id_local", "id");
     }
 
     public function organizadores(): HasMany
