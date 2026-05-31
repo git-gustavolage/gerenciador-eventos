@@ -31,9 +31,9 @@ class UpdateEventoRequest extends FormRequest
             "descricao" => ["sometimes", "nullable", "string", "max:255"],
             "categorias" => ["sometimes", "array", "min:1"],
             "formato" => ["sometimes", "string", "max:255"],
+            "id_local" => ["sometimes", "integer", "exists:locais,id"],
             "data_inicio" => ["sometimes", "date"],
             "data_fim" => ["sometimes", "date", "after:data_inicio"],
-            "endereco" => ["sometimes", "string", "min:3", "max:255"],
             "banner" => ["sometimes", "file", "mimes:png,jpg,jpeg,webp", "max:5120"],
         ];
     }

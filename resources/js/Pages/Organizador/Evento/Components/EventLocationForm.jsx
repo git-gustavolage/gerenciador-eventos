@@ -1,26 +1,25 @@
 import { update } from "@/Actions/update";
+import { getFormatos } from "@/api/getFormatos";
 import { eventosRoutes } from "@/api/routes";
-import { Input } from "@/Components/Inputs/Input";
 import InputError from "@/Components/Inputs/InputError";
 import InputLabel from "@/Components/Inputs/InputLabel";
 import { InputRadio } from "@/Components/Inputs/InputRadio";
+import { Select } from "@/Components/Inputs/Select";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
 import useData from "@/Hooks/useData";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
+import { usePage } from "@inertiajs/react";
 import { MapPinLineIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 export function EventLocationForm({ evento = {} }) {
-    const format_options = [
-        { label: "Remoto", value: "remoto" },
-        { label: "Presencial", value: "presencial" },
-        { label: "Híbrido", value: "hibrido" },
-    ];
+    const formatos = getFormatos();
+    const { locais } = usePage().props;
 
     const [data, setData] = useData({
         formato: evento.formato ?? "",
-        endereco: evento.endereco ?? "",
+        id_local: evento.id_local ?? "",
     });
 
     const action = useAction({
@@ -34,7 +33,7 @@ export function EventLocationForm({ evento = {} }) {
         },
     });
 
-    const disabled = !data.formato || action.loading;
+    const disabled = !data.formato || !data.id_local || action.loading;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,7 +42,7 @@ export function EventLocationForm({ evento = {} }) {
 
         const payload = {
             formato: data.formato,
-            endereco: data.endereco,
+            id_local: data.id_local,
         };
 
         await action.execute(eventosRoutes.update(), payload);
@@ -64,17 +63,17 @@ export function EventLocationForm({ evento = {} }) {
                     <span className="text-neutral-600 text-sm font-normal">Formato</span>
 
                     <div className="w-full flex items-center justify-center gap-4">
-                        {format_options.map((format, index) => (
+                        {formatos.map((formato, index) => (
                             <InputRadio
                                 key={index}
-                                label={format.label}
-                                id={format.value}
+                                label={formato.label}
+                                id={formato.value}
                                 value={data.formato}
                                 onClick={() => {
-                                    setData("formato", format.value);
+                                    setData("formato", formato.value);
                                     action.clearError("formato");
                                 }}
-                                selected={format.value == data.formato}
+                                selected={formato.value == data.formato}
                             />
                         ))}
                     </div>
@@ -82,19 +81,26 @@ export function EventLocationForm({ evento = {} }) {
                 </div>
 
                 <div className="space-y-2">
-                    <InputLabel htmlFor="endereco" value="Informe o endereço" />
+                    <InputLabel htmlFor="id_local" value="Informe o local do evento" />
 
-                    <Input
-                        id="endereco"
-                        placeholder="Endereço"
-                        value={data.endereco}
+                    <Select
+                        id="id_local"
+                        value={data.id_local}
                         onChange={(e) => {
-                            setData("endereco", e.target.value);
-                            action.clearError("endereco");
+                            setData("id_local", e.target.value);
+                            action.clearError("id_local");
                         }}
-                        invalid={!!data?.error?.errors?.endereco}
-                    />
-                    <InputError message={data?.error?.errors?.endereco} />
+                        invalid={!!data?.error?.errors?.id_local}
+                    >
+                        <option disabled>Selecione um local</option>
+                        {locais.map((local) => (
+                            <option key={local.id} value={local.id}>
+                                {local.nome}
+                            </option>
+                        ))}
+                    </Select>
+
+                    <InputError message={action?.error?.errors?.id_local} />
                 </div>
             </div>
 

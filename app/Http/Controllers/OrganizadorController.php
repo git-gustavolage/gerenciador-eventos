@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Evento\EventoResource;
+use App\Http\Resources\Local\LocalResource;
 use App\Models\Evento;
+use App\Models\Local;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +81,7 @@ class OrganizadorController extends Controller
     public function evento(Request $request)
     {
         $evento = CurrentEvent::get($request->input('id'));
+        $locais = Local::query()->get();
 
         if (!$evento) {
             return redirect()->route("eventos.create");
@@ -86,6 +89,7 @@ class OrganizadorController extends Controller
 
         return inertia("Organizador/Evento/Index", [
             "evento" => EventoResource::make($evento),
+            "locais" => LocalResource::collection($locais),
         ]);
     }
 }
