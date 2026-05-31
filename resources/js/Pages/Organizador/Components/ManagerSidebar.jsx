@@ -45,18 +45,12 @@ function SidebarModule({ title = "", children }) {
 function Manage() {
     return (
         <SidebarModule title="Gerenciamento">
-            <SideBarLink
-                href={route("organizador.index")}
-                active={route().current("organizador.index")}
-            >
+            <SideBarLink href={route("organizador.index")} active={route().current("organizador.index")}>
                 <HouseIcon size={18} />
                 <span>Início</span>
             </SideBarLink>
 
-            <SideBarLink
-                href={route("organizador.evento")}
-                active={route().current("organizador.evento")}
-            >
+            <SideBarLink href={route("organizador.evento")} active={route().current("organizador.evento")}>
                 <LayoutIcon size={18} />
                 <span>Informações do Evento</span>
             </SideBarLink>
@@ -64,6 +58,7 @@ function Manage() {
             <SideBarLink
                 href={route("organizador.organizadores.view")}
                 active={route().current("organizador.organizadores.view")}
+                prefetch
             >
                 <UserIcon size={18} />
                 <span>Organizadores</span>
