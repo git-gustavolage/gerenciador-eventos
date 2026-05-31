@@ -7,7 +7,7 @@ use App\Models\Evento;
 
 final readonly class CurrentEvent
 {
-    public static function get(mixed $id = null): ?Evento
+    public static function get(mixed $id = null): Evento
     {
         if(isset($id) && is_numeric($id)) {
             self::set($id);

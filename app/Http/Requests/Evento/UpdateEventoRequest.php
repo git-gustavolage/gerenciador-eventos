@@ -29,6 +29,7 @@ class UpdateEventoRequest extends FormRequest
         return [
             "titulo" => ["sometimes", "string", "max:255", "min:3"],
             "descricao" => ["sometimes", "nullable", "string", "max:255"],
+            "categorias" => ["sometimes", "array", "min:1"],
             "formato" => ["sometimes", "string", "max:255"],
             "data_inicio" => ["sometimes", "date"],
             "data_fim" => ["sometimes", "date", "after:data_inicio"],
