@@ -3,6 +3,7 @@
 namespace App\Actions\Evento;
 
 use App\DataTransferObjects\EventoData;
+use App\Enum\PerfilEnum;
 use App\Exceptions\CreationFailedException;
 use App\Models\Evento;
 use App\Models\Organizador;
@@ -26,6 +27,7 @@ class StoreEventoAction
                 ]);
 
                 Organizador::create([
+                    "perfil" => PerfilEnum::GESTOR->value,
                     "id_evento" => $evento->id,
                     "id_user" => $id_user,
                 ]);

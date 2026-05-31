@@ -12,11 +12,14 @@ return new class extends Migration {
     {
         Schema::create("organizadores", function (Blueprint $table) {
             $table->id();
+            $table->string("perfil");
             $table->unsignedBigInteger("id_user");
             $table->unsignedBigInteger("id_evento");
 
             $table->foreign("id_user")->references("id")->on("users");
             $table->foreign("id_evento")->references("id")->on("eventos");
+
+            $table->unique(['id_user', 'id_evento']);
             $table->timestamps();
         });
     }
