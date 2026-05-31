@@ -6,6 +6,7 @@ use App\Actions\Convites\AcceptInviteAction;
 use App\Actions\Convites\InviteOrganizadorAction;
 use App\Http\Requests\Convite\InviteRequest;
 use App\Models\Convite;
+use App\Support\CurrentEvent;
 
 class ConviteController extends Controller
 {
@@ -34,17 +35,15 @@ class ConviteController extends Controller
     {
         $action->execute(auth("web")->id(), $request->input("id_evento"), $request->input("email"));
 
-        return response()->json([
-            "success" => true,
-        ]);
+        return response()->json(["success" => true]);
     }
 
     public function accept(string $token, AcceptInviteAction $action)
     {
-        $action->execute(auth("web")->id(), $token);
+        $evento = $action->execute(auth("web")->id(), $token);
 
-        return response()->json([
-            "success" => true,
-        ]);
+        CurrentEvent::set($evento->id);
+
+        return response()->json(["success" => true]);
     }
 }
