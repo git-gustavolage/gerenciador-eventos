@@ -1,8 +1,8 @@
 import { update } from "@/Actions/update";
 import { getCategorias } from "@/api/getCategorias";
 import { eventosRoutes } from "@/api/routes";
-import InputError from "@/Components/InputError";
-import InputLabel from "@/Components/InputLabel";
+import InputError from "@/Components/Inputs/InputError";
+import InputLabel from "@/Components/Inputs/InputLabel";
 import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 import { Input } from "@/Components/Inputs/Input";
