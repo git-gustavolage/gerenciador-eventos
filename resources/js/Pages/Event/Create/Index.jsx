@@ -15,6 +15,7 @@ import { getCategorias } from "@/api/getCategorias";
 import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 import InputLabel from "@/Components/Inputs/InputLabel";
 import { Select } from "@/Components/Inputs/Select";
+import { getFormatos } from "@/api/getFormatos";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -164,7 +165,7 @@ function EventFormBasicsSection({ data, setData, onNext }) {
 }
 
 function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
-    const format_options = ["Remoto", "Presencial", "Híbrido"];
+    const format_options = getFormatos();
 
     const category_options = getCategorias();
 
@@ -197,14 +198,14 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
                 <span className="text-dark text-sm font-normal">Qual o formato do evento?</span>
 
                 <div className="w-full flex items-center gap-4 flex-wrap">
-                    {format_options.map((format) => (
+                    {format_options.map((formato) => (
                         <InputRadio
-                            key={format}
-                            label={format}
-                            id={format}
-                            onClick={() => setData("formato", format)}
+                            key={formato.value}
+                            id={formato.label}
+                            label={formato.label}
+                            onClick={() => setData("formato", formato.value)}
                             value={data.formato}
-                            selected={data.formato === format}
+                            selected={data.formato === formato.value}
                         />
                     ))}
                 </div>
