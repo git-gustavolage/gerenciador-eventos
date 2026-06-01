@@ -34,7 +34,7 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
 
     return (
         <>
-            <div className="min-w-[350px] group flex items-start gap-4 rounded-sm border border-neutral-300 bg-white p-4 transition-colors hover:border-neutral-400 cursor-pointer relative">
+            <div className="w-full group flex items-start gap-4 rounded-sm border border-neutral-300 bg-white p-4 transition-colors hover:border-neutral-400 cursor-pointer relative">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-lg font-semibold text-emerald-800">
                     {organizer.nome?.charAt(0).toUpperCase()}
                     {organizer.nome?.charAt(1).toLowerCase()}

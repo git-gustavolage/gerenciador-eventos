@@ -29,6 +29,15 @@ class InviteOrganizadorAction
 
                 $token = Str::uuid()->toString();
 
+                Convite::query()
+                    ->where("id_evento", $evento->id)
+                    ->where("email", $email)
+                    ->whereNull("aceito_em")
+                    ->whereNull("cancelado_em")
+                    ->update([
+                        "cancelado_em" => now(),
+                    ]);
+
                 Convite::create([
                     "id_evento" => $evento->id,
                     "email" => $email,

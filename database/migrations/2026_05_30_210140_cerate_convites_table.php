@@ -19,6 +19,7 @@ return new class extends Migration {
 
             $table->timestamp("aceito_em")->nullable();
             $table->timestamp("expira_em")->nullable();
+            $table->timestamp("cancelado_em")->nullable();
 
             $table->timestamps();
         });

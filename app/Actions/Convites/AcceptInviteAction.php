@@ -40,15 +40,26 @@ class AcceptInviteAction
 
         try {
             return DB::transaction(function () use ($user, $convite, $evento) {
+                $now = now();
                 Organizador::create([
-                    "perfil" => PerfilEnum::ORGANIZADOR,
+                    "perfil" => PerfilEnum::ORGANIZADOR->value,
                     "id_user" => $user->id,
                     "id_evento" => $convite->id_evento,
                 ]);
 
                 $convite->update([
-                    "aceito_em" => now(),
+                    "aceito_em" => $now,
                 ]);
+
+                Convite::query()
+                    ->where("id_evento", $convite->id_evento)
+                    ->where("email", $convite->email)
+                    ->where("id", "!=", $convite->id)
+                    ->whereNull("aceito_em")
+                    ->whereNull("cancelado_em")
+                    ->update([
+                        "cancelado_em" => $now,
+                    ]);
 
                 return $evento;
             });

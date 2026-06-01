@@ -7,14 +7,15 @@ use Override;
 
 class Convite extends Model
 {
-    protected $fillable = ["id_evento", "email", "token", "aceito_em", "expira_em"];
+    protected $fillable = ["id_evento", "email", "token", "aceito_em", "expira_em", "cancelado_em"];
 
     #[Override]
-    protected function casts()
+    protected function casts(): array
     {
         return [
-            "aceito_em" => "datetime:Y-m-d H:i:s",
-            "expira_em" => "datetime:Y-m-d H:i:s",
+            "aceito_em" => "datetime",
+            "expira_em" => "datetime",
+            "cancelado_em" => "datetime",
         ];
     }
 
@@ -23,8 +24,28 @@ class Convite extends Model
         return $this->belongsTo(Evento::class, "id_evento", "id");
     }
 
-    public function user()
+    public function destinatario()
     {
         return $this->belongsTo(User::class, "email", "email");
+    }
+
+    public function isCancelado(): bool
+    {
+        return $this->cancelado_em !== null;
+    }
+
+    public function isExpirado(): bool
+    {
+        return $this->expira_em?->isPast() ?? false;
+    }
+
+    public function isPendente(): bool
+    {
+        return !$this->isCancelado() && !$this->isAceito() && !$this->isExpirado();
+    }
+
+    public function isAceito(): bool
+    {
+        return $this->aceito_em !== null;
     }
 }

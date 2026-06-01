@@ -63,9 +63,11 @@ Route::middleware("auth")->group(function () {
     Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
 
     Route::group(["prefix" => "/convites", "as" => "convites.", "controller" => ConviteController::class], function () {
-        Route::get("/{token}", "view")->name("view")->withoutMiddleware('auth');
+        Route::get("/handle/{token}", "view")->name("view")->withoutMiddleware('auth');
+        Route::get("/pending", "pending")->name("pending");
         Route::post("/accept/{token}", "accept")->name("accept");
         Route::post("/invite", "invite")->name("invite");
+        Route::delete("/cancel/{id}", "cancel")->name("cancel");
     });
 });
 

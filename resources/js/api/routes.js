@@ -15,8 +15,10 @@ export const organizadoresRoutes = {
 export const convitesRoutes = {
     invite: (params = {}) => route("convites.invite", params),
     accept: (params = {}) => route("convites.accept", params),
+    pending: (params = {}) => route("convites.pending", params),
+    cancel: (params = {}) => route("convites.cancel", params),
 };
 
 export const ambientesRoutes = {
-    store: (params) => route("ambientes.store", params),
+    store: (params = {}) => route("ambientes.store", params),
 };

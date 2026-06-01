@@ -15,13 +15,24 @@ import { store } from "@/Actions/store";
 import { toast } from "sonner";
 import { usePage } from "@inertiajs/react";
 import InputError from "@/Components/Inputs/InputError";
+import { PendingInviteCard } from "../Components/PendingInviteCard";
 
 export default function Index({ evento = {} }) {
-    const { data, reload } = useApi(organizadoresRoutes.index(), { id_evento: evento.id });
-
-    const organizadores = data?.data ?? [];
+    const { data, reload: reloadData } = useApi(organizadoresRoutes.index(), { id_evento: evento.id });
+    const { data: convitesData, reload: reloadConvites } = useApi(convitesRoutes.pending(), { id_evento: evento.id });
 
     const [open, setOpen] = useState(false);
+
+    const reload = () => {
+        reloadData();
+        reloadConvites();
+        console.log("reload");
+    };
+
+    const organizadores = data?.data ?? [];
+    const convites = convitesData ?? [];
+
+    const empty = !convites.length || convites.length <= 0;
 
     return (
         <>
@@ -34,20 +45,32 @@ export default function Index({ evento = {} }) {
                         </SecondaryButton>
                     </div>
 
-                    <div className="grid grid-cols-3 max-md:grid-cols-1 gap-4">
+                    <div className="grid grid-cols-3 max-lg:grid-cols-1 max-2xl:grid-cols-2 gap-4">
                         {organizadores.map((organizador) => (
                             <OrganizerCard key={organizador.id} organizer={organizador} reload={reload} />
                         ))}
                     </div>
+
+                    {!empty && (
+                        <div className="w-full space-y-4 mt-4">
+                            <h2 className="text-lg text-neutral-800 font-medium">Convites Pendentes</h2>
+
+                            <div className="grid grid-cols-3 max-lg:grid-cols-1 max-2xl:grid-cols-2 gap-4">
+                                {convites.map((convite) => (
+                                    <PendingInviteCard key={convite.id} convite={convite} reload={reload} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </ManagerLayout>
 
-            <InviteOrganizer open={open} onClose={() => setOpen(false)} />
+            <InviteOrganizer open={open} onClose={() => setOpen(false)} reload={reload} />
         </>
     );
 }
 
-function InviteOrganizer({ open, onClose }) {
+function InviteOrganizer({ open, onClose, reload = () => { } }) {
     const id_evento = usePage().props.auth.current_evento_id;
 
     const [data, setData, clear] = useData({
@@ -58,6 +81,7 @@ function InviteOrganizer({ open, onClose }) {
         actionFn: store,
         onSuccess: () => {
             toast.success("Link enviado!");
+            reload();
             clear();
             onClose();
         },
