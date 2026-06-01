@@ -49,6 +49,13 @@ class EventoController extends Controller
             ->where("id_user", auth("web")->id())
             ->findOrFail($id);
 
+        $user = auth("web")->user();
+
+        if (!$user->can("view", $evento)) {
+            CurrentEvent::forget();
+            return redirect()->route("eventos.create");
+        }
+
         $ministrantes = Ministrante::query()
             ->where("id_user", auth("web")->id())
             ->get(["id", "nome", "email"]);
@@ -68,7 +75,7 @@ class EventoController extends Controller
 
     public function update(UpdateEventoRequest $request, UpdateEventoAction $action)
     {
-        $event = $action->execute(CurrentEvent::get()->id, $request->validated());
+        $event = $action->execute(auth('web')->id(), CurrentEvent::get()->id, $request->validated());
 
         return response()->json([
             "success" => true,

@@ -8,11 +8,13 @@ use App\Exceptions\UpdateFailedException;
 use App\Models\Ambiente;
 use App\Models\Atividade;
 use App\Models\Evento;
+use App\Models\User;
 use App\Validators\DateRangeValidator;
 use App\Validators\PeriodContainmentValidator;
 use App\Validators\ScheduleConflictValidator;
 use Carbon\Carbon;
 use Exception;
+use Illuminate\Support\Facades\Gate;
 
 class UpdateAtividadeAction
 {
@@ -24,9 +26,10 @@ class UpdateAtividadeAction
 
     public function execute(int $id_user, int $id, array $data): void
     {
+        $user = User::query()->findOrFail($id_user);
         $atividade = Atividade::query()->with("evento")->findOrFail($id);
 
-        $this->validate($id_user, $atividade, $data);
+        $this->validate($user, $atividade, $data);
 
         try {
             $atividade->update([
@@ -47,8 +50,10 @@ class UpdateAtividadeAction
         }
     }
 
-    private function validate(int $id_user, Atividade $atividade, array $data): void
+    private function validate(User $user, Atividade $atividade, array $data): void
     {
+        Gate::forUser($user)->authorize("update", $atividade);
+
         $evento = Evento::query()->findOrFail($atividade->id_evento);
         $ambiente = Ambiente::query()->findOrFail($data["id_ambiente"]);
 
@@ -98,9 +103,7 @@ class UpdateAtividadeAction
             );
 
         if (!$this->scheduleConflictValidator->validate($inicio, $fim, $intervals)) {
-            throw new ScheduleConflictException(
-                "Já existe uma atividade agendada para este ambiente no período informado.",
-            );
+            throw new ScheduleConflictException("Já existe uma atividade agendada para este ambiente no período informado.");
         }
     }
 }
