@@ -4,9 +4,9 @@ import { useAction } from "@/Hooks/useAction";
 import { store } from "@/Actions/store";
 import { toast } from "sonner";
 import { ambientesRoutes } from "@/api/routes";
-import { InputLabel } from "@/Components/Inputs/InputLabel";
 import useData from "@/Hooks/useData";
-import InputError from "@/Components/InputError";
+import InputError from "@/Components/Inputs/InputError";
+import InputLabel from "@/Components/Inputs/InputLabel";
 
 export default function AmbienteModal({ id_local, onClose, onSuccess }) {
     const [data, setData, clear] = useData({

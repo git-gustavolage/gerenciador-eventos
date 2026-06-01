@@ -8,15 +8,17 @@ export const eventosRoutes = {
 };
 
 export const organizadoresRoutes = {
-    index: (params = {}) => route("organizador.organizadores.index", params),
-    destroy: (params = {}) => route("organizador.organizadores.destroy", params),
+    index: (params = {}) => route("organizadores.index", params),
+    destroy: (params = {}) => route("organizadores.destroy", params),
 };
 
 export const convitesRoutes = {
     invite: (params = {}) => route("convites.invite", params),
     accept: (params = {}) => route("convites.accept", params),
+    pending: (params = {}) => route("convites.pending", params),
+    cancel: (params = {}) => route("convites.cancel", params),
 };
 
 export const ambientesRoutes = {
-    store: (params) => route("ambientes.store", params),
+    store: (params = {}) => route("ambientes.store", params),
 };

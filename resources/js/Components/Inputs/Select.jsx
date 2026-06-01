@@ -1,17 +1,23 @@
-import {InputLabel} from "./InputLabel";
-
-export function Select({ label = "", children, ...props }) {
-
+export function Select({ invalid = false, className = "", children, ...props }) {
     return (
-        <div className="w-full flex flex-col items-start gap-1">
-            <InputLabel htmlFor={props.id}>{label}</InputLabel>
+        <select
+            {...props}
+            aria-invalid={invalid}
+            className={[
+                "w-full rounded-sm border px-3 py-3 pr-6 outline-none focus:ring-1",
+                "text-sm leading-5",
+                "transition-colors",
+                "disabled:bg-neutral-100 disabled:text-neutral-300",
+                "*:text-medium",
 
-            <select
-                {...props}
-                className={props?.className + " w-full rounded-sm border border-neutral-300 px-3 pr-6 py-3 outline-none focus:ring-emerald-300 focus:border-emerald-500 text-sm *:text-medium leading-5"}
-            >
-                {children}
-            </select>
-        </div>
-    )
+                invalid
+                    ? "border-red-500 focus:border-red-500 focus:ring-red-200 bg-red-50/10"
+                    : "border-neutral-300 focus:border-emerald-500 focus:ring-emerald-300",
+
+                className,
+            ].join(" ")}
+        >
+            {children}
+        </select>
+    );
 }

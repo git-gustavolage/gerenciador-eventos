@@ -3,15 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Convites\AcceptInviteAction;
+use App\Actions\Convites\CancelInviteAction;
 use App\Actions\Convites\InviteOrganizadorAction;
+use App\Actions\Convites\ListPendingInvites;
 use App\Http\Requests\Convite\InviteRequest;
+use App\Http\Resources\Convite\ConviteResource;
 use App\Models\Convite;
+use App\Support\CurrentEvent;
+use Illuminate\Http\Request;
 
 class ConviteController extends Controller
 {
     public function view(string $token)
     {
-        $convite = Convite::query()->with("evento")->where("token", $token)->firstOrFail();
+        $convite = Convite::query()->with("evento:id,titulo")->where("token", $token)->firstOrFail();
 
         $authenticated = auth("web")->check();
 
@@ -25,6 +30,9 @@ class ConviteController extends Controller
                 "evento" => $convite->evento->titulo,
                 "email" => $convite->email,
                 "expira_em" => $convite->expira_em,
+                "is_expirado" => $convite->isExpirado(),
+                "is_cancelado" => $convite->isCancelado(),
+                "is_aceito" => $convite->isAceito(),
             ],
             "authenticated" => $authenticated,
         ]);
@@ -34,17 +42,29 @@ class ConviteController extends Controller
     {
         $action->execute(auth("web")->id(), $request->input("id_evento"), $request->input("email"));
 
-        return response()->json([
-            "success" => true,
-        ]);
+        return response()->json(["success" => true]);
     }
 
     public function accept(string $token, AcceptInviteAction $action)
     {
-        $action->execute(auth("web")->id(), $token);
+        $evento = $action->execute(auth("web")->id(), $token);
 
-        return response()->json([
-            "success" => true,
-        ]);
+        CurrentEvent::set($evento->id);
+
+        return response()->json(["success" => true]);
+    }
+
+    public function pending(Request $request, ListPendingInvites $action)
+    {
+        $pending = $action->execute($request->input("id_evento") ?? CurrentEvent::getId());
+
+        return ConviteResource::collection($pending)->response();
+    }
+
+    public function cancel(int $id, CancelInviteAction $action)
+    {
+        $action->execute(auth("web")->id(), $id);
+
+        return response()->noContent();
     }
 }

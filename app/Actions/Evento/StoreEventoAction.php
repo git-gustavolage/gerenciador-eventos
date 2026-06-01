@@ -7,6 +7,7 @@ use App\Enum\PerfilEnum;
 use App\Exceptions\CreationFailedException;
 use App\Models\Evento;
 use App\Models\Organizador;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +17,9 @@ class StoreEventoAction
     {
         try {
             return DB::transaction(function () use ($id_user, $input) {
+                $inicio = Carbon::now()->addMonthNoOverflow()->startOfMonth()->startOfDay();
+                $fim = Carbon::now()->addMonthNoOverflow()->endOfMonth()->endOfDay();
+
                 $evento = Evento::create([
                     "titulo" => $input->titulo,
                     "descricao" => $input->descricao,
@@ -24,6 +28,9 @@ class StoreEventoAction
                     "id_user" => $id_user,
                     "is_publicado" => false,
                     "is_cancelado" => false,
+                    "is_encerrado" => false,
+                    "data_inicio" => $inicio,
+                    "data_fim" => $fim,
                 ]);
 
                 Organizador::create([

@@ -9,20 +9,24 @@ import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { router } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import { eventosRoutes } from "@/api/routes";
 import { getCategorias } from "@/api/getCategorias";
 import { CategoryOption } from "@/Components/Inputs/CategoryOption";
+import InputLabel from "@/Components/Inputs/InputLabel";
+import { Select } from "@/Components/Inputs/Select";
 
 export default function Index() {
     const [data, setData] = useData({
         titulo: "",
         descricao: "",
+        id_local: "",
         formato: "",
         categorias: [],
     });
 
     const totalSteps = 3;
+
     const [step, setStep] = useState(1);
 
     const handleNextStep = () => {
@@ -33,8 +37,18 @@ export default function Index() {
         setStep((prev) => (prev - 1 < 0 ? prev : prev - 1));
     };
 
-    const action = useAction({ actionFn: actionErrorHandlingDecorator(store) });
-    const disabled = !data.titulo || !data.formato || !data.categorias?.length || action.loading;
+    const action = useAction({
+        actionFn: actionErrorHandlingDecorator(store),
+        onSuccess: () => {
+            toast.success("Evento criado com sucesso!");
+
+            setTimeout(() => {
+                router.visit(route("eventos.organizacao.view"));
+            }, 1000);
+        },
+    });
+
+    const disabled = !data.titulo || !data.id_local || !data.formato || !data.categorias?.length || action.loading;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,13 +59,7 @@ export default function Index() {
             ...data,
         };
 
-        const res = await action.execute(eventosRoutes.store(), payload);
-        if (res?.success) {
-            toast.info("Evento criado com sucesso!");
-            setTimeout(() => {
-                router.visit(route("organizador.index"));
-            }, 1000);
-        }
+        await action.execute(eventosRoutes.store(), payload);
     };
 
     return (
@@ -89,9 +97,7 @@ export default function Index() {
                         />
                     )}
 
-                    {step == 3 && (
-                        <EventFormConfirmationSection loading={disabled} data={data} onPrevius={handlePreviusStep} />
-                    )}
+                    {step == 3 && <EventFormConfirmationSection loading={disabled} data={data} onPrevius={handlePreviusStep} />}
                 </form>
             </div>
         </AuthenticatedLayout>
@@ -99,6 +105,8 @@ export default function Index() {
 }
 
 function EventFormBasicsSection({ data, setData, onNext }) {
+    const { locais } = usePage().props;
+
     return (
         <Container>
             <div className="flex flex-col gap-2 w-full items-start">
@@ -106,30 +114,44 @@ function EventFormBasicsSection({ data, setData, onNext }) {
                 <p className="text-sm text-neutral-500">Informe os dados iniciais para o cadastro do evento.</p>
             </div>
 
-            <div className="w-full flex items-start justify-center flex-col gap-1">
-                <label htmlFor="title" className="text-dark text-sm font-normal">
-                    Qual o título do evento?
-                </label>
-                <Input
-                    id="title"
-                    placeholder="Título do evento"
-                    value={data.titulo}
-                    onChange={(e) => setData("titulo", e.target.value)}
-                />
-            </div>
+            <div className="w-full flex flex-col gap-4">
+                <div className="w-full space-y-2">
+                    <label htmlFor="title" className="text-dark text-sm font-normal">
+                        Qual o título do evento?
+                    </label>
+                    <Input
+                        id="title"
+                        placeholder="Título do evento"
+                        value={data.titulo}
+                        onChange={(e) => setData("titulo", e.target.value)}
+                    />
+                </div>
 
-            <div className="w-full flex items-start justify-center flex-col gap-1">
-                <label htmlFor="description" className="text-dark text-sm font-normal">
-                    Adicione uma descrição para o evento (opcional)
-                </label>
-                <textarea
-                    id="description"
-                    placeholder="Desceva o evento..."
-                    value={data.descricao}
-                    onChange={(e) => setData("descricao", e.target.value)}
-                    rows={4}
-                    className="w-full rounded-sm border border-neutral-300 resize-none text-sm outline-none focus:ring-green-300 focus:border-emerald-500"
-                ></textarea>
+                <div className="w-full space-y-2">
+                    <label htmlFor="description" className="text-dark text-sm font-normal">
+                        Adicione uma descrição para o evento (opcional)
+                    </label>
+                    <textarea
+                        id="description"
+                        placeholder="Desceva o evento..."
+                        value={data.descricao}
+                        onChange={(e) => setData("descricao", e.target.value)}
+                        rows={4}
+                        className="w-full rounded-sm border border-neutral-300 resize-none text-sm outline-none focus:ring-green-300 focus:border-emerald-500"
+                    ></textarea>
+                </div>
+
+                <div className="w-full space-y-2">
+                    <InputLabel htmlFor="id_local" value="Local do evento" />
+                    <Select id="id_local" value={data.id_local} onChange={(e) => setData("id_local", e.target.value)}>
+                        <option value="">Selecione o local do evento</option>
+                        {locais.map((local) => (
+                            <option key={local.id} value={local.id}>
+                                {local.nome}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
             </div>
 
             <div className="w-full text-start">
@@ -162,6 +184,7 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
     };
 
     const disabled = !data.formato || !data.categorias?.length;
+
     return (
         <Container>
             <div className="flex flex-col gap-2 w-full items-start">
@@ -224,7 +247,11 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
 }
 
 function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
-    const disabled = loading || !data.titulo || !data.formato || !data.categorias?.length;
+    const { locais } = usePage().props;
+
+    const disabled = loading || !data.titulo || !data.id_local || !data.formato || !data.categorias?.length;
+
+    const selected_local = locais.find((local) => local.id == data.id_local);
 
     return (
         <Container>
@@ -241,9 +268,7 @@ function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
                     <div className="flex flex-col">
                         <span className="text-sm font-semibold text-neutral-800">Dados do evento</span>
 
-                        <span className="text-xs text-neutral-500">
-                            Verifique se todas as informações estão corretas
-                        </span>
+                        <span className="text-xs text-neutral-500">Verifique se todas as informações estão corretas</span>
                     </div>
                 </div>
 
@@ -259,6 +284,14 @@ function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
 
                         <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line break-words">
                             {data.descricao || "Nenhuma descrição informada."}
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-[180px_1fr] max-md:grid-cols-1 gap-2 px-5 py-4">
+                        <span className="text-sm font-medium text-neutral-500">Local</span>
+
+                        <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line break-words">
+                            {selected_local?.nome || "Nenhuma local informado."}
                         </p>
                     </div>
 

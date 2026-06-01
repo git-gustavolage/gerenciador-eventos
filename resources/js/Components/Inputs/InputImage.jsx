@@ -1,3 +1,5 @@
+import { ImageIcon } from "@phosphor-icons/react";
+
 export default function InputImage({ preview, onChange }) {
     return (
         <label

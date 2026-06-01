@@ -7,6 +7,7 @@ use App\Exceptions\AlreadyUsedTokenException;
 use App\Exceptions\CreationFailedException;
 use App\Exceptions\ExpiredInviteException;
 use App\Models\Convite;
+use App\Models\Evento;
 use App\Models\Organizador;
 use App\Models\User;
 use Exception;
@@ -15,10 +16,11 @@ use Illuminate\Support\Facades\DB;
 
 class AcceptInviteAction
 {
-    public function execute(int $id_user, string $token)
+    public function execute(int $id_user, string $token): Evento
     {
         $convite = Convite::query()->where("token", $token)->firstOrFail();
         $user = User::query()->where("email", $convite->email)->first();
+        $evento = Evento::query()->findOrFail($convite->id_evento);
 
         if ($id_user !== $user->id) {
             throw new AuthorizationException("Este link não condiz com seu perfil. Solicite um novo link.");
@@ -33,20 +35,33 @@ class AcceptInviteAction
         }
 
         if (Organizador::query()->where("id_user", $user->id)->where("id_evento", $convite->id_evento)->exists()) {
-            return;
+            return $evento;
         }
 
         try {
-            DB::transaction(function () use ($user, $convite) {
+            return DB::transaction(function () use ($user, $convite, $evento) {
+                $now = now();
                 Organizador::create([
-                    "perfil" => PerfilEnum::ORGANIZADOR,
+                    "perfil" => PerfilEnum::ORGANIZADOR->value,
                     "id_user" => $user->id,
                     "id_evento" => $convite->id_evento,
                 ]);
 
                 $convite->update([
-                    "aceito_em" => now(),
+                    "aceito_em" => $now,
                 ]);
+
+                Convite::query()
+                    ->where("id_evento", $convite->id_evento)
+                    ->where("email", $convite->email)
+                    ->where("id", "!=", $convite->id)
+                    ->whereNull("aceito_em")
+                    ->whereNull("cancelado_em")
+                    ->update([
+                        "cancelado_em" => $now,
+                    ]);
+
+                return $evento;
             });
         } catch (Exception $e) {
             throw new CreationFailedException("Ocorreu um erro ao aceitar o convite. Solicite um novo link e tente novamente.", [

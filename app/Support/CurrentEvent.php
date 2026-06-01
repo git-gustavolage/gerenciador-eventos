@@ -39,6 +39,11 @@ final readonly class CurrentEvent
     {
         session(["current_event_id" => $id]);
     }
+    
+    public static function forget(): void
+    {
+        session()->forget("current_event_id");
+    }
 
     private static function latestCreatedBy(int $id_user): ?Evento
     {

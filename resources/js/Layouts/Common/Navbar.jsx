@@ -46,10 +46,7 @@ export default function Navbar() {
 
                                 {user && (
                                     <div className="hidden md:flex gap-8 h-14 me-4">
-                                        <NavLink
-                                            href={route("eventos.create")}
-                                            active={route().current("eventos.create")}
-                                        >
+                                        <NavLink href={route("eventos.create")} active={route().current("eventos.create")}>
                                             <span className="inline-flex gap-2 items-center">
                                                 <PlusIcon size={20} />
                                                 Criar
@@ -57,8 +54,8 @@ export default function Navbar() {
                                         </NavLink>
 
                                         <NavLink
-                                            href={route("organizador.index")}
-                                            active={route().current("organizador.index")}
+                                            href={route("dashboard")}
+                                            active={route().current("dashboard")}
                                             className="h-14"
                                         >
                                             Meus Eventos
@@ -171,10 +168,7 @@ export default function Navbar() {
                         </ResponsiveNavLink>
 
                         {user && (
-                            <ResponsiveNavLink
-                                href={route("organizador.index")}
-                                active={route().current("organizador.index")}
-                            >
+                            <ResponsiveNavLink href={route("dashboard")} active={route().current("dashboard")}>
                                 <div className="flex items-center gap-3">
                                     <CalendarCheckIcon size={20} />
                                     Meus Eventos
