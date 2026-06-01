@@ -39,13 +39,15 @@ export default function Index() {
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(store),
-        onSuccess: (res) => {
+        onSuccess: () => {
             toast.success("Evento criado com sucesso!");
+
             setTimeout(() => {
-                router.visit(route("organizador.index"));
+                router.visit(route("eventos.organizacao.view"));
             }, 1000);
         },
     });
+
     const disabled = !data.titulo || !data.id_local || !data.formato || !data.categorias?.length || action.loading;
 
     const handleSubmit = async (e) => {

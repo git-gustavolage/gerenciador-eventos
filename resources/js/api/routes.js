@@ -8,8 +8,8 @@ export const eventosRoutes = {
 };
 
 export const organizadoresRoutes = {
-    index: (params = {}) => route("organizador.organizadores.index", params),
-    destroy: (params = {}) => route("organizador.organizadores.destroy", params),
+    index: (params = {}) => route("organizadores.index", params),
+    destroy: (params = {}) => route("organizadores.destroy", params),
 };
 
 export const convitesRoutes = {

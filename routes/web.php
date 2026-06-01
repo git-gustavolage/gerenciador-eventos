@@ -5,69 +5,76 @@ use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InscricaoController;
-use App\Http\Controllers\OrganizadorController;
 use App\Http\Controllers\OrganizadoresController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AmbienteController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\OrganizacaoController;
 use App\Support\S3Manager;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
 
-Route::get("/midia/{path}", fn (string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
+Route::get("/midia/{path}", fn(string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
 Route::middleware("auth")->group(function () {
-    Route::get("/profile", [ProfileController::class, "edit"])->name("profile.edit");
-    Route::patch("/profile", [ProfileController::class, "update"])->name("profile.update");
-    Route::delete("/profile", [ProfileController::class, "destroy"])->name("profile.destroy");
-
-    Route::group(["prefix" => "/organizador", "as" => "organizador.", "controller" => OrganizadorController::class], function () {
-        Route::get("/", "view")->name("index");
-        Route::get("/evento", "evento")->name("evento");
-
-        Route::group(["prefix" => "/organizadores", "as" => "organizadores.", "controller" => OrganizadoresController::class], function () {
-            Route::get("/", "view")->name("view");
-            Route::get("/index", "index")->name("index");
-            Route::delete("/destoy/{id}", "destroy")->name("destroy");
-        });
-    });
+    Route::get("/dashboard", [DashboardController::class, "view"])->name("dashboard");
 
     Route::group(["prefix" => "/eventos", "as" => "eventos.", "controller" => EventoController::class], function () {
         Route::get("/create", "create")->name("create");
         Route::post("/store", "store")->name("store");
         Route::put("/update", "update")->name("update");
 
-        Route::prefix("/{evento}")->group(function () {
-            Route::get("/edit", "edit")->name("edit");
-
-            Route::get("/inscricoes", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
-            Route::post("/inscricoes", [InscricaoController::class, "storeEvento"])->name("inscricoes.store");
-            Route::delete("/inscricoes", [InscricaoController::class, "destroyEvento"])->name("inscricoes.destroy");
-            Route::patch("/inscricoes/{inscricao}", [InscricaoController::class, "updateEvento"])->name("inscricoes.update");
-
-            Route::prefix("/atividades/{atividade}")->group(function () {
-                Route::get("/inscricoes", [InscricaoController::class, "indexAtividade"])->name("atividades.inscricoes.index");
-                Route::post("/inscricoes", [InscricaoController::class, "storeAtividade"])->name("atividades.inscricoes.store");
-                Route::delete("/inscricoes", [InscricaoController::class, "destroyAtividade"])->name("atividades.inscricoes.destroy");
-                Route::patch("/inscricoes/{inscricao}", [InscricaoController::class, "updateAtividade"])->name("atividades.inscricoes.update");
-            });
+        Route::group(["prefix" => "/organizacao", "as" => "organizacao."], function () {
+            Route::get("/", [OrganizacaoController::class, "view"])->name("view");
+            Route::get("/edit", [OrganizacaoController::class, "edit"])->name("edit");
+            Route::get("/organizadores", [OrganizacaoController::class, "organizadores"])->name("organizadores");
+            Route::get("/atividades", [OrganizacaoController::class, "atividades"])->name("atividades");
         });
+    });
+
+    // Route::group(["prefix" => "/inscricoes", "as" => "inscricoes."], function () {
+    //     Route::get("/", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
+    //     Route::post("/", [InscricaoController::class, "storeEvento"])->name("inscricoes.store");
+    //     Route::delete("/", [InscricaoController::class, "destroyEvento"])->name("inscricoes.destroy");
+    //     Route::patch("/{inscricao}", [InscricaoController::class, "updateEvento"])->name("inscricoes.update");
+    // });
+
+    // Route::group(["prefix" => "/atividades/{atividade}", "as" => "atividades."], function () {
+    //     Route::get("/inscricoes", [InscricaoController::class, "indexAtividade"])->name("atividades.inscricoes.index");
+    //     Route::post("/inscricoes", [InscricaoController::class, "storeAtividade"])->name("atividades.inscricoes.store");
+    //     Route::delete("/inscricoes", [InscricaoController::class, "destroyAtividade"])->name("atividades.inscricoes.destroy");
+    //     Route::patch("/inscricoes/{inscricao}", [InscricaoController::class, "updateAtividade"])->name(
+    //         "atividades.inscricoes.update",
+    //     );
+    // });
+    //
+    // Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
+    // Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
+    // Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
+
+    Route::group(["prefix" => "/organizadores", "as" => "organizadores."], function () {
+        Route::get("/", [OrganizadoresController::class, "view"])->name("view");
+        Route::get("/index", [OrganizadoresController::class, "index"])->name("index");
+        Route::delete("/destoy/{id}", [OrganizadoresController::class, "destroy"])->name("destroy");
     });
 
     Route::group(["prefix" => "/ambientes", "as" => "ambientes.", "controller" => AmbienteController::class], function () {
         Route::post("/store", "store")->name("store");
     });
 
-    Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
-    Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
-    Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
-
     Route::group(["prefix" => "/convites", "as" => "convites.", "controller" => ConviteController::class], function () {
-        Route::get("/handle/{token}", "view")->name("view")->withoutMiddleware('auth');
+        Route::get("/handle/{token}", "view")->name("view")->withoutMiddleware("auth");
         Route::get("/pending", "pending")->name("pending");
         Route::post("/accept/{token}", "accept")->name("accept");
         Route::post("/invite", "invite")->name("invite");
         Route::delete("/cancel/{id}", "cancel")->name("cancel");
+    });
+
+    Route::group(["prefix" => "/profile", "as" => "profile.", "controller" => ProfileController::class], function () {
+        Route::get("/profile", "edit")->name("edit");
+        Route::patch("/profile", "update")->name("update");
+        Route::delete("/profile", "destroy")->name("destroy");
     });
 });
 

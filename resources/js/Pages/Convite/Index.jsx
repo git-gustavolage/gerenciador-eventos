@@ -21,7 +21,7 @@ export default function Index({ convite, authenticated }) {
             toast.success("Convite aceito com sucesso!");
 
             setTimeout(() => {
-                router.visit(route("organizador.index"));
+                router.visit(route("eventos.organizacao.view"));
             }, 1000);
         },
         onError: (err) => {

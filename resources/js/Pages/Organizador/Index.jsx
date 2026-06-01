@@ -185,7 +185,7 @@ export default function Dashboard({ stats, eventos }) {
                                     </div>
 
                                     <Link
-                                        href={safeRoute("organizador.evento", { id: evento.id })}
+                                        href={safeRoute("eventos.edit", { id: evento.id })}
                                         className="flex-shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 hover:bg-neutral-100 transition-colors"
                                     >
                                         Gerenciar
