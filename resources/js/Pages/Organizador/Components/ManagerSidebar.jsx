@@ -1,5 +1,6 @@
 import Overlay from "@/Components/Overlay";
 import SideBarLink from "@/Layouts/Common/Sidebar/SidebarLink";
+import { usePage } from "@inertiajs/react"; 
 import {
     CalendarIcon,
     CertificateIcon,
@@ -44,6 +45,9 @@ function SidebarModule({ title = "", children }) {
 }
 
 function Manage() {
+    
+    const { evento } = usePage().props; 
+
     return (
         <SidebarModule title="Gerenciamento">
             <SideBarLink href={route("eventos.organizacao.view")} active={route().current("eventos.organizacao.view")}>
@@ -56,7 +60,11 @@ function Manage() {
                 <span>Informações do Evento</span>
             </SideBarLink>
 
-            <SideBarLink href="/preview" target="_blank">
+            { }
+            <SideBarLink 
+                href={evento?.id ? route("eventos.publico.show", evento.id) : "#"} 
+                target="_blank"
+            >
                 <LaptopIcon size={18} />
                 <span>Página do Evento</span>
             </SideBarLink>

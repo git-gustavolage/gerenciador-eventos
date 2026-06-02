@@ -16,6 +16,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
 
+Route::get("/eventos/{id}", [EventoController::class, "show"])
+    ->name("eventos.publico.show")
+    ->whereNumber("id");
+    
 Route::get("/midia/{path}", fn(string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
 Route::middleware("auth")->group(function () {
