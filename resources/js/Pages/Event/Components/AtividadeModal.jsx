@@ -87,6 +87,11 @@ export default function AtividadeModal({ editingId, initialData, ministrantes, a
                         </button>
                     </div>
 
+                    {errors.error && (
+                        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                            {errors.error}
+                        </div>
+                    )}
                     <div className="flex flex-col gap-5">
                         <Field
                             label="Título"
@@ -199,7 +204,20 @@ export default function AtividadeModal({ editingId, initialData, ministrantes, a
                         </div>
 
                         <div className="flex flex-col gap-2">
-                            <label className="text-sm font-medium text-neutral-700">Ministrantes</label>
+    <div className="flex items-center justify-between">
+        <label className="text-sm font-medium text-neutral-700">Ministrantes</label>
+        <button
+            type="button"
+            onClick={() => {
+                if (confirm("Você será redirecionado e os dados informados neste formulário serão perdidos. Deseja continuar?")) {
+                    router.visit(route("eventos.organizacao.ministrantes"));
+                }
+            }}
+            className="text-xs font-medium text-emerald-600 hover:text-emerald-700 underline transition-colors"
+        >
+            Cadastrar novo ministrante
+        </button>
+    </div>
                             {ministrantes.length === 0 ? (
                                 <div className="rounded-sm border border-dashed border-neutral-300 p-4 text-sm text-neutral-500">
                                     Nenhum ministrante cadastrado ainda.

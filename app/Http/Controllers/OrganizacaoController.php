@@ -85,4 +85,23 @@ class OrganizacaoController extends Controller
             "ambientes" => $ambientes,
         ]);
     }
+    public function ministrantes()
+{
+    $ministrantes = Ministrante::query()
+        ->where("id_user", auth("web")->id())
+        ->get([
+            "id",
+            "nome",
+            "email",
+            "telefone",
+            "cargo",
+            "instituicao",
+        ]);
+
+    return inertia("Ministrantes/Index", [
+        "ministrantes" => $ministrantes,
+    ]);
+}
+
+    
 }

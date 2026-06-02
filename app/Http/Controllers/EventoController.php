@@ -25,23 +25,24 @@ class EventoController extends Controller
     }
 
     public function store(StoreEventoRequest $request, StoreEventoAction $action)
-    {
-        $input = new EventoData(
-            $request->input("titulo"),
-            $request->input("descricao"),
-            EventoFormatoEnum::tryFrom(strtolower($request->input("formato"))),
-            $request->array("categorias"),
-        );
+{
+    $input = new EventoData(
+        $request->input("titulo"),
+        $request->input("descricao"),
+        EventoFormatoEnum::tryFrom(strtolower($request->input("formato"))),
+        $request->array("categorias"),
+        (int) $request->input("id_local"), // <-- adiciona
+    );
 
-        $evento = $action->execute(auth("web")->id(), $input);
+    $evento = $action->execute(auth("web")->id(), $input);
 
-        CurrentEvent::set($evento->id);
+    CurrentEvent::set($evento->id);
 
-        return response()->json([
-            "success" => true,
-            "evento" => EventoResource::make($evento),
-        ]);
-    }
+    return response()->json([
+        "success" => true,
+        "evento" => EventoResource::make($evento),
+    ]);
+}
 
     public function update(UpdateEventoRequest $request, UpdateEventoAction $action)
     {

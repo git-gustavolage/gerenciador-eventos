@@ -12,7 +12,7 @@ class StoreMinistranteRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,15 +21,13 @@ class StoreMinistranteRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'id_atividade' => ['required', 'numeric', 'exists:atividades,id'],
-
-            'nome' => ['required', 'max:255', 'string'],
-            'email' => ['required', 'max:255', 'email'],
-            'telefone' => ['nullable', 'max:255', 'string'],
-            'cargo' => ['nullable', 'max:255', 'string'],
-            'instituicao' => ['nullable', 'max:255', 'string'],
-        ];
-    }
+{
+    return [
+        'nome' => ['required', 'max:255', 'string'],
+        'email' => ['nullable', 'max:255', 'email'],
+        'telefone' => ['nullable', 'max:255', 'string'],
+        'cargo' => ['nullable', 'max:255', 'string'],
+        'instituicao' => ['nullable', 'max:255', 'string'],
+    ];
+}
 }

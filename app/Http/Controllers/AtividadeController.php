@@ -22,6 +22,8 @@ class AtividadeController extends Controller
 
             return redirect()->back()->with("success", "Atividade criada com sucesso!");
         } catch (Exception $e) {
+                    \Log::error($e->getMessage()); // <-- adiciona
+
             return redirect()
                 ->back()
                 ->withErrors(["error" => "Erro ao salvar: " . $e->getMessage()]);

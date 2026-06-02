@@ -17,6 +17,9 @@ return new class extends Migration
             $table->text('bio')->nullable();
             $table->string('foto_path')->nullable();
             $table->timestamps();
+            $table->foreignId('conta_id')->nullable()->constrained('users')->nullOnDelete()->after('id_user');
+            $table->string('cargo')->nullable();
+        $table->string('instituicao')->nullable();
         });
     }
 

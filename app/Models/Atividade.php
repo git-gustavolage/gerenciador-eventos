@@ -35,13 +35,19 @@ class Atividade extends Model
         return $this->belongsTo(Evento::class, "id_evento", "id");
     }
 
+    
     public function ambiente(): BelongsTo
     {
         return $this->belongsTo(Ambiente::class, "id_ambiente", "id");
     }
 
     public function ministrantes(): BelongsToMany
-    {
-        return $this->belongsToMany(Ministrante::class, "atividade_ministrante", "atividade_id", "ministrante_id");
-    }
+{
+    return $this->belongsToMany(
+        Ministrante::class,
+        'atividade_ministrante',
+        'atividade_id',
+        'ministrante_id'
+    );
+}
 }
