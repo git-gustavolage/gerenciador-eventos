@@ -111,7 +111,7 @@ export function EventDivulgationForm({ evento = {} }) {
                     <InputLabel htmlFor="banner" value="Imagem de capa do evento" />
                     <div className="space-y-1">
                         <InputImage preview={preview} onChange={handleBannerChange} />
-                        <p className="w-full text-end text-xs text-neutral-500">Dimensões recomendadas: 1200x630px</p>
+                        <p className="w-full text-end text-xs text-neutral-500">Dimensões recomendadas: 1900x380px</p>
                     </div>
                     <InputError message={action?.error?.errors?.banner} />
                 </div>
