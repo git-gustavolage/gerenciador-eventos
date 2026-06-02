@@ -4,7 +4,7 @@ namespace App\Http\Requests\Ministrante;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreMinistranteRequest extends FormRequest
+class UpdateMinistranteRequest extends FormRequest
 {
     public function authorize(): bool { return true; }
 

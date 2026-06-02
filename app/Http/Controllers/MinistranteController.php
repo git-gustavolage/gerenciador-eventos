@@ -4,36 +4,105 @@ namespace App\Http\Controllers;
 
 use App\Actions\Ministrante\DestroyMinistranteAction;
 use App\Actions\Ministrante\StoreMinistranteAction;
+use App\Actions\Ministrante\UpdateMinistranteAction;
+use App\Actions\Ministrante\ConfirmarConviteAction;
+use App\Actions\Ministrante\RecusarConviteAction;
 use App\Http\Requests\Ministrante\StoreMinistranteRequest;
+use App\Http\Requests\Ministrante\UpdateMinistranteRequest;
+use App\Models\Ministrante;
+use App\Models\User;
 
 class MinistranteController extends Controller
 {
-    public function view()
-    {
-        //
-    }
-
     public function index()
     {
-        //
+        $ministrantes = Ministrante::query()
+            ->where('id_user', auth('web')->id())
+            ->orderBy('nome')
+            ->get();
+
+        return inertia('Ministrante/Index', [
+            'ministrantes' => $ministrantes,
+        ]);
     }
 
-    public function store(StoreMinistranteRequest $request, StoreMinistranteAction $action)
+    public function convites()
     {
-        $action->execute(auth('web')->id(), $request->validated());
+        $ministrante = Ministrante::query()
+            ->where('conta_id', auth('web')->id()) 
+            ->with([
+                'atividades' => fn($q) => $q->withPivot('status')->with('evento'),
+            ])
+            ->first();
 
-        return response()->json(['success' => true]);
+        return inertia('Ministrante/Convites', [
+            'ministrante' => $ministrante,
+        ]);
     }
 
-    public function update()
+    public function store(StoreMinistranteRequest $request)
     {
-        //
+        $validated = $request->validated();
+        $email = $validated['email'] ?? null;
+        $userExistente = null;
+
+        if ($email) {
+            $userExistente = User::where('email', $email)->first();
+        }
+
+        if ($userExistente) {
+            Ministrante::create([
+                'nome' => $validated['nome'],
+                'email' => $email,
+                'telefone' => $validated['telefone'] ?? null,
+                'cargo' => $validated['cargo'] ?? null,
+                'instituicao' => $validated['instituicao'] ?? null,
+                'id_user' => auth('web')->id(),   
+                'conta_id' => $userExistente->id, 
+            ]);
+
+            return redirect()->back()->with('success', 'Usuário encontrado! O ministrante foi vinculado com sucesso.');
+
+        } else {
+            Ministrante::create([
+                'nome' => $validated['nome'],
+                'email' => $email,
+                'telefone' => $validated['telefone'] ?? null,
+                'cargo' => $validated['cargo'] ?? null,
+                'instituicao' => $validated['instituicao'] ?? null,
+                'id_user' => auth('web')->id(), 
+                'conta_id' => null,             
+            ]);
+
+            return redirect()->back()->with('success', 'Ministrante cadastrado com sucesso!');
+        }
+    }
+
+    public function update(int $id, UpdateMinistranteRequest $request, UpdateMinistranteAction $action)
+    {
+        $action->execute(auth('web')->id(), $id, $request->validated());
+
+        return redirect()->back()->with('success', 'Ministrante atualizado com sucesso!');
     }
 
     public function destroy(int $id, DestroyMinistranteAction $action)
     {
         $action->execute(auth('web')->id(), $id);
 
-        return response()->noContent();
+        return redirect()->back()->with('success', 'Ministrante removido com sucesso!');
+    }
+
+    public function confirmar(int $atividadeId, ConfirmarConviteAction $action)
+    {
+        $action->execute(auth('web')->id(), $atividadeId);
+
+        return redirect()->back()->with('success', 'Participação confirmada!');
+    }
+
+    public function recusar(int $atividadeId, RecusarConviteAction $action)
+    {
+        $action->execute(auth('web')->id(), $atividadeId);
+
+        return redirect()->back()->with('success', 'Convite recusado.');
     }
 }

@@ -5,6 +5,6 @@ namespace App\Enum;
 enum EventoFormatoEnum: string
 {
     case PRESENCIAL = 'presencial';
-    case HIBRIDO = 'hibrido';
+    case HIBRIDO = 'híbrido';
     case REMOTO = 'remoto';
 }

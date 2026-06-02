@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Ministrante extends Model
 {
     protected $fillable = [
-        'id_user', 
-        'nome',
+        'id_user',
+        'conta_id',
+        'nome', 
         'email',
         'telefone',
         'cargo',
@@ -29,6 +30,6 @@ class Ministrante extends Model
             'atividade_ministrante',
             'ministrante_id',
             'atividade_id'
-        );
+        )->withPivot('status');
     }
 }
