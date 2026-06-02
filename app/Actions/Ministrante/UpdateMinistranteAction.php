@@ -19,11 +19,13 @@ class UpdateMinistranteAction
 
         try {
             $ministrante->update([
-                'nome'        => $data['nome'],
-                'email'       => $data['email'] ?? null,
-                'telefone'    => $data['telefone'] ?? null,
-                'cargo'       => $data['cargo'] ?? null,
-                'instituicao' => $data['instituicao'] ?? null,
+                'id_user'     => $id_user, 
+            'conta_id'    => $contaVinculada ? $contaVinculada->id : null, 
+            'nome'        => $data['nome'],
+            'email'       => $data['email'] ?? null,
+            'telefone'    => $data['telefone'] ?? null,
+            'cargo'       => $data['cargo'] ?? null,
+            'instituicao' => $data['instituicao'] ?? null,
             ]);
         } catch (Exception $e) {
             throw new UpdateFailedException('Erro ao atualizar ministrante.', [
