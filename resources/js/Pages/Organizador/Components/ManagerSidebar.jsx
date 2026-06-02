@@ -85,11 +85,6 @@ function BeforeEvent() {
                 <span>Atividades</span>
             </SideBarLink>
 
-            <SideBarLink href="/ministrantes">
-                <UserIcon size={18} />
-                <span>Cadastrar Ministrante</span>
-            </SideBarLink>
-
             <SideBarLink href="#">
                 <CalendarIcon size={18} />
                 <span>Programação</span>
