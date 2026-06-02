@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
 
+Route::get("/eventos", [EventoController::class, "index"])->name("eventos.publico.index");
+
 Route::get("/eventos/{id}", [EventoController::class, "show"])
     ->name("eventos.publico.show")
     ->whereNumber("id");

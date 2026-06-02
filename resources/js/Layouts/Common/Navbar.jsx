@@ -39,8 +39,8 @@ export default function Navbar() {
                                         Início
                                     </NavLink>
 
-                                    <NavLink href={route("home")} active={false} className="h-14">
-                                        Eventos
+                                    <NavLink href={route("eventos.publico.index")} active={route().current("eventos.publico.index")} className="h-14">
+                                      Eventos
                                     </NavLink>
                                 </div>
 
@@ -160,7 +160,7 @@ export default function Navbar() {
                             </div>
                         </ResponsiveNavLink>
 
-                        <ResponsiveNavLink href={route("home")} active={route().current("home")}>
+                        <ResponsiveNavLink href={route("eventos.publico.index")} active={route().current("eventos.publico.index")}>
                             <div className="flex items-center gap-3">
                                 <CalendarBlankIcon size={20} />
                                 Eventos

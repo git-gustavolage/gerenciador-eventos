@@ -24,17 +24,21 @@ class UpdateEventoRequest extends FormRequest
      */
     public function rules(): array
     {
-        Rule::enum(EventoFormatoEnum::class)->when($this->formato);
-
         return [
             "titulo" => ["sometimes", "string", "max:255", "min:3"],
             "descricao" => ["sometimes", "nullable", "string", "max:255"],
             "categorias" => ["sometimes", "array", "min:1"],
-            "formato" => ["sometimes", "string", "max:255"],
+            
+            "formato" => ["sometimes", "string", Rule::enum(EventoFormatoEnum::class)],
+            
             "id_local" => ["sometimes", "integer", "exists:locais,id"],
             "data_inicio" => ["sometimes", "date"],
             "data_fim" => ["sometimes", "date", "after:data_inicio"],
             "banner" => ["sometimes", "file", "mimes:png,jpg,jpeg,webp", "max:5120"],
+            
+            "is_publicado" => ["sometimes", "boolean"],
+            "is_cancelado" => ["sometimes", "boolean"],
+            "is_encerrado" => ["sometimes", "boolean"],
         ];
     }
 

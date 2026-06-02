@@ -45,15 +45,14 @@ class EventoController extends Controller
 }
 
     public function update(UpdateEventoRequest $request, UpdateEventoAction $action)
-    {
-        $evento = CurrentEvent::get();
-        $evento = $action->execute(auth("web")->id(), $evento->id, $request->validated());
+{
+    $evento = CurrentEvent::get();
+    
+    $evento = $action->execute(auth("web")->id(), $evento->id, $request->validated());
 
-        return response()->json([
-            "success" => true,
-            "evento" => EventoResource::make($evento),
-        ]);
-    }
+
+    return redirect()->back()->with("success", "Evento atualizado com sucesso!");
+}
      public function show(int $id)
 {
     $evento = \App\Models\Evento::with(['atividades.ministrantes', 'atividades.ambiente', 'local'])
@@ -73,6 +72,20 @@ class EventoController extends Controller
     return inertia('Event/Publico/Index', [
         'evento' => $evento,
         'isOwner' => $isOwner 
+    ]);
+}
+
+public function index()
+{
+    $eventos = \App\Models\Evento::with(['local'])
+        ->withCount('atividades')
+        ->where('is_publicado', true)
+        ->where('is_cancelado', false)
+        ->orderBy('data_inicio', 'asc')
+        ->get();
+
+    return inertia('Event/Publico/List', [
+        'eventos' => $eventos
     ]);
 }
 }
