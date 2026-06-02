@@ -11,7 +11,6 @@ use App\Models\Ambiente;
 use App\Models\Evento;
 use App\Models\Ministrante;
 use App\Support\CurrentEvent;
-use Illuminate\Http\Request;
 use Exception;
 
 class AtividadeController extends Controller
@@ -30,17 +29,16 @@ class AtividadeController extends Controller
     }
 
     public function update(int $id, UpdateAtividadeRequest $request, UpdateAtividadeAction $action)
-{
-    try {
-        $action->execute(auth("web")->id(), $id, $request->validated());
-        
-        return redirect()->back()->with("success", "Atividade atualizada com sucesso!");
-    } catch (Exception $e) {
-        return redirect()
-            ->back()
-            ->withErrors(["error" => "Erro ao atualizar: " . $e->getMessage()]);
+    {
+        try {
+            $action->execute(auth("web")->id(), $id, $request->validated());
+            return redirect()->back()->with("success", "Atividade atualizada com sucesso!");
+        } catch (Exception $e) {
+            return redirect()
+                ->back()
+                ->withErrors(["error" => "Erro ao atualizar: " . $e->getMessage()]);
+        }
     }
-}
 
     public function destroy(int $id, DestroyAtividadeAction $action)
     {
