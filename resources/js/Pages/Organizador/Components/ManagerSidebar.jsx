@@ -60,7 +60,6 @@ function Manage() {
                 <span>Informações do Evento</span>
             </SideBarLink>
 
-            { }
             <SideBarLink 
                 href={evento?.id ? route("eventos.publico.show", evento.id) : "#"} 
                 target="_blank"
