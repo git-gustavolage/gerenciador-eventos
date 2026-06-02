@@ -189,7 +189,7 @@ export default function EventoPublico({ evento, isOwner }) {
 
             {/* Aviso do Organizador */}
             {isOwner && (!evento.is_publicado || evento.is_cancelado) && (
-<div className="bg-amber-100 text-amber-900 text-center px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2 border border-amber-300">                    <InfoIcon size={18} weight="fill" />
+<div className="bg-amber-100 text-amber-900 text-center px-4 py-2.5 text-sm font-medium flex items-center justify-center gap-2 border border-amber-300 sticky top-14 z-10">                    <InfoIcon size={18} weight="fill" />
                     <span>
                         Você está visualizando este evento como <strong>Organizador</strong>. Ele está em modo 
                         <strong> {!evento.is_publicado ? 'Rascunho' : 'Cancelado'}</strong>.
