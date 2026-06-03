@@ -49,6 +49,17 @@ Route::middleware("auth")->group(function () {
     Route::delete("/{id}", "destroy")->name("destroy");
 });
 
+Route::prefix('eventos/{evento}')->name('eventos.')->group(function () {
+ 
+       Route::get('inscricao/dados', [InscricaoController::class, 'dadosInscricao'])
+        ->name('inscricao.dados')
+        ->middleware('auth:web');
+ 
+     Route::post('inscricao', [InscricaoController::class, 'store'])
+        ->name('inscricao.store')
+        ->middleware('auth:web');
+});
+
     // Route::group(["prefix" => "/inscricoes", "as" => "inscricoes."], function () {
     //     Route::get("/", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
     //     Route::post("/", [InscricaoController::class, "storeEvento"])->name("inscricoes.store");

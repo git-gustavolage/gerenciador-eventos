@@ -10,6 +10,8 @@ use App\Http\Requests\Evento\StoreEventoRequest;
 use App\Http\Requests\Evento\UpdateEventoRequest;
 use App\Http\Resources\Evento\EventoResource;
 use App\Http\Resources\Local\LocalResource;
+use App\Models\Inscricao;
+use App\Models\InscricaoEvento;
 use App\Models\Local;
 use App\Support\CurrentEvent;
 
@@ -54,26 +56,38 @@ class EventoController extends Controller
     return redirect()->back()->with("success", "Evento atualizado com sucesso!");
 }
      public function show(int $id)
-{
-    $evento = \App\Models\Evento::with(['atividades.ministrantes', 'atividades.ambiente', 'local'])
-        ->findOrFail($id);
-
-
-    $isOwner = auth('web')->check() && auth('web')->id() === $evento->id_user;
-
-    
-    if (!$evento->is_publicado || $evento->is_cancelado) {
-        
-        if (!$isOwner) {
-            abort(403, 'Este evento não está disponível publicamente.');
+    {
+        $evento = \App\Models\Evento::with(['atividades.ministrantes', 'atividades.ambiente', 'local'])
+            ->findOrFail($id);
+ 
+        $isOwner = auth('web')->check() && auth('web')->id() === $evento->id_user;
+ 
+        if (!$evento->is_publicado || $evento->is_cancelado) {
+            if (!$isOwner) {
+                abort(403, 'Este evento não está disponível publicamente.');
+            }
         }
+ 
+        $userId = auth('web')->id();
+ 
+        return inertia('Event/Publico/Index', [
+            'evento'   => $evento,
+            'isOwner'  => $isOwner,
+ 
+            
+            'inscritoNoEvento' => $userId
+                ? InscricaoEvento::where('id_user', $userId)
+                    ->where('id_evento', $id)
+                    ->exists()
+                : false,
+ 
+            'atividadesInscritas' => $userId
+                ? Inscricao::where('id_user', $userId)
+                    ->whereIn('id_atividade', $evento->atividades->pluck('id'))
+                    ->pluck('id_atividade')
+                : [],
+        ]);
     }
-
-    return inertia('Event/Publico/Index', [
-        'evento' => $evento,
-        'isOwner' => $isOwner 
-    ]);
-}
 
 public function index()
 {
