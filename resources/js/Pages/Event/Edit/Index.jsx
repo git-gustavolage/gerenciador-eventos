@@ -86,7 +86,7 @@ export default function Index() {
                 titulo: atividade.titulo ?? "",
                 descricao: atividade.descricao ?? "",
                 id_ambiente: atividade.id_ambiente ?? "",
-                data_inicio: formatDateForInput(atividade.data_inicio),
+                data_inicio: (atividade.data_inicio),
                 data_fim: formatDateForInput(atividade.data_fim),
                 limite_participantes: atividade.limite_participantes ?? "",
                 ministrantes: atividade.ministrantes?.map((m) => m.id) ?? [],

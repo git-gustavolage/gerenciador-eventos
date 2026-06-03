@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProgramacaoController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\EventoController;
@@ -36,7 +37,7 @@ Route::middleware("auth")->group(function () {
             Route::get("/organizadores", [OrganizacaoController::class, "organizadores"])->name("organizadores");
             Route::get("/atividades", [OrganizacaoController::class, "atividades"])->name("atividades");
             Route::get("/ministrantes", [OrganizacaoController::class, "ministrantes"])->name("ministrantes");
-
+            Route::get("/programacao", [OrganizacaoController::class, "programacao"])->name("programacao");
         });
     });
 

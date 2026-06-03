@@ -1,6 +1,6 @@
 import Overlay from "@/Components/Overlay";
 import SideBarLink from "@/Layouts/Common/Sidebar/SidebarLink";
-import { usePage } from "@inertiajs/react"; 
+import { usePage } from "@inertiajs/react";
 import {
     CalendarIcon,
     CertificateIcon,
@@ -11,7 +11,6 @@ import {
     LayoutIcon,
     TicketIcon,
     UserIcon,
-    UsersIcon,
 } from "@phosphor-icons/react";
 
 export default function ManagerSidebar({ open, setOpen }) {
@@ -45,8 +44,8 @@ function SidebarModule({ title = "", children }) {
 }
 
 function Manage() {
-    
-    const { evento } = usePage().props; 
+
+    const { evento } = usePage().props;
 
     return (
         <SidebarModule title="Gerenciamento">
@@ -60,8 +59,8 @@ function Manage() {
                 <span>Informações do Evento</span>
             </SideBarLink>
 
-            <SideBarLink 
-                href={evento?.id ? route("eventos.publico.show", evento.id) : "#"} 
+            <SideBarLink
+                href={evento?.id ? route("eventos.publico.show", evento.id) : "#"}
                 target="_blank"
             >
                 <LaptopIcon size={18} />
@@ -92,7 +91,7 @@ function BeforeEvent() {
                 <span>Atividades</span>
             </SideBarLink>
 
-            <SideBarLink 
+            <SideBarLink
                 href={route("eventos.organizacao.ministrantes")}
                 active={route().current("eventos.organizacao.ministrantes")}
                 prefetch
@@ -101,7 +100,7 @@ function BeforeEvent() {
                 <span>Cadastrar Ministrante</span>
             </SideBarLink>
 
-            <SideBarLink href="#">
+            <SideBarLink href={route("eventos.organizacao.programacao")}>
                 <CalendarIcon size={18} />
                 <span>Programação</span>
             </SideBarLink>

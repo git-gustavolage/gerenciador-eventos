@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AtividadeResource;
 use App\Http\Resources\Evento\EventoResource;
 use App\Http\Resources\Local\LocalResource;
 use App\Models\Ambiente;
+use App\Models\Atividade;
 use App\Models\Evento;
 use App\Models\Local;
 use App\Models\Ministrante;
@@ -86,22 +88,30 @@ class OrganizacaoController extends Controller
         ]);
     }
     public function ministrantes()
-{
-    $ministrantes = Ministrante::query()
-        ->where("id_user", auth("web")->id())
-        ->get([
-            "id",
-            "nome",
-            "email",
-            "telefone",
-            "cargo",
-            "instituicao",
+    {
+        $ministrantes = Ministrante::query()
+            ->where("id_user", auth("web")->id())
+            ->get([
+                "id",
+                "nome",
+                "email",
+                "telefone",
+                "cargo",
+                "instituicao",
+            ]);
+
+        return inertia("Ministrantes/Index", [
+            "ministrantes" => $ministrantes,
         ]);
+    }
 
-    return inertia("Ministrantes/Index", [
-        "ministrantes" => $ministrantes,
-    ]);
-}
+    public function programacao()
+    {
+        $evento = CurrentEvent::get();
+        $atividades = $evento->atividades()->where("is_cancelada", false)->get();
 
-
+        return inertia("Programacao/Index", [
+            "atividades" => AtividadeResource::collection($atividades),
+        ]);
+    }
 }
