@@ -1,17 +1,22 @@
-export const localidadesRoutes = {
-    store: "", //safeRoute("localidades.store"),
-};
-
+/**
+ * @deprecated
+ */
 export const eventosRoutes = {
     store: (params = {}) => route("eventos.store", params),
     update: (params = {}) => route("eventos.update", params),
 };
 
+/**
+ * @deprecated
+ */
 export const organizadoresRoutes = {
     index: (params = {}) => route("organizadores.index", params),
     destroy: (params = {}) => route("organizadores.destroy", params),
 };
 
+/**
+ * @deprecated
+ */
 export const convitesRoutes = {
     invite: (params = {}) => route("convites.invite", params),
     accept: (params = {}) => route("convites.accept", params),
@@ -19,6 +24,29 @@ export const convitesRoutes = {
     cancel: (params = {}) => route("convites.cancel", params),
 };
 
+/**
+ * @deprecated
+ */
 export const ambientesRoutes = {
     store: (params = {}) => route("ambientes.store", params),
+};
+
+export const routes = {
+    convites: {
+        invite: (params = {}) => route("convites.invite", params),
+        accept: (params = {}) => route("convites.accept", params),
+        pending: (params = {}) => route("convites.pending", params),
+        cancel: (params = {}) => route("convites.cancel", params),
+    },
+    organizadores: {
+        index: (params = {}) => route("organizadores.index", params),
+        destroy: (params = {}) => route("organizadores.destroy", params),
+    },
+    atividades: {
+        store: (params = {}) => route("atividades.store", params),
+        update: (params = {}) => route("atividades.update", params),
+    },
+    ambientes: {
+        store: (params = {}) => route("ambientes.store", params),
+    },
 };

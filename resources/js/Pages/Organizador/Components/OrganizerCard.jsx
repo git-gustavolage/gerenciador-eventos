@@ -1,5 +1,5 @@
 import { destroy } from "@/Actions/destroy";
-import { organizadoresRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import DangerButton from "@/Components/DangerButton";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
@@ -29,7 +29,7 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
     const handleRemove = async () => {
         if (disabled) return;
 
-        await action.execute(organizadoresRoutes.destroy({ id: organizer.id }));
+        await action.execute(routes.organizadores.destroy({ id: organizer.id }));
     };
 
     return (
@@ -61,7 +61,7 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
                 )}
             </div>
 
-            <Modal show={open} onClose={() => setOpen(false)}>
+            <Modal show={open} onClose={() => setOpen(false)} maxWidth="sm" center>
                 <div className="space-y-4">
                     <h2 className="text-lg font-medium text-neutral-800">Remover {organizer.nome}</h2>
 
@@ -73,7 +73,7 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
                         <p className="mt-2">Tem certeza que deseja prosseguir com esta ação?</p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 max-md:flex-col">
                         <DangerButton onClick={handleRemove} disabled={disabled}>
                             Remover
                         </DangerButton>
