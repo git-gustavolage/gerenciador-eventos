@@ -69,7 +69,7 @@ export default function Index() {
     const [toast, setToast] = useState(null);
 
     function openNew() {
-            console.log("id_local:", evento.id_local); // <-- adiciona isso
+           
 
         setModalAtividade({
             editingId: null,

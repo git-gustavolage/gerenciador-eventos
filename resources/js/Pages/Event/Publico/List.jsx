@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { usePage } from "@inertiajs/react";
+
 import { Link } from "@inertiajs/react";
 import Navbar from "@/Layouts/Common/Navbar";
 import { 
@@ -53,7 +55,10 @@ function FormatoBadge({ formato }) {
 }
 
 export default function ListagemEventos({ eventos = [] }) {
-    const [busca, setBusca] = useState("");
+    const { url } = usePage();
+    const params = new URLSearchParams(url.split("?")[1] ?? "");
+    const [busca, setBusca] = useState(params.get("q") ?? "");
+    
     const [filtroFormato, setFiltroFormato] = useState("todos");
     const [filtroStatus, setFiltroStatus] = useState("todos");
 

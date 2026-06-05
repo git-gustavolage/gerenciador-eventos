@@ -20,7 +20,7 @@ export default function Inscricoes({ inscricoes, inscricoesAtividades, atividade
     const [loading, setLoading] = useState(false);
     const [abaAtiva, setAbaAtiva] = useState("evento"); 
 
-      console.log("inscricoesAtividades:", inscricoesAtividades);
+    
 
     function handleConfirmarInscricao(id) {
         if (!confirm("Deseja confirmar a inscrição deste participante?")) return;

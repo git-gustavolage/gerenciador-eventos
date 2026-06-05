@@ -3,18 +3,13 @@ import Slider from "@/Components/Slider/Slider";
 import { CalendarIcon } from "@phosphor-icons/react";
 
 export default function SliderSection({ eventos = [] }) {
-
-    const slides = [];
-
-    eventos.forEach(event => {
-        slides.push(<EventSlide key={event.uuid} event={event} />)
-    })
-
     return (
         <div className="w-full py-16 flex flex-col items-start justify-center p-4">
             <div className="max-w-6xl m-auto">
                 <h2 className="text-4xl font-bold text-neutral-800 mb-4">Eventos em Destaque:</h2>
-                <Slider slides={slides} />
+                <Slider slides={eventos.map((event) => (
+                    <EventSlide key={event.uuid ?? event.id} event={event} />
+                ))} />
             </div>
         </div>
     );

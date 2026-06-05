@@ -24,6 +24,15 @@ Route::get("/eventos/{id}", [EventoController::class, "show"])
     
 Route::get("/midia/{path}", fn(string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
+
+Route::get("/api/eventos/publicos", function () {
+    return \App\Models\Evento::with(['local'])
+        ->where('is_publicado', true)
+        ->where('is_cancelado', false)
+        ->orderBy('data_inicio', 'asc')
+        ->get();
+})->name("api.eventos.publicos");
+
 Route::middleware("auth")->group(function () {
     Route::get("/dashboard", [DashboardController::class, "view"])->name("dashboard");
 
@@ -114,6 +123,8 @@ Route::prefix('eventos/{evento}')->name('eventos.')->group(function () {
         Route::patch("/profile", "update")->name("update");
         Route::delete("/profile", "destroy")->name("destroy");
     });
+
+    
 });
 
 require __DIR__ . "/auth.php";
