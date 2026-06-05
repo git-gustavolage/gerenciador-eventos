@@ -38,8 +38,8 @@ export default function Slider({ slides }) {
                 <div className="flex items-center justify-between gap-4">
                     <Button orientation="left" onClick={previous} />
 
-                    <div className="overflow-hidden">
-                        <div className="w-full flex gap-[4px] transition-transform duration-500" style={{ transform: `translateX(-${index * 100}%)` }}>
+                    <div className="overflow-hidden w-[1100px]">
+                        <div className="w-full flex transition-transform duration-500" style={{ transform: `translateX(-${index * 100}%)` }}>
 
                             {slides.map(slide => slide)}
 
