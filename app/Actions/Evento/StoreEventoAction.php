@@ -26,6 +26,7 @@ class StoreEventoAction
                     "formato" => $input->formato,
                     "categorias" => $input->categorias,
                     "id_user" => $id_user,
+                    "id_local"    => $input->id_local,
                     "is_publicado" => false,
                     "is_cancelado" => false,
                     "is_encerrado" => false,

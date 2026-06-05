@@ -22,6 +22,6 @@ class DatabaseSeeder extends Seeder
             "password" => Hash::make("12345678"),
         ]);
 
-        $this->call([LocalSeeder::class]);
+        $this->call([LocalSeeder::class, AmbienteSeeder::class, EventoSeeder::class, AtividadeSeeder::class]);
     }
 }

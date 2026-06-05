@@ -1,5 +1,5 @@
 import { destroy } from "@/Actions/destroy";
-import { convitesRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import DangerButton from "@/Components/DangerButton";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
@@ -26,15 +26,13 @@ export function PendingInviteCard({ convite = {}, reload = () => {} }) {
     const handleCancelInvite = async () => {
         if (disabled) return;
 
-        await action.execute(convitesRoutes.cancel({ id: convite.id }));
+        await action.execute(routes.convites.cancel({ id: convite.id }));
     };
 
     return (
         <>
             <div
-                className={`w-full group flex items-start gap-4 rounded-sm border bg-white p-4 transition-colors relative ${
-                    convite.expirado ? "border-orange-300 bg-orange-50/30" : "border-neutral-300 hover:border-neutral-400"
-                }`}
+                className={`w-full group flex items-start gap-4 rounded-sm border bg-white p-4 transition-colors relative ${convite.expirado ? "border-orange-300 bg-orange-50/30" : "border-neutral-300 hover:border-neutral-400"}`}
             >
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-neutral-100 text-lg font-semibold text-neutral-600">
                     {convite.email?.charAt(0).toUpperCase()}
@@ -68,7 +66,7 @@ export function PendingInviteCard({ convite = {}, reload = () => {} }) {
                 </button>
             </div>
 
-            <Modal show={open} onClose={() => setOpen(false)}>
+            <Modal show={open} onClose={() => setOpen(false)} maxWidth="sm" center>
                 <div className="space-y-4">
                     <h2 className="text-lg font-medium text-neutral-800">Cancelar convite</h2>
 
@@ -80,7 +78,7 @@ export function PendingInviteCard({ convite = {}, reload = () => {} }) {
                         <p className="mt-2">O destinatário não poderá mais utilizar o link recebido.</p>
                     </div>
 
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 max-md:flex-col">
                         <DangerButton onClick={handleCancelInvite} disabled={disabled}>
                             Cancelar convite
                         </DangerButton>

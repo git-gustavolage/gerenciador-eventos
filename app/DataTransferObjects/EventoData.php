@@ -11,5 +11,6 @@ final readonly class EventoData
         public ?string $descricao,
         public EventoFormatoEnum $formato,
         public array $categorias,
+        public ?int $id_local = null,
     ) {}
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProgramacaoController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\EventoController;
@@ -11,9 +12,14 @@ use App\Http\Controllers\AmbienteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\OrganizacaoController;
 use App\Support\S3Manager;
+use App\Http\Controllers\MinistranteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get("/", [HomeController::class, "view"])->name("home");
+
+Route::get("/eventos", [EventoController::class, "view"])->name("eventos.publico.view");
+
+Route::get("/eventos/show/{id}", [EventoController::class, "show"])->name("eventos.publico.show");
 
 Route::get("/midia/{path}", fn(string $path) => S3Manager::get($path, "imagem"))->name("midia")->where("path", ".*");
 
@@ -27,11 +33,22 @@ Route::middleware("auth")->group(function () {
 
         Route::group(["prefix" => "/organizacao", "as" => "organizacao."], function () {
             Route::get("/", [OrganizacaoController::class, "view"])->name("view");
-            Route::get("/edit", [OrganizacaoController::class, "edit"])->name("edit");
+            Route::get("/evento", [OrganizacaoController::class, "evento"])->name("evento");
             Route::get("/organizadores", [OrganizacaoController::class, "organizadores"])->name("organizadores");
-            Route::get("/atividades", [OrganizacaoController::class, "atividades"])->name("atividades");
+            Route::get("/ministrantes", [OrganizacaoController::class, "ministrantes"])->name("ministrantes");
+            Route::get("/programacao", [OrganizacaoController::class, "programacao"])->name("programacao");
         });
     });
+
+    Route::group(
+        ["prefix" => "/ministrantes", "as" => "ministrantes.", "controller" => MinistranteController::class],
+        function () {
+            Route::get("/", "index")->name("index");
+            Route::post("/", "store")->name("store");
+            Route::put("/{id}", "update")->name("update");
+            Route::delete("/{id}", "destroy")->name("destroy");
+        },
+    );
 
     // Route::group(["prefix" => "/inscricoes", "as" => "inscricoes."], function () {
     //     Route::get("/", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
@@ -49,9 +66,10 @@ Route::middleware("auth")->group(function () {
     //     );
     // });
     //
-    // Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
-    // Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
-    // Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
+    Route::get("/atividades", [AtividadeController::class, "index"])->name("atividades.index");
+    Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
+    Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
+    Route::put("/atividades/cancel/{id}", [AtividadeController::class, "cancel"])->name("atividades.cancel");
 
     Route::group(["prefix" => "/organizadores", "as" => "organizadores."], function () {
         Route::get("/", [OrganizadoresController::class, "view"])->name("view");

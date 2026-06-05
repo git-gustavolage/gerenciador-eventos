@@ -19,8 +19,12 @@ class AcceptInviteAction
     public function execute(int $id_user, string $token): Evento
     {
         $convite = Convite::query()->where("token", $token)->firstOrFail();
-        $user = User::query()->where("email", $convite->email)->first();
         $evento = Evento::query()->findOrFail($convite->id_evento);
+        $user = User::query()->where("email", $convite->email)->first();
+
+        if (!$user) {
+            throw new AuthorizationException("Este link não condiz com seu perfil. Solicite um novo link.");
+        }
 
         if ($id_user !== $user->id) {
             throw new AuthorizationException("Este link não condiz com seu perfil. Solicite um novo link.");

@@ -1,9 +1,9 @@
 import Overlay from "@/Components/Overlay";
 import SideBarLink from "@/Layouts/Common/Sidebar/SidebarLink";
+import { usePage } from "@inertiajs/react";
 import {
-    CalendarIcon,
+    CalendarBlankIcon,
     CertificateIcon,
-    ChecksIcon,
     GearIcon,
     HouseIcon,
     LaptopIcon,
@@ -44,6 +44,8 @@ function SidebarModule({ title = "", children }) {
 }
 
 function Manage() {
+    const { evento } = usePage().props;
+
     return (
         <SidebarModule title="Gerenciamento">
             <SideBarLink href={route("eventos.organizacao.view")} active={route().current("eventos.organizacao.view")}>
@@ -51,23 +53,14 @@ function Manage() {
                 <span>Início</span>
             </SideBarLink>
 
-            <SideBarLink href={route("eventos.organizacao.edit")} active={route().current("eventos.organizacao.edit")}>
+            <SideBarLink href={route("eventos.organizacao.evento")} active={route().current("eventos.organizacao.evento")}>
                 <LayoutIcon size={18} />
                 <span>Informações do Evento</span>
             </SideBarLink>
 
-            <SideBarLink href="/preview" target="_blank">
+            <SideBarLink href={evento?.id ? route("eventos.publico.show", evento.id) : "#"} target="_blank">
                 <LaptopIcon size={18} />
                 <span>Página do Evento</span>
-            </SideBarLink>
-
-            <SideBarLink
-                href={route("eventos.organizacao.organizadores")}
-                active={route().current("eventos.organizacao.organizadores")}
-                prefetch
-            >
-                <UserIcon size={18} />
-                <span>Organizadores</span>
             </SideBarLink>
         </SidebarModule>
     );
@@ -77,17 +70,20 @@ function BeforeEvent() {
     return (
         <SidebarModule title="Pré-evento">
             <SideBarLink
-                href={route("eventos.organizacao.atividades")}
-                active={route().current("eventos.organizacao.atividades")}
-                prefetch
+                href={route("eventos.organizacao.programacao")}
+                active={route().current("eventos.organizacao.programacao")}
             >
-                <ChecksIcon size={18} />
-                <span>Atividades</span>
+                <CalendarBlankIcon size={18} />
+                <span>Programação</span>
             </SideBarLink>
 
-            <SideBarLink href="#">
-                <CalendarIcon size={18} />
-                <span>Programação</span>
+            <SideBarLink
+                href={route("eventos.organizacao.ministrantes")}
+                active={route().current("eventos.organizacao.ministrantes")}
+                prefetch
+            >
+                <UserIcon size={18} />
+                <span>Cadastrar Ministrante</span>
             </SideBarLink>
 
             <SideBarLink href="/manager/registration">
@@ -115,6 +111,15 @@ function Configuration() {
             <SideBarLink href="#">
                 <GearIcon size={18} />
                 <span>Configurações</span>
+            </SideBarLink>
+
+            <SideBarLink
+                href={route("eventos.organizacao.organizadores")}
+                active={route().current("eventos.organizacao.organizadores")}
+                prefetch
+            >
+                <UsersIcon size={18} />
+                <span>Organizadores</span>
             </SideBarLink>
         </SidebarModule>
     );
