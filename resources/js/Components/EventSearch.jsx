@@ -109,7 +109,7 @@ export default function EventSearch({ eventos = [] }) {
                     className={`rounded-sm py-4 pl-12 pr-28 text-neutral-800 w-full shadow-lg focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500 outline-none transition-all ${
                         mostrarDropdown ? "rounded-b-none" : ""
                     }`}
-                    placeholder="Buscar eventos, categorias..."
+                    placeholder="Buscar eventos..."
                     autoComplete="off"
                 />
 

@@ -21,7 +21,7 @@ class MinistranteController extends Controller
             ->orderBy('nome')
             ->get();
 
-        return inertia('Ministrante/Index', [
+        return inertia('Ministrantes/Index', [
             'ministrantes' => $ministrantes,
         ]);
     }
@@ -63,6 +63,26 @@ class MinistranteController extends Controller
             return redirect()->back()->with('success', 'Ministrante cadastrado com sucesso!');
         }
     }
+
+    public function minhasAtividades()
+    {
+        $ministrante = \App\Models\Ministrante::where('conta_id', auth('web')->id())
+            ->firstOrFail();
+
+        $atividades = $ministrante->atividades()
+            ->with(['evento', 'ambiente'])
+            ->whereHas('evento', function ($q) {
+                $q->where('is_publicado', true)
+                ->where('is_cancelado', false);
+            })
+            ->get();
+
+        return inertia('Ministrantes/MinhasAtividades', [
+            'ministrante' => $ministrante,
+            'atividades'  => $atividades,
+        ]);
+    }
+
 
     public function update(int $id, UpdateMinistranteRequest $request, UpdateMinistranteAction $action)
     {

@@ -61,7 +61,11 @@ Route::middleware("auth")->group(function () {
              Route::put("/atividades/inscricoes/{inscricaoAtividade}/toggle-presenca", [OrganizacaoController::class, "togglePresencaAtividade"])->name("atividades.toggle-presenca");
             });
     });
+    
+    Route::get("/minhas-atividades", [\App\Http\Controllers\MinistranteController::class, "minhasAtividades"])
+        ->name("ministrante.minhas-atividades");
 
+        
     Route::group(["prefix" => "/ministrantes", "as" => "ministrantes.", "controller" => MinistranteController::class], function () {
     Route::get("/", "index")->name("index");
     Route::post("/", "store")->name("store");

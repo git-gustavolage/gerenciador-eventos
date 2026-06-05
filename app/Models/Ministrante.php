@@ -30,6 +30,6 @@ class Ministrante extends Model
             'atividade_ministrante',
             'ministrante_id',
             'atividade_id'
-        )->withPivot('status');
+        );
     }
 }

@@ -23,11 +23,6 @@ class HandleInertiaRequests extends Middleware
         return parent::version($request);
     }
 
-    /**
-     * Define the props that are shared by default.
-     *
-     * @return array<string, mixed>
-     */
     public function share(Request $request): array
     {
         return [
@@ -36,6 +31,18 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'current_evento_id' => CurrentEvent::getId(),
             ],
+            'isMinistrante' => function () use ($request) {
+                if (!$request->user()) return false;
+
+                return \App\Models\Ministrante::where('conta_id', $request->user()->id)
+                    ->whereHas('atividades', function ($q) {
+                        $q->whereHas('evento', function ($q2) {
+                            $q2->where('is_publicado', true)
+                            ->where('is_cancelado', false);
+                        });
+                    })
+                    ->exists();
+            },
         ];
     }
 }

@@ -3,6 +3,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import Overlay from "@/Components/Overlay";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
+import { ChalkboardTeacherIcon } from "@phosphor-icons/react";
 import { Link, usePage } from "@inertiajs/react";
 import {
     CalendarBlankIcon,
@@ -20,7 +21,7 @@ import { useState } from "react";
 
 export default function Navbar() {
     const user = usePage().props.auth.user;
-
+    const { isMinistrante } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -60,6 +61,16 @@ export default function Navbar() {
                                         >
                                             Meus Eventos
                                         </NavLink>
+
+                                        {isMinistrante && (
+                                            <NavLink
+                                                href={route("ministrante.minhas-atividades")}
+                                                active={route().current("ministrante.minhas-atividades")}
+                                                className="h-14"
+                                            >
+                                                Ministrante
+                                            </NavLink>
+                                        )}
                                     </div>
                                 )}
 
@@ -172,6 +183,18 @@ export default function Navbar() {
                                 <div className="flex items-center gap-3">
                                     <CalendarCheckIcon size={20} />
                                     Meus Eventos
+                                </div>
+                            </ResponsiveNavLink>
+                        )}
+
+                        {isMinistrante && (
+                            <ResponsiveNavLink
+                                href={route("ministrante.minhas-atividades")}
+                                active={route().current("ministrante.minhas-atividades")}
+                            >
+                                <div className="flex items-center gap-3">
+                                    <ChalkboardTeacherIcon size={20} />
+                                    Ministrante
                                 </div>
                             </ResponsiveNavLink>
                         )}
