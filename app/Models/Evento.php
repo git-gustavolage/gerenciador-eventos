@@ -59,4 +59,10 @@ class Evento extends Model
     {
         return $this->hasMany(Organizador::class, "id_evento", "id");
     }
+
+
+    public function inscricoesEvento(): HasMany
+    {
+        return $this->hasMany(InscricaoEvento::class, "id_evento", "id");
+    }
 }
