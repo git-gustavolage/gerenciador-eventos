@@ -107,7 +107,10 @@ function BeforeEvent() {
                 <span>Programação</span>
             </SideBarLink>
 
-            <SideBarLink href="/manager/registration">
+            <SideBarLink 
+                href={route("eventos.organizacao.inscricoes")} 
+                active={route().current("eventos.organizacao.inscricoes")}
+            >
                 <TicketIcon size={18} />
                 <span>Inscrições</span>
             </SideBarLink>

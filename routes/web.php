@@ -39,7 +39,18 @@ Route::middleware("auth")->group(function () {
             Route::get("/atividades", [OrganizacaoController::class, "atividades"])->name("atividades");
             Route::get("/ministrantes", [OrganizacaoController::class, "ministrantes"])->name("ministrantes");
 
-        });
+           Route::get("/inscricoes", [OrganizacaoController::class, "inscricoes"])->name("inscricoes");
+            Route::post("/inscricoes/confirmar-todas", [OrganizacaoController::class, "confirmarTodas"])->name("confirmar-todas");
+            Route::put("/inscricoes/{inscricaoEvento}/confirmar", [OrganizacaoController::class, "confirmarInscricao"])->name("confirmar-inscricao");
+            Route::put("/inscricoes/{inscricaoEvento}/cancelar", [OrganizacaoController::class, "cancelarInscricao"])->name("cancelar-inscricao");
+            Route::put("/inscricoes/{inscricaoEvento}/toggle-presenca", [OrganizacaoController::class, "togglePresenca"])->name("toggle-presenca");
+       
+             Route::get("/atividades/{atividade}/inscricoes", [OrganizacaoController::class, "inscricoesAtividade"])->name("atividades.inscricoes");
+             Route::post("/atividades/{atividade}/inscricoes/confirmar-todas", [OrganizacaoController::class, "confirmarTodasAtividade"])->name("atividades.confirmar-todas");
+             Route::put("/atividades/inscricoes/{inscricaoAtividade}/confirmar", [OrganizacaoController::class, "confirmarInscricaoAtividade"])->name("atividades.confirmar-inscricao");
+             Route::put("/atividades/inscricoes/{inscricaoAtividade}/cancelar", [OrganizacaoController::class, "cancelarInscricaoAtividade"])->name("atividades.cancelar-inscricao");
+             Route::put("/atividades/inscricoes/{inscricaoAtividade}/toggle-presenca", [OrganizacaoController::class, "togglePresencaAtividade"])->name("atividades.toggle-presenca");
+            });
     });
 
     Route::group(["prefix" => "/ministrantes", "as" => "ministrantes.", "controller" => MinistranteController::class], function () {

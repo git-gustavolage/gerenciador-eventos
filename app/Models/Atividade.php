@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 use Override;
 
 class Atividade extends Model
@@ -40,6 +42,11 @@ class Atividade extends Model
     {
         return $this->belongsTo(Ambiente::class, "id_ambiente", "id");
     }
+
+    public function inscricoes(): HasMany
+{
+    return $this->hasMany(InscricaoAtividade::class, 'id_atividade', 'id');
+}
 
     public function ministrantes(): BelongsToMany
 {
