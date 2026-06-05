@@ -9,7 +9,7 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
-class DestroyAtividadeAction
+class CancelAtividadeAction
 {
     public function execute(int $id_user, int $id_atividade): void
     {
@@ -20,11 +20,15 @@ class DestroyAtividadeAction
 
         try {
             DB::transaction(function () use ($atividade) {
-                $atividade->ministrantes()->detach();
-                $atividade->delete();
+                $atividade->update([
+                    "is_cancelada" => true,
+                    "data_cancelamento" => now(),
+                ]);
+
+                // TODO: notificar inscritos sobre o cancelamento da atividade
             });
         } catch (Exception $e) {
-            throw new CreationFailedException("Ocorreu um erro ao deletar a atividade", [
+            throw new CreationFailedException("Ocorreu um erro ao cancelar a atividade", [
                 "message" => $e->getMessage(),
                 "id_user" => $id_user,
                 "id_atividade" => $id_atividade,
@@ -34,6 +38,6 @@ class DestroyAtividadeAction
 
     private function validate(User $user, Atividade $atividade): void
     {
-        Gate::forUser($user)->authorize("update", $atividade);
+        Gate::forUser($user)->authorize("cancel", $atividade);
     }
 }

@@ -33,20 +33,22 @@ Route::middleware("auth")->group(function () {
 
         Route::group(["prefix" => "/organizacao", "as" => "organizacao."], function () {
             Route::get("/", [OrganizacaoController::class, "view"])->name("view");
-            Route::get("/edit", [OrganizacaoController::class, "edit"])->name("edit");
+            Route::get("/evento", [OrganizacaoController::class, "evento"])->name("evento");
             Route::get("/organizadores", [OrganizacaoController::class, "organizadores"])->name("organizadores");
-            Route::get("/atividades", [OrganizacaoController::class, "atividades"])->name("atividades");
             Route::get("/ministrantes", [OrganizacaoController::class, "ministrantes"])->name("ministrantes");
             Route::get("/programacao", [OrganizacaoController::class, "programacao"])->name("programacao");
         });
     });
 
-    Route::group(["prefix" => "/ministrantes", "as" => "ministrantes.", "controller" => MinistranteController::class], function () {
-    Route::get("/", "index")->name("index");
-    Route::post("/", "store")->name("store");
-    Route::put("/{id}", "update")->name("update");
-    Route::delete("/{id}", "destroy")->name("destroy");
-});
+    Route::group(
+        ["prefix" => "/ministrantes", "as" => "ministrantes.", "controller" => MinistranteController::class],
+        function () {
+            Route::get("/", "index")->name("index");
+            Route::post("/", "store")->name("store");
+            Route::put("/{id}", "update")->name("update");
+            Route::delete("/{id}", "destroy")->name("destroy");
+        },
+    );
 
     // Route::group(["prefix" => "/inscricoes", "as" => "inscricoes."], function () {
     //     Route::get("/", [InscricaoController::class, "indexEvento"])->name("inscricoes.index");
@@ -64,9 +66,10 @@ Route::middleware("auth")->group(function () {
     //     );
     // });
     //
+    Route::get("/atividades", [AtividadeController::class, "index"])->name("atividades.index");
     Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
-     Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
-     Route::delete("/atividades/{id}", [AtividadeController::class, "destroy"])->name("atividades.destroy");
+    Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
+    Route::put("/atividades/cancel/{id}", [AtividadeController::class, "cancel"])->name("atividades.cancel");
 
     Route::group(["prefix" => "/organizadores", "as" => "organizadores."], function () {
         Route::get("/", [OrganizadoresController::class, "view"])->name("view");

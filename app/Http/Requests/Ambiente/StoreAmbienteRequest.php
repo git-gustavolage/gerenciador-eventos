@@ -23,7 +23,7 @@ class StoreAmbienteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "id_local" => ['required', 'numeric', 'exists:locais,id'],
+            "id_local" => ['sometimes', 'numeric', 'exists:locais,id'],
             "nome" => ["required", "string", "max:255", "min:3"],
             "capacidade" => ["sometimes", "numeric", "min:0"],
         ];

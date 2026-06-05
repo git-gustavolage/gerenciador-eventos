@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Ambiente\AmbienteResource;
 use App\Http\Resources\AtividadeResource;
 use App\Http\Resources\Evento\EventoResource;
 use App\Http\Resources\Local\LocalResource;
 use App\Models\Ambiente;
-use App\Models\Atividade;
-use App\Models\Evento;
 use App\Models\Local;
 use App\Models\Ministrante;
 use App\Support\CurrentEvent;
@@ -24,7 +23,7 @@ class OrganizacaoController extends Controller
         ]);
     }
 
-    public function edit()
+    public function evento()
     {
         $user = auth("web")->user();
         $evento = CurrentEvent::get();
@@ -40,7 +39,7 @@ class OrganizacaoController extends Controller
             return redirect()->route("eventos.create");
         }
 
-        return inertia("Organizador/Evento/Index", [
+        return inertia("Organizacao/Evento/Index", [
             "evento" => EventoResource::make($evento),
             "locais" => LocalResource::collection($locais),
         ]);
@@ -50,55 +49,16 @@ class OrganizacaoController extends Controller
     {
         $evento = CurrentEvent::get();
 
-        return inertia("Organizador/Organizadores/Index", [
+        return inertia("Organizacao/Organizadores/Index", [
             "evento" => $evento,
         ]);
     }
 
-    public function atividades()
-    {
-        $id = CurrentEvent::getId();
-
-        $evento = Evento::query()
-            ->with(["atividades.ministrantes", "local"])
-            ->where("id_user", auth("web")->id())
-            ->findOrFail($id);
-
-        // $user = auth("web")->user();
-
-        // if (!$user->can("show", $evento)) {
-        //     CurrentEvent::forget();
-        //     return redirect()->route("eventos.create");
-        // }
-
-        $ministrantes = Ministrante::query()
-            ->where("id_user", auth("web")->id())
-            ->get(["id", "nome", "email"]);
-
-        $idLocal = $evento->id_local;
-
-        $ambientes = Ambiente::query()
-            ->where("id_local", $idLocal)
-            ->get(["id", "nome", "capacidade"]);
-
-        return inertia("Event/Edit/Index", [
-            "evento" => $evento,
-            "ministrantes" => $ministrantes,
-            "ambientes" => $ambientes,
-        ]);
-    }
     public function ministrantes()
     {
         $ministrantes = Ministrante::query()
             ->where("id_user", auth("web")->id())
-            ->get([
-                "id",
-                "nome",
-                "email",
-                "telefone",
-                "cargo",
-                "instituicao",
-            ]);
+            ->get(["id", "nome", "email", "telefone", "cargo", "instituicao"]);
 
         return inertia("Ministrantes/Index", [
             "ministrantes" => $ministrantes,
@@ -108,10 +68,17 @@ class OrganizacaoController extends Controller
     public function programacao()
     {
         $evento = CurrentEvent::get();
-        $atividades = $evento->atividades()->where("is_cancelada", false)->get();
+        $atividades = $evento
+            ->atividades()
+            ->with(["ambiente", "ministrantes"])
+            ->where("is_cancelada", false)
+            ->orderBy("data_inicio")
+            ->get();
+        $ambientes = Ambiente::query()->where("id_local", $evento->id_local)->get();
 
-        return inertia("Programacao/Index", [
+        return inertia("Organizacao/Programacao/Index", [
             "atividades" => AtividadeResource::collection($atividades),
+            "ambientes" => AmbienteResource::collection($ambientes),
         ]);
     }
 }

@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->foreignId('id_ambiente')->constrained('ambientes')->restrictOnDelete();
             $table->dateTime('data_inicio');
             $table->dateTime('data_fim');
+            $table->dateTime('data_cancelamento')->nullable();
             $table->boolean('is_cancelada')->default(false);
             $table->unsignedInteger('limite_participantes')->nullable();
             $table->timestamps();

@@ -43,8 +43,10 @@ export const routes = {
         destroy: (params = {}) => route("organizadores.destroy", params),
     },
     atividades: {
+        index: (params = {}) => route("atividades.index", params),
         store: (params = {}) => route("atividades.store", params),
         update: (params = {}) => route("atividades.update", params),
+        cancel: (id) => route("atividades.cancel", { id }),
     },
     ambientes: {
         store: (params = {}) => route("ambientes.store", params),
