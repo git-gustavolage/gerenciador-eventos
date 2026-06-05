@@ -17,6 +17,7 @@ class Atividade extends Model
         "data_inicio",
         "data_fim",
         "is_cancelada",
+        "data_cancelamento",
         "limite_participantes",
     ];
 
@@ -24,8 +25,9 @@ class Atividade extends Model
     protected function casts(): array
     {
         return [
-            "data_inicio" => "datetime:Y-m-d H:i:s",
-            "data_fim" => "datetime:Y-m-d H:i:s",
+            "data_inicio" => "datetime",
+            "data_fim" => "datetime",
+            "data_cancelamento" => "datetime",
             "is_cancelada" => "boolean",
         ];
     }
@@ -35,19 +37,13 @@ class Atividade extends Model
         return $this->belongsTo(Evento::class, "id_evento", "id");
     }
 
-    
     public function ambiente(): BelongsTo
     {
         return $this->belongsTo(Ambiente::class, "id_ambiente", "id");
     }
 
     public function ministrantes(): BelongsToMany
-{
-    return $this->belongsToMany(
-        Ministrante::class,
-        'atividade_ministrante',
-        'atividade_id',
-        'ministrante_id'
-    );
-}
+    {
+        return $this->belongsToMany(Ministrante::class, "atividade_ministrante", "atividade_id", "ministrante_id");
+    }
 }

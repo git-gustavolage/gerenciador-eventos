@@ -6,7 +6,7 @@ import { Link, router } from "@inertiajs/react";
 import { useAction } from "@/Hooks/useAction";
 import { store } from "@/Actions/store";
 import { toast } from "sonner";
-import { convitesRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 
 export default function Index({ convite, authenticated }) {
     const isCancelled = convite.is_cancelado;
@@ -32,16 +32,12 @@ export default function Index({ convite, authenticated }) {
     const accept = async () => {
         if (action.loading || !isPending) return;
 
-        await action.execute(
-            convitesRoutes.accept({
-                token: convite.token,
-            })
-        );
+        await action.execute(routes.convites.accept({ token: convite.token }));
     };
 
     return (
         <GuestLayout title="Convite para organização">
-            <div className="w-full min-h-full flex items-center justify-center py-10">
+            <div className="w-full min-h-full flex items-center justify-center py-10 px-4">
                 <div className="w-full max-w-xl">
                     <div className="overflow-hidden rounded-sm border border-neutral-300 bg-white">
                         <div className="p-8 sm:p-10">

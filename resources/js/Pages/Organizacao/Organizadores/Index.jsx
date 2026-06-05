@@ -3,7 +3,7 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import useApi from "@/Hooks/useApi";
 import ManagerLayout from "@/Layouts/ManagerLayout";
 import { PlusIcon } from "@phosphor-icons/react/dist/ssr";
-import { OrganizerCard } from "../Components/OrganizerCard";
+import { OrganizerCard } from "./Components/OrganizerCard";
 import Modal from "@/Components/Modal";
 import { useState } from "react";
 import PrimaryButton from "@/Components/PrimaryButton";
@@ -15,7 +15,7 @@ import { store } from "@/Actions/store";
 import { toast } from "sonner";
 import { usePage } from "@inertiajs/react";
 import InputError from "@/Components/Inputs/InputError";
-import { PendingInviteCard } from "../Components/PendingInviteCard";
+import { PendingInviteCard } from "./Components/PendingInviteCard";
 
 export default function Index({ evento = {} }) {
     const { data, reload: reloadData } = useApi(organizadoresRoutes.index(), { id_evento: evento.id });

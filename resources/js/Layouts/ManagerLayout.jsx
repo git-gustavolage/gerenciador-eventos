@@ -1,5 +1,5 @@
 import NavLink from "@/Components/NavLink";
-import ManagerSidebar from "@/Pages/Organizador/Components/ManagerSidebar";
+import ManagerSidebar from "@/Layouts/Common/ManagerSidebar";
 import { Head, usePage } from "@inertiajs/react";
 import { ListIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
@@ -32,10 +32,10 @@ export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarO
                     </div>
                 </header>
 
-                <main className="inline-flex w-full min-h-[calc(100dvh-56px)] flex-1">
+                <main className="flex min-h-[calc(100dvh-56px)] overflow-hidden">
                     <ManagerSidebar open={sidebarOpen} setOpen={setSidebarOpen} />
-
-                    <div className="w-full flex-1">{children}</div>
+                
+                    <div className="flex-1 min-w-0 overflow-hidden">{children}</div>
                 </main>
             </div>
         </>

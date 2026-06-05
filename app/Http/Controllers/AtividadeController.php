@@ -2,55 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Atividade\DestroyAtividadeAction;
+use App\Actions\Atividade\CancelAtividadeAction;
 use App\Actions\Atividade\StoreAtividadeAction;
 use App\Actions\Atividade\UpdateAtividadeAction;
 use App\Http\Requests\Atividade\StoreAtividadeRequest;
 use App\Http\Requests\Atividade\UpdateAtividadeRequest;
-use App\Models\Ambiente;
-use App\Models\Evento;
-use App\Models\Ministrante;
+use App\Http\Resources\AtividadeResource;
 use App\Support\CurrentEvent;
-use Exception;
 
 class AtividadeController extends Controller
 {
+    public function index()
+    {
+        $evento = CurrentEvent::get();
+        $atividades = $evento
+            ->atividades()
+            ->with(["ambiente", "ministrantes"])
+            ->where("is_cancelada", false)
+            ->orderBy("data_inicio")
+            ->get();
+
+        return response()->json([
+            "data" => AtividadeResource::collection($atividades),
+        ]);
+    }
+
     public function store(StoreAtividadeRequest $request, StoreAtividadeAction $action)
     {
-        try {
-            $action->execute(auth("web")->id(), $request->validated());
+        $action->execute(auth("web")->id(), $request->validated());
 
-            return redirect()->back()->with("success", "Atividade criada com sucesso!");
-        } catch (Exception $e) {
-                    \Log::error($e->getMessage()); // <-- adiciona
-
-            return redirect()
-                ->back()
-                ->withErrors(["error" => "Erro ao salvar: " . $e->getMessage()]);
-        }
+        return response()->json(["success" => true], 201);
     }
 
     public function update(int $id, UpdateAtividadeRequest $request, UpdateAtividadeAction $action)
     {
-        try {
-            $action->execute(auth("web")->id(), $id, $request->validated());
-            return redirect()->back()->with("success", "Atividade atualizada com sucesso!");
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->withErrors(["error" => "Erro ao atualizar: " . $e->getMessage()]);
-        }
+        $action->execute(auth("web")->id(), $id, $request->validated());
+
+        return response()->json(["success" => true]);
     }
 
-    public function destroy(int $id, DestroyAtividadeAction $action)
+    public function cancel(int $id, CancelAtividadeAction $action)
     {
-        try {
-            $action->execute(auth("web")->id(), $id);
-            return redirect()->back()->with("success", "Atividade excluída com sucesso!");
-        } catch (Exception $e) {
-            return redirect()
-                ->back()
-                ->withErrors(["error" => "Erro ao excluir: " . $e->getMessage()]);
-        }
+        $action->execute(auth("web")->id(), $id);
+
+        return response()->noContent();
     }
 }
