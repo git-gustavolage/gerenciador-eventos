@@ -5,19 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Override;
 
 class Atividade extends Model
 {
     protected $fillable = [
-        "id_evento",
-        "id_ambiente",
-        "titulo",
+        "id_evento", 
+        "id_ambiente", 
+        "titulo", 
         "descricao",
-        "data_inicio",
-        "data_fim",
+        "data_inicio", 
+        "data_fim", 
         "is_cancelada",
-        "data_cancelamento",
+        "data_cancelamento", 
         "limite_participantes",
     ];
 
@@ -45,5 +46,10 @@ class Atividade extends Model
     public function ministrantes(): BelongsToMany
     {
         return $this->belongsToMany(Ministrante::class, "atividade_ministrante", "atividade_id", "ministrante_id");
+    }
+
+    public function inscricoes(): HasMany
+    {
+        return $this->hasMany(Inscricao::class, "id_atividade", "id");
     }
 }

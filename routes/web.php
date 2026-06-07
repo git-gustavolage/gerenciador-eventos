@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CertificadoController;
+use App\Http\Controllers\CertificadoTemplateController;
 use App\Http\Controllers\ProgramacaoController;
 use App\Http\Controllers\AtividadeController;
 use App\Http\Controllers\ConviteController;
@@ -26,6 +28,9 @@ Route::get("/midia/{path}", fn(string $path) => S3Manager::get($path, "imagem"))
 Route::middleware("auth")->group(function () {
     Route::get("/dashboard", [DashboardController::class, "view"])->name("dashboard");
 
+    Route::get("/certificados/meus", [CertificadoController::class, "meusCertificados"])
+        ->name("certificados.meus");
+
     Route::group(["prefix" => "/eventos", "as" => "eventos.", "controller" => EventoController::class], function () {
         Route::get("/create", "create")->name("create");
         Route::post("/store", "store")->name("store");
@@ -37,6 +42,19 @@ Route::middleware("auth")->group(function () {
             Route::get("/organizadores", [OrganizacaoController::class, "organizadores"])->name("organizadores");
             Route::get("/ministrantes", [OrganizacaoController::class, "ministrantes"])->name("ministrantes");
             Route::get("/programacao", [OrganizacaoController::class, "programacao"])->name("programacao");
+
+            Route::group(["prefix" => "/certificados", "as" => "certificados."], function () {
+                // modelos de certificado
+                Route::get("/", [CertificadoTemplateController::class, "edit"])->name("edit");
+                Route::post("/", [CertificadoTemplateController::class, "store"])->name("store");
+                Route::post("/{certificado}/fundo", [CertificadoTemplateController::class, "uploadFundo"])->name("fundo");
+                // Emissão
+                Route::get("/emissao", [CertificadoController::class, "emissao"])->name("emissao");
+                Route::post("/issue", [CertificadoController::class, "issue"])->name("issue");
+                Route::post("/batch", [CertificadoController::class, "issueBatch"])->name("batch");
+                Route::get("/download/{id}", [CertificadoController::class, "download"])->name("download");
+            });
+
         });
     });
 
