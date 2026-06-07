@@ -79,10 +79,12 @@ class OrganizacaoController extends Controller
             ->orderBy('data_inicio')
             ->get();
         $ambientes = Ambiente::query()->where('id_local', $evento->id_local)->get();
+        $ministrantes = Ministrante::query()->get();
 
-        return inertia('Organizacao/Programacao/Index', [
-            'atividades' => AtividadeResource::collection($atividades),
-            'ambientes' => AmbienteResource::collection($ambientes),
+        return inertia("Organizacao/Programacao/Index", [
+            "atividades" => AtividadeResource::collection($atividades),
+            "ambientes" => AmbienteResource::collection($ambientes),
+            "ministrantes" => $ministrantes,
         ]);
     }
 

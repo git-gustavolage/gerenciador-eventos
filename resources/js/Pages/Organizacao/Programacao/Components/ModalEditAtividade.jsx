@@ -10,7 +10,6 @@ import { formatDate } from "@/util/formatDate";
 import { Menu } from "@/Components/Menu";
 import { FormAtividadeAmbiente } from "./FormAtividadeAmbiente";
 import { FormAtividadeGeneral } from "./FormAtividadeGeneral";
-import { FormAtividadeMinistrantes } from "./FormAtividadeMinistrantes";
 
 export function ModalEditAtividade({ atividade = {}, open, onClose, onSuccess }) {
     const { current_evento_id } = usePage().props.auth;
@@ -23,7 +22,6 @@ export function ModalEditAtividade({ atividade = {}, open, onClose, onSuccess })
         data_inicio: atividade ? formatDate(atividade.data_inicio, "DD/MM/YYYY HH:ii:ss", "YYYY-MM-DD HH:ii:ss") : "",
         data_fim: atividade ? formatDate(atividade.data_fim, "DD/MM/YYYY HH:ii:ss", "YYYY-MM-DD HH:ii:ss") : "",
         limite_participantes: atividade?.limite_participantes ?? "",
-        ministrantes: [],
     });
 
     const action = useAction({
@@ -80,18 +78,6 @@ export function ModalEditAtividade({ atividade = {}, open, onClose, onSuccess })
 
                     <Menu.Tab label="Ambiente">
                         <FormAtividadeAmbiente
-                            data={data}
-                            setData={setData}
-                            editing
-                            errors={action.error?.errors}
-                            onClose={handleClose}
-                            onSubmit={handleSubmit}
-                            loading={loading}
-                        />
-                    </Menu.Tab>
-
-                    <Menu.Tab label="Ministrante">
-                        <FormAtividadeMinistrantes
                             data={data}
                             setData={setData}
                             editing
