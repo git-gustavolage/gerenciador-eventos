@@ -8,7 +8,7 @@ class StoreAtividadeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth('web')->check();
     }
 
     public function rules(): array

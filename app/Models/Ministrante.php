@@ -11,7 +11,7 @@ class Ministrante extends Model
     protected $fillable = [
         'id_user',
         'conta_id',
-        'nome', 
+        'nome',
         'email',
         'telefone',
         'cargo',
@@ -20,16 +20,11 @@ class Ministrante extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\User::class, 'id_user');
+        return $this->belongsTo(User::class, 'id_user');
     }
 
     public function atividades(): BelongsToMany
     {
-        return $this->belongsToMany(
-            Atividade::class,
-            'atividade_ministrante',
-            'ministrante_id',
-            'atividade_id'
-        )->withPivot('status');
+        return $this->belongsToMany(Atividade::class, 'atividades_ministrantes', 'id_ministrante', 'id_atividade');
     }
 }

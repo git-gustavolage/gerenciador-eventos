@@ -58,5 +58,5 @@ class Evento extends Model
     public function organizadores(): HasMany
     {
         return $this->hasMany(Organizador::class, "id_evento", "id");
-    }
+    }   
 }

@@ -70,6 +70,8 @@ Route::middleware("auth")->group(function () {
     Route::post("/atividades", [AtividadeController::class, "store"])->name("atividades.store");
     Route::put("/atividades/{id}", [AtividadeController::class, "update"])->name("atividades.update");
     Route::put("/atividades/cancel/{id}", [AtividadeController::class, "cancel"])->name("atividades.cancel");
+    Route::post("/atividades/ministrantes/store", [AtividadeController::class, "addMinistrante"])->name("atividades.ministrantes.store");
+    Route::delete("/atividades/ministrantes/destroy", [AtividadeController::class, "removeMinistrante"])->name("atividades.ministrantes.destroy");
 
     Route::group(["prefix" => "/organizadores", "as" => "organizadores."], function () {
         Route::get("/", [OrganizadoresController::class, "view"])->name("view");

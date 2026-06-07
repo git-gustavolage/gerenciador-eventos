@@ -47,6 +47,8 @@ export const routes = {
         store: (params = {}) => route("atividades.store", params),
         update: (params = {}) => route("atividades.update", params),
         cancel: (id) => route("atividades.cancel", { id }),
+        addMinistrante: (params = {}) => route("atividades.ministrantes.store", params),
+        removeMinistrante: (params = {}) => route("atividades.ministrantes.destroy", params),
     },
     ambientes: {
         store: (params = {}) => route("ambientes.store", params),

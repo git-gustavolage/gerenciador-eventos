@@ -28,14 +28,9 @@ export function FormAtividadeAmbiente({ data = {}, setData, errors = {}, editing
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (editing) {
-            onSubmit(e);
-            return;
-        }
-
         if (disabled) return;
 
-        setMenuIndex(2);
+        onSubmit(e);
     };
 
     const handleClose = () => {
@@ -99,7 +94,7 @@ export function FormAtividadeAmbiente({ data = {}, setData, errors = {}, editing
                 </div>
             ) : (
                 <div className="flex items-center gap-4">
-                    <PrimaryButton disabled={disabled}>Próximo</PrimaryButton>
+                    <PrimaryButton disabled={disabled}>Enviar</PrimaryButton>
                     <SecondaryButton onClick={handleClose}>Voltar</SecondaryButton>
                 </div>
             )}

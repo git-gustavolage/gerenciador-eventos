@@ -24,7 +24,7 @@ class AtividadeResource extends JsonResource
             "limite_participantes" => $this->limite_participantes ?? 0,
             "inscritos" => $this->whenLoaded("inscritos", fn() => $this->inscritos),
             "ambiente" => $this->whenLoaded("ambiente", fn() => AmbienteResource::make($this->ambiente)),
-            "ministrantes" => $this->whenLoaded("ministrantes", fn() => $this->ministrantes),
+            "ministrantes" => $this->whenLoaded("ministrantes", fn() => MinistranteResource::collection($this->ministrantes)),
         ];
     }
 }

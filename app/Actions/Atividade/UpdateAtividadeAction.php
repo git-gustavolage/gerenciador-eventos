@@ -40,8 +40,6 @@ class UpdateAtividadeAction
                 "data_fim" => $data["data_fim"],
                 "limite_participantes" => $data["limite_participantes"] ?? null,
             ]);
-
-            $atividade->ministrantes()->sync($data["ministrantes"] ?? []);
         } catch (Exception $e) {
             throw new UpdateFailedException("Erro ao atualizar atividade.", [
                 "message" => $e->getMessage(),

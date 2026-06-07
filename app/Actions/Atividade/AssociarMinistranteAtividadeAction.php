@@ -38,6 +38,5 @@ class AssociarMinistranteAtividadeAction
         if ($atividade->ministrantes()->whereKey($ministrante->id)->exists()) {
             throw new InvalidStateException('Esse ministrante já está vinculado a esta atividade.');
         }
-
     }
 }
