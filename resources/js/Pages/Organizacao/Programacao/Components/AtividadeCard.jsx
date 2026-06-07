@@ -137,7 +137,7 @@ function MinistrantesWrapper({ ministrantes = [] }) {
     const remaining = ministrantes.length - visible.length;
 
     return (
-        <div className="inline-flex items-center gap-2">
+        <div className="inline-flex items-start gap-2">
             {visible.map((ministrante) => (
                 <MinistranteIcon key={ministrante.id} ministrante={ministrante} />
             ))}
