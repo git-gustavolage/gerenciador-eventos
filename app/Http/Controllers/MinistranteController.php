@@ -3,10 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Ministrante\DestroyMinistranteAction;
-use App\Actions\Ministrante\StoreMinistranteAction;
 use App\Actions\Ministrante\UpdateMinistranteAction;
-use App\Actions\Ministrante\ConfirmarConviteAction;
-use App\Actions\Ministrante\RecusarConviteAction;
 use App\Http\Requests\Ministrante\StoreMinistranteRequest;
 use App\Http\Requests\Ministrante\UpdateMinistranteRequest;
 use App\Models\Ministrante;
@@ -21,7 +18,7 @@ class MinistranteController extends Controller
             ->orderBy('nome')
             ->get();
 
-        return inertia('Ministrante/Index', [
+        return inertia('Ministrantes/Index', [
             'ministrantes' => $ministrantes,
         ]);
     }
@@ -43,8 +40,8 @@ class MinistranteController extends Controller
                 'telefone' => $validated['telefone'] ?? null,
                 'cargo' => $validated['cargo'] ?? null,
                 'instituicao' => $validated['instituicao'] ?? null,
-                'id_user' => auth('web')->id(),   
-                'conta_id' => $userExistente->id, 
+                'id_user' => auth('web')->id(),
+                'conta_id' => $userExistente->id,
             ]);
 
             return redirect()->back()->with('success', 'Usuário encontrado! O ministrante foi vinculado com sucesso.');
@@ -56,12 +53,31 @@ class MinistranteController extends Controller
                 'telefone' => $validated['telefone'] ?? null,
                 'cargo' => $validated['cargo'] ?? null,
                 'instituicao' => $validated['instituicao'] ?? null,
-                'id_user' => auth('web')->id(), 
-                'conta_id' => null,             
+                'id_user' => auth('web')->id(),
+                'conta_id' => null,
             ]);
 
             return redirect()->back()->with('success', 'Ministrante cadastrado com sucesso!');
         }
+    }
+
+    public function minhasAtividades()
+    {
+        $ministrante = Ministrante::where('conta_id', auth('web')->id())
+            ->firstOrFail();
+
+        $atividades = $ministrante->atividades()
+            ->with(['evento', 'ambiente'])
+            ->whereHas('evento', function ($q) {
+                $q->where('is_publicado', true)
+                    ->where('is_cancelado', false);
+            })
+            ->get();
+
+        return inertia('Ministrantes/MinhasAtividades', [
+            'ministrante' => $ministrante,
+            'atividades' => $atividades,
+        ]);
     }
 
     public function update(int $id, UpdateMinistranteRequest $request, UpdateMinistranteAction $action)
@@ -77,5 +93,4 @@ class MinistranteController extends Controller
 
         return redirect()->back()->with('success', 'Ministrante removido com sucesso!');
     }
-
 }

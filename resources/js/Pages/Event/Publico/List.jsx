@@ -1,4 +1,6 @@
 import { useState, useMemo } from "react";
+import { usePage } from "@inertiajs/react";
+
 import { Link } from "@inertiajs/react";
 import Navbar from "@/Layouts/Common/Navbar";
 import { 
@@ -14,7 +16,6 @@ import {
     SmileySadIcon
 } from "@phosphor-icons/react";
 
-/* ─── Helpers de Formatação ─────────────────────────── */
 function formatDate(dateStr) {
     if (!dateStr) return "";
     return new Date(dateStr).toLocaleDateString("pt-BR", {
@@ -27,11 +28,9 @@ function formatDate(dateStr) {
 function checkEncerrado(evento) {
     if (evento.is_encerrado) return true;
     
-    // Verifica se a data fim das inscrições já passou
     if (evento.data_fim_inscricoes && new Date(evento.data_fim_inscricoes) < new Date()) {
         return true;
     }
-    // Verifica se o próprio evento já terminou
     if (evento.data_fim && new Date(evento.data_fim) < new Date()) {
         return true;
     }
@@ -55,27 +54,28 @@ function FormatoBadge({ formato }) {
     );
 }
 
-/* ─── Componente Principal ───────────────────────────── */
 export default function ListagemEventos({ eventos = [] }) {
-    // Estados dos filtros
-    const [busca, setBusca] = useState("");
+    const { url } = usePage();
+    const params = new URLSearchParams(url.split("?")[1] ?? "");
+    const [busca, setBusca] = useState(params.get("q") ?? "");
+    
     const [filtroFormato, setFiltroFormato] = useState("todos");
     const [filtroStatus, setFiltroStatus] = useState("todos");
 
-    // Filtragem reativa instantânea
+    
     const eventosFiltrados = useMemo(() => {
         return eventos.filter((evento) => {
-            // 1. Filtro de Texto (Título ou Descrição)
+            
             const termoBusca = busca.toLowerCase();
             const bateTexto = 
                 evento.titulo?.toLowerCase().includes(termoBusca) || 
                 evento.descricao?.toLowerCase().includes(termoBusca);
 
-            // 2. Filtro de Formato
+            
             const valorFormato = evento.formato?.value ?? evento.formato;
             const bateFormato = filtroFormato === "todos" || valorFormato === filtroFormato;
 
-            // 3. Filtro de Status
+            
             const encerrado = checkEncerrado(evento);
             const bateStatus = 
                 filtroStatus === "todos" || 
@@ -103,7 +103,7 @@ export default function ListagemEventos({ eventos = [] }) {
 
                 {/* Barra de Pesquisa e Filtros */}
                 <div className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded-2xl border border-neutral-200 shadow-sm">
-                    {/* Input de Busca */}
+                    {}
                     <div className="flex-1 relative">
                         <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none">
                             <MagnifyingGlassIcon size={20} className="text-neutral-400" />
@@ -150,9 +150,9 @@ export default function ListagemEventos({ eventos = [] }) {
                     </div>
                 </div>
 
-                {/* Grid de Eventos */}
+                {}
                 {eventos.length === 0 ? (
-                    // Caso 1: O banco de dados está vazio e não tem NENHUM evento publicado
+                    
                     <div className="flex flex-col items-center justify-center text-center py-20 bg-white border border-neutral-200 rounded-3xl p-8 shadow-sm">
                         <CalendarBlankIcon size={48} className="text-neutral-300 mb-3" weight="duotone" />
                         <h3 className="font-semibold text-neutral-700 text-lg">Nenhum evento publicado</h3>
@@ -161,7 +161,7 @@ export default function ListagemEventos({ eventos = [] }) {
                         </p>
                     </div>
                 ) : eventosFiltrados.length === 0 ? (
-                    // Caso 2: Existem eventos, mas nenhum bate com os filtros aplicados
+                    
                     <div className="flex flex-col items-center justify-center text-center py-20 bg-transparent p-8">
                         <SmileySadIcon size={48} className="text-neutral-300 mb-3" weight="duotone" />
                         <h3 className="font-semibold text-neutral-700 text-lg">Nenhum resultado encontrado</h3>
@@ -176,7 +176,7 @@ export default function ListagemEventos({ eventos = [] }) {
                         </button>
                     </div>
                 ) : (
-                    // Caso 3: Renderiza os eventos filtrados
+                    
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {eventosFiltrados.map((evento) => {
                             const encerrado = checkEncerrado(evento);
@@ -252,7 +252,7 @@ export default function ListagemEventos({ eventos = [] }) {
                                         </div>
                                     </div>
 
-                                    {/* Link invisível/Ação do card */}
+                                    {}
                                     <div className="px-5 pb-4 pt-1 flex items-center justify-between text-xs font-semibold group-hover:text-emerald-600 text-neutral-400 transition-colors">
                                         <span>Ver detalhes do evento</span>
                                         <ArrowRightIcon size={14} weight="bold" className="transform group-hover:translate-x-1 transition-transform" />

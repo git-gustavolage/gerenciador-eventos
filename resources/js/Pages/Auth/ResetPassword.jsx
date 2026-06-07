@@ -63,6 +63,7 @@ export default function ResetPassword({ token, email }) {
                                         className="mt-1 block w-full"
                                         autoComplete="username"
                                         placeholder="exemplo@email.com"
+                                        disabled
                                         onChange={(e) => setData("email", e.target.value)}
                                     />
 

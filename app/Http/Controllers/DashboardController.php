@@ -3,67 +3,78 @@
 namespace App\Http\Controllers;
 
 use App\Models\Evento;
-use Illuminate\Support\Facades\DB;
+use App\Models\Inscricao;
+use App\Models\InscricaoEvento;
+use App\Models\Organizador;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function view()
     {
-        $userId = auth("web")->id();
+        $userId = Auth::id();
 
-        $eventoIds = Evento::query()
-            ->where("id_user", $userId)
-            ->orWhereHas("organizadores", fn($q) => $q->where("id_user", $userId))
-            ->pluck("id");
+        $eventoIds = Organizador::where('id_user', $userId)->pluck('id_evento');
 
-        $totalEventos = $eventoIds->count();
+        $eventos = Evento::withCount(['atividades', 'inscricoesEvento as total_inscricoes'])
+            ->whereIn('id', $eventoIds)
+            ->orderByDesc('created_at')
+            ->get();
 
-        $eventosPublicadosAtivos = Evento::query()
-            ->whereIn("id", $eventoIds)
-            ->where("is_publicado", true)
-            ->where("is_cancelado", false)
-            ->where("is_encerrado", false)
-            ->where(function ($q) {
-                $q->whereNull("data_fim_inscricoes")->orWhere("data_fim_inscricoes", ">=", now());
-            })
-            ->count("id");
+        $stats = [
+            'total_eventos'             => $eventos->count(),
+            'eventos_publicados_ativos' => $eventos->filter(fn($e) =>
+                $e->is_publicado &&
+                !$e->is_cancelado &&
+                (!$e->data_fim_inscricoes || $e->data_fim_inscricoes > now())
+            )->count(),
+            'total_inscricoes' => $eventos->sum('total_inscricoes'),
+        ];
 
-        $totalInscricoes = DB::table("inscricoes")
-            ->join("atividades", "inscricoes.id_atividade", "=", "atividades.id")
-            ->whereIn("atividades.id_evento", $eventoIds)
-            ->count();
+        $inscricoesEvento = InscricaoEvento::with([
+                'evento.local',
+                'evento.atividades.ambiente',
+                'evento.atividades.ministrantes',
+            ])
+            ->where('id_user', $userId)
+            ->orderByDesc('created_at')
+            ->get();
 
-        $eventos = Evento::query()
-            ->whereIn("id", $eventoIds)
-            ->with(["atividades"])
-            ->orderByDesc("created_at")
+        $inscricoesAtividades = Inscricao::where('id_user', $userId)
             ->get()
-            ->map(function (Evento $evento) {
-                $totalInscricoesEvento = DB::table("inscricoes")
-                    ->join("atividades", "inscricoes.id_atividade", "=", "atividades.id")
-                    ->where("atividades.id_evento", $evento->id)
-                    ->count();
+            ->keyBy('id_atividade');
 
-                return [
-                    "id" => $evento->id,
-                    "titulo" => $evento->titulo,
-                    "formato" => $evento->formato,
-                    "is_publicado" => $evento->is_publicado,
-                    "is_cancelado" => $evento->is_cancelado,
-                    "data_inicio" => $evento->data_inicio,
-                    "data_fim_inscricoes" => $evento->data_fim_inscricoes,
-                    "total_atividades" => $evento->atividades->count(),
-                    "total_inscricoes" => $totalInscricoesEvento,
-                ];
-            });
+        $eventosParticipante = $inscricoesEvento->map(function ($inscricaoEvento) use ($inscricoesAtividades) {
+            $evento = $inscricaoEvento->evento;
 
-        return inertia("Dashboard", [
-            "stats" => [
-                "total_eventos" => $totalEventos,
-                "eventos_publicados_ativos" => $eventosPublicadosAtivos,
-                "total_inscricoes" => $totalInscricoes,
-            ],
-            "eventos" => $eventos,
+            $atividadesInscritas = $evento->atividades
+                ->filter(fn($a) => $inscricoesAtividades->has($a->id))
+                ->map(fn($a) => [
+                    'id'               => $a->id,
+                    'titulo'           => $a->titulo,
+                    'data_inicio'      => $a->data_inicio,
+                    'data_fim'         => $a->data_fim,
+                    'ambiente'         => $a->ambiente?->nome,
+                    'ministrantes'     => $a->ministrantes->pluck('nome')->toArray(),
+                    'status_inscricao' => $inscricoesAtividades[$a->id]->status,
+                ])
+                ->values();
+
+            return [
+                'id'                   => $evento->id,
+                'titulo'               => $evento->titulo,
+                'data_inicio'          => $evento->data_inicio,
+                'data_fim'             => $evento->data_fim,
+                'local'                => $evento->local?->nome,
+                'status_inscricao'     => $inscricaoEvento->status,
+                'atividades_inscritas' => $atividadesInscritas,
+            ];
+        })->values();
+
+        return inertia('Dashboard', [
+            'stats'               => $stats,
+            'eventos'             => $eventos,
+            'eventosParticipante' => $eventosParticipante,
         ]);
     }
 }

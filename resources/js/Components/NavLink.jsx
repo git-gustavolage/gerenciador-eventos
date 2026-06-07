@@ -1,9 +1,10 @@
 import { Link } from "@inertiajs/react";
 
-export default function NavLink({ active = false, className = "", children, ...props }) {
+export default function NavLink({ active = false, prefetch = false, className = "", children, ...props }) {
     return (
         <Link
             {...props}
+            prefetch={prefetch}
             className={
                 "inline-flex items-center border-b-[3px] px-4 pt-1 text-sm font-medium leading-5 transition duration-150 ease-in-out focus:outline-none " +
                 (active

@@ -19,7 +19,7 @@ export default function Textarea({ invalid = false, className = "", ...props }) 
                     "resize-none w-full border rounded-sm text-sm px-3 py-2 outline-none focus:ring-1",
                     "text-medium leading-5",
                     "transition-colors placeholder:text-neutral-500",
-                    "disabled:bg-neutral-100 disabled:text-neutral-300",
+                    "disabled:bg-neutral-100 disabled:text-neutral-400",
 
                     invalid
                         ? "border-red-500 focus:border-red-500 focus:ring-red-200 bg-red-50/10"

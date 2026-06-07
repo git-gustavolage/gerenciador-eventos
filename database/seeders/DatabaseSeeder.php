@@ -17,11 +17,17 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         User::factory()->create([
-            "nome" => "Test User",
-            "email" => "test@example.com",
-            "password" => Hash::make("12345678"),
+            'nome' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => Hash::make('12345678'),
         ]);
 
-        $this->call([LocalSeeder::class, AmbienteSeeder::class, EventoSeeder::class, AtividadeSeeder::class]);
+        $this->call([
+            LocalSeeder::class,
+            AmbienteSeeder::class,
+            EventoSeeder::class,
+            OrganizadorSeed::class,
+            AtividadeSeeder::class,
+        ]);
     }
 }

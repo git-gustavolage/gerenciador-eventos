@@ -2,157 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\InscricaoStatusEnum;
+use App\Actions\Inscricao\StoreInscricaoAction;
+use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Models\Atividade;
 use App\Models\Evento;
-use App\Models\Inscricao;
 use App\Models\InscricaoEvento;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Models\Inscricao;
+use Illuminate\Http\JsonResponse;
 
 class InscricaoController extends Controller
 {
-
-    public function indexEvento(Evento $evento)
-    {
-        $inscricoes = InscricaoEvento::where('id_evento', $evento->id)
-            ->with('user')
-            ->orderByDesc('created_at')
-            ->get()
-            ->map(fn($i) => [
-                'id'         => $i->id,
-                'user'       => ['id' => $i->user->id, 'nome' => $i->user->nome, 'email' => $i->user->email],
-                'status'     => $i->status,
-                'compareceu' => $i->compareceu,
-                'criado_em'  => $i->created_at->format('d/m/Y H:i'),
-            ]);
-
-        return response()->json($inscricoes);
-    }
-
-
-    public function storeEvento(Evento $evento)
+    /**
+     * Retorna os dados do evento + atividades com status de inscrição do usuário autenticado.
+     * Usado para popular o modal/passo de seleção de atividades.
+     */
+    public function dadosInscricao(int $eventoId): JsonResponse
     {
         $userId = auth('web')->id();
 
-        abort_if(
-            $evento->data_fim_inscricoes && $evento->data_fim_inscricoes->isPast(),
-            422,
-            'As inscrições para este evento estão encerradas.'
-        );
+        $evento = Evento::with(['atividades.ministrantes', 'atividades.ambiente', 'local'])
+            ->where('is_publicado', true)
+            ->where('is_cancelado', false)
+            ->findOrFail($eventoId);
 
-        if ($evento->limite_inscricoes) {
-            $total = InscricaoEvento::where('id_evento', $evento->id)
-                ->whereNot('status', InscricaoStatusEnum::Cancelado)
-                ->count();
+        $inscricaoEvento = InscricaoEvento::where('id_user', $userId)
+            ->where('id_evento', $eventoId)
+            ->first();
 
-            abort_if($total >= $evento->limite_inscricoes, 422, 'Limite de inscrições atingido.');
-        }
+        $inscricoesAtividades = Inscricao::where('id_user', $userId)
+            ->whereIn('id_atividade', $evento->atividades->pluck('id'))
+            ->pluck('status', 'id_atividade');
 
-        $inscricao = InscricaoEvento::firstOrCreate(
-            ['id_user' => $userId, 'id_evento' => $evento->id],
-            ['status' => InscricaoStatusEnum::Pendente]
-        );
+        $atividades = $evento->atividades
+            ->where('is_cancelada', false)
+            ->map(function (Atividade $atividade) use ($inscricoesAtividades) {
+                $inscrito = $inscricoesAtividades->has($atividade->id);
+                $vagasOcupadas = Inscricao::where('id_atividade', $atividade->id)
+                    ->whereIn('status', ['pendente', 'confirmado'])
+                    ->count();
 
-        abort_if($inscricao->wasRecentlyCreated === false, 422, 'Você já está inscrito neste evento.');
+                return [
+                    'id'                  => $atividade->id,
+                    'titulo'              => $atividade->titulo,
+                    'descricao'           => $atividade->descricao,
+                    'data_inicio'         => $atividade->data_inicio,
+                    'data_fim'            => $atividade->data_fim,
+                    'ambiente'            => $atividade->ambiente?->nome,
+                    'ministrantes'        => $atividade->ministrantes->pluck('nome'),
+                    'limite_participantes'=> $atividade->limite_participantes,
+                    'vagas_restantes'     => $atividade->limite_participantes
+                        ? max(0, $atividade->limite_participantes - $vagasOcupadas)
+                        : null,
+                    'inscrito'            => $inscrito,
+                    'status_inscricao'    => $inscrito ? $inscricoesAtividades[$atividade->id] : null,
+                ];
+            })
+            ->values();
 
-        return response()->json(['success' => true, 'id' => $inscricao->id], 201);
-    }
-
-
-    public function destroyEvento(Evento $evento)
-    {
-        $userId = auth('web')->id();
-
-        $inscricao = InscricaoEvento::where('id_user', $userId)
-            ->where('id_evento', $evento->id)
-            ->firstOrFail();
-
-        $inscricao->update(['status' => InscricaoStatusEnum::Cancelado]);
-
-        return response()->noContent();
-    }
-
-
-    public function updateEvento(Request $request, Evento $evento, InscricaoEvento $inscricao)
-    {
-        $data = $request->validate([
-            'status'     => ['sometimes', Rule::enum(InscricaoStatusEnum::class)],
-            'compareceu' => ['sometimes', 'nullable', 'boolean'],
+        return response()->json([
+            'evento' => [
+                'id'     => $evento->id,
+                'titulo' => $evento->titulo,
+                'data_inicio' => $evento->data_inicio,
+                'data_fim'    => $evento->data_fim,
+                'local'       => $evento->local?->nome,
+                'limite_inscricoes' => $evento->limite_inscricoes,
+                'inscrito_no_evento' => $inscricaoEvento !== null,
+                'status_inscricao_evento' => $inscricaoEvento?->status,
+            ],
+            'atividades' => $atividades,
         ]);
-
-        $inscricao->update($data);
-
-        return response()->json(['success' => true]);
     }
 
-
-    public function indexAtividade(Evento $evento, Atividade $atividade)
-    {
-        $inscricoes = Inscricao::where('id_atividade', $atividade->id)
-            ->with('user')
-            ->orderByDesc('created_at')
-            ->get()
-            ->map(fn($i) => [
-                'id'         => $i->id,
-                'user'       => ['id' => $i->user->id, 'nome' => $i->user->nome, 'email' => $i->user->email],
-                'status'     => $i->status,
-                'compareceu' => $i->compareceu,
-                'criado_em'  => $i->created_at->format('d/m/Y H:i'),
-            ]);
-
-        return response()->json($inscricoes);
-    }
-
-
-    public function storeAtividade(Evento $evento, Atividade $atividade)
+    /**
+     * Processa a inscrição: cria InscricaoEvento e/ou Inscricoes nas atividades selecionadas.
+     */
+    public function store(StoreInscricaoRequest $request, StoreInscricaoAction $action, int $eventoId): JsonResponse
     {
         $userId = auth('web')->id();
 
-        abort_if($atividade->is_cancelada, 422, 'Esta atividade foi cancelada.');
+        $result = $action->execute($userId, $eventoId, $request->validated());
 
-        if ($atividade->limite_participantes) {
-            $total = Inscricao::where('id_atividade', $atividade->id)
-                ->whereNot('status', InscricaoStatusEnum::Cancelado)
-                ->count();
-
-            abort_if($total >= $atividade->limite_participantes, 422, 'Limite de participantes atingido.');
-        }
-
-        $inscricao = Inscricao::firstOrCreate(
-            ['id_user' => $userId, 'id_atividade' => $atividade->id],
-            ['status' => InscricaoStatusEnum::Pendente]
-        );
-
-        abort_if($inscricao->wasRecentlyCreated === false, 422, 'Você já está inscrito nesta atividade.');
-
-        return response()->json(['success' => true, 'id' => $inscricao->id], 201);
-    }
-
-
-    public function destroyAtividade(Evento $evento, Atividade $atividade)
-    {
-        $userId = auth('web')->id();
-
-        $inscricao = Inscricao::where('id_user', $userId)
-            ->where('id_atividade', $atividade->id)
-            ->firstOrFail();
-
-        $inscricao->update(['status' => InscricaoStatusEnum::Cancelado]);
-
-        return response()->noContent();
-    }
-
-
-    public function updateAtividade(Request $request, Evento $evento, Atividade $atividade, Inscricao $inscricao)
-    {
-        $data = $request->validate([
-            'status'     => ['sometimes', Rule::enum(InscricaoStatusEnum::class)],
-            'compareceu' => ['sometimes', 'nullable', 'boolean'],
+        return response()->json([
+            'success'                => true,
+            'inscrito_no_evento'     => $result['inscrito_no_evento'],
+            'atividades_inscritas'   => $result['atividades_inscritas'],
+            'atividades_ja_inscritas'=> $result['atividades_ja_inscritas'],
         ]);
-
-        $inscricao->update($data);
-
-        return response()->json(['success' => true]);
     }
 }
