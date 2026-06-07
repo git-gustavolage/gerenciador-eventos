@@ -6,8 +6,8 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { useAction } from "@/Hooks/useAction";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
-import { usePage } from "@inertiajs/react";
-import { UserIcon } from "@phosphor-icons/react";
+import { Link, usePage } from "@inertiajs/react";
+import { PlusIcon, UserIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 export function ModalMinistrantesForm({ atividade = {}, show, onClose, onSuccess }) {
@@ -60,6 +60,15 @@ export function ModalMinistrantesForm({ atividade = {}, show, onClose, onSuccess
                     <h2 className="text-xl font-semibold text-neutral-800">Ministrantes da atividade</h2>
 
                     <p className="text-sm text-neutral-500">Adicione ou remova ministrantes vinculados a esta atividade.</p>
+                </div>
+
+                <div>
+                    <Link
+                        href={route("eventos.organizacao.ministrantes")}
+                        className="text-sm text-emerald-500 hover:underline inline-flex items-center gap-1 hover:text-emerald-700"
+                    >
+                        <PlusIcon /> Cadastrar novo ministrante
+                    </Link>
                 </div>
 
                 <div className="mt-6 max-h-[500px] overflow-y-auto space-y-3">
