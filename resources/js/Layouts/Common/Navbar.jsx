@@ -21,12 +21,13 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
     const user = usePage().props.auth.user;
+    const admin = user?.is_admin ?? false;
     const { isMinistrante } = usePage().props;
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     useEffect(() => {
         document.body.style.overflow = showingNavigationDropdown ? "hidden" : "";
-    
+
         return () => {
             document.body.style.overflow = "";
         };
@@ -60,16 +61,18 @@ export default function Navbar() {
 
                                 {user && (
                                     <div className="hidden md:flex gap-8 h-14 me-4">
-                                        <NavLink
-                                            href={route("eventos.create")}
-                                            prefetch
-                                            active={route().current("eventos.create")}
-                                        >
-                                            <span className="inline-flex gap-2 items-center">
-                                                <PlusIcon size={20} />
-                                                Criar
-                                            </span>
-                                        </NavLink>
+                                        {admin && (
+                                            <NavLink
+                                                href={route("eventos.create")}
+                                                prefetch
+                                                active={route().current("eventos.create")}
+                                            >
+                                                <span className="inline-flex gap-2 items-center">
+                                                    <PlusIcon size={20} />
+                                                    Criar
+                                                </span>
+                                            </NavLink>
+                                        )}
 
                                         <NavLink
                                             href={route("dashboard")}
