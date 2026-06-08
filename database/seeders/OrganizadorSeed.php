@@ -20,19 +20,19 @@ class OrganizadorSeed extends Seeder
                 'perfil' => 'gestor',
             ],
             [
-                'id' => 1,
+                'id' => 2,
                 'id_user' => 1,
                 'id_evento' => 2,
                 'perfil' => 'gestor',
             ],
             [
-                'id' => 1,
+                'id' => 3,
                 'id_user' => 1,
                 'id_evento' => 3,
                 'perfil' => 'gestor',
             ],
             [
-                'id' => 1,
+                'id' => 4,
                 'id_user' => 1,
                 'id_evento' => 4,
                 'perfil' => 'gestor',
