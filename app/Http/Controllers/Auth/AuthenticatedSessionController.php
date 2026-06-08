@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Support\URLValidator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render("Auth/Login");
+        return Inertia::render('Auth/Login');
     }
 
     /**
@@ -27,16 +28,23 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
-        $token = session()->pull("pending_invite_token");
+        $token = session()->pull('pending_invite_token');
 
         $request->session()->regenerate();
 
         if ($token) {
             session()->forget('pending_invite_token');
-            return redirect()->route("convites.view", ["token" => $token]);
+
+            return redirect()->route('convites.view', ['token' => $token]);
         }
 
-        return redirect()->intended(route("home", absolute: false));
+        $redirectTo = $request->string('redirectTo')->value();
+
+        if (URLValidator::isValidRedirect($redirectTo)) {
+            return redirect()->to($redirectTo);
+        }
+
+        return redirect()->intended(route('home', absolute: false));
     }
 
     /**
@@ -44,12 +52,12 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        Auth::guard("web")->logout();
+        Auth::guard('web')->logout();
 
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
 
-        return redirect("/");
+        return redirect('/');
     }
 }

@@ -9,10 +9,13 @@ import { Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
 
 export default function Login() {
+    const redirectTo = new URLSearchParams(window.location.search).get("redirect");
+
     const { data, setData, post, processing, errors, reset } = useForm({
         email: "",
         password: "",
         remember: false,
+        redirectTo: redirectTo ?? "",
     });
 
     const [showPassword, setShowPassword] = useState(false);
@@ -29,11 +32,7 @@ export default function Login() {
         <GuestLayout title="Entrar">
             <div className="w-full min-h-full flex max-md:flex-col">
                 <div className="hidden md:flex w-1/2 relative overflow-hidden border-r border-neutral-200 bg-gradient-to-br from-emerald-50/50 via-white to-emerald-100/30">
-                    <img
-                        src="/images/mash.jpg"
-                        alt="Background"
-                        className="absolute inset-0 w-full h-full object-cover"
-                    />
+                    <img src="/images/mash.jpg" alt="Background" className="absolute inset-0 w-full h-full object-cover" />
 
                     <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-white backdrop-blur-[1px]" />
 
@@ -45,17 +44,13 @@ export default function Login() {
                                 <div className="flex flex-col">
                                     <span className="text-2xl font-bold text-neutral-900">E-IFRO</span>
 
-                                    <span className="text-sm text-neutral-500">
-                                        Plataforma de gerenciamento de eventos
-                                    </span>
+                                    <span className="text-sm text-neutral-500">Plataforma de gerenciamento de eventos</span>
                                 </div>
                             </div>
                         </div>
 
                         <div className="flex flex-col items-start gap-4">
-                            <h1 className="text-5xl font-bold leading-tight text-neutral-900">
-                                Participe e organize eventos
-                            </h1>
+                            <h1 className="text-5xl font-bold leading-tight text-neutral-900">Participe e organize eventos</h1>
 
                             <p className="text-base leading-relaxed text-neutral-600">
                                 Centralize seus eventos em uma plataforma moderna, acessível e intuitiva.
@@ -81,9 +76,7 @@ export default function Login() {
                         <div className="mb-8">
                             <h2 className="text-3xl font-bold text-neutral-900">Acesse sua conta</h2>
 
-                            <p className="mt-2 text-sm text-neutral-500">
-                                Entre para continuar gerenciando seus eventos.
-                            </p>
+                            <p className="mt-2 text-sm text-neutral-500">Entre para continuar gerenciando seus eventos.</p>
                         </div>
 
                         <div>
