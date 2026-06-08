@@ -1,5 +1,5 @@
 import { update } from "@/Actions/update";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
@@ -37,7 +37,7 @@ export function EventDateForm({ evento = {} }) {
             data_fim: data.data_fim,
         };
 
-        await action.execute(eventosRoutes.update(), payload);
+        await action.execute(routes.eventos.update(), payload);
     };
 
     return (

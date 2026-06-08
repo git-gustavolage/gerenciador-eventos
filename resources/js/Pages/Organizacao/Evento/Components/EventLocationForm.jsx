@@ -1,6 +1,6 @@
 import { update } from "@/Actions/update";
 import { getFormatos } from "@/api/getFormatos";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import InputError from "@/Components/Inputs/InputError";
 import InputLabel from "@/Components/Inputs/InputLabel";
 import { InputRadio } from "@/Components/Inputs/InputRadio";
@@ -45,7 +45,7 @@ export function EventLocationForm({ evento = {} }) {
             id_local: data.id_local,
         };
 
-        await action.execute(eventosRoutes.update(), payload);
+        await action.execute(routes.eventos.update(), payload);
     };
 
     return (
