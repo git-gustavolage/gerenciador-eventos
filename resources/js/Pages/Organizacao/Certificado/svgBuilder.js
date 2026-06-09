@@ -89,7 +89,11 @@ export const DEFAULT_FIELDS = [
 ];
 
 export function interpolate(text, data) {
-    return Object.entries(data).reduce((acc, [k, v]) => acc.replaceAll(k, v), text);
+    const safeText = text || "";
+    return Object.entries(data).reduce((acc, [k, v]) => {
+        const safeValue = v || "";
+        return acc.replaceAll(k, safeValue);
+    }, safeText);
 }
 
 function parseCarbonValue(value) {

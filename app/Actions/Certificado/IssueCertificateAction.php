@@ -90,7 +90,7 @@ class IssueCertificateAction
           ? $atividade->data_inicio->format('H:i') . ' às ' . $atividade->data_fim->format('H:i')
           : ($atividade->data_inicio?->format('H:i') ?? ''),
       '{{carga_horaria}}'     => $cargaFormatada,
-      '{{data_emissao}}'      => $issuedAt->format('d/m/Y'),
+      '{{data_emissao}}' => $issuedAt->timezone('America/Porto_Velho')->format('d/m/Y'),
     ];
   }  
 }

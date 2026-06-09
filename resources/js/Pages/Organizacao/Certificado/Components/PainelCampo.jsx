@@ -25,7 +25,7 @@ export default function PainelCampo({ campo, aoMudar, aoDeletar, ePadrao, pegarT
                 <textarea
                     ref={(el) => { if (el) pegarTextarea._set?.(el); }}
                     rows={3}
-                    value={campo.content}
+                    value={campo.content || ''}
                     onChange={(e) => aoMudar(campo.id, "content", e.target.value)}
                     className="w-full rounded-sm border border-neutral-300 px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-emerald-300 focus:border-emerald-500 resize-none leading-relaxed"
                 />

@@ -14,13 +14,13 @@ import {
     UserCircleIcon,
     UserIcon,
     XIcon,
+    CertificateIcon,
 } from "@phosphor-icons/react";
-import { CaretDownIcon, PlusCircleIcon } from "@phosphor-icons/react/dist/ssr";
+import { CaretDownIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
 export default function Navbar() {
     const user = usePage().props.auth.user;
-
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     return (
@@ -38,9 +38,8 @@ export default function Navbar() {
                                     <NavLink href={route("home")} active={route().current("home")} className="h-14">
                                         Início
                                     </NavLink>
-
                                     <NavLink href={route("eventos.publico.view")} active={route().current("eventos.publico.view")} className="h-14">
-                                      Eventos
+                                        Eventos
                                     </NavLink>
                                 </div>
 
@@ -59,6 +58,14 @@ export default function Navbar() {
                                             className="h-14"
                                         >
                                             Meus Eventos
+                                        </NavLink>
+
+                                        <NavLink
+                                            href={route("certificados.meus")}
+                                            active={route().current("certificados.meus")}
+                                            className="h-14"
+                                        >
+                                            Meus Certificados
                                         </NavLink>
                                     </div>
                                 )}
@@ -87,7 +94,6 @@ export default function Navbar() {
 
                                         <Dropdown.Content>
                                             <Dropdown.Link href={route("profile.edit")}>Perfil</Dropdown.Link>
-
                                             <Dropdown.Link href={route("logout")} method="post" as="button">
                                                 Sair
                                             </Dropdown.Link>
@@ -112,22 +118,18 @@ export default function Navbar() {
             <div
                 className={`
                     fixed inset-y-0 right-0 z-50 w-[88%] max-w-sm bg-white shadow-2xl
-                    transition-all duration-300 ease-in-out
-                    border-l border-neutral-200
-                    flex flex-col
+                    transition-all duration-300 ease-in-out border-l border-neutral-200 flex flex-col
                     ${showingNavigationDropdown ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"}
                 `}
             >
                 <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
                     <div className="flex items-center gap-3">
                         <ApplicationLogo className="h-9 w-auto" />
-
                         <div className="flex flex-col">
                             <span className="font-semibold text-neutral-900">E-IFRO</span>
                             <span className="text-xs text-neutral-500">Plataforma de eventos</span>
                         </div>
                     </div>
-
                     <button
                         onClick={() => setShowingNavigationDropdown(false)}
                         className="rounded-lg p-2 text-neutral-500 hover:bg-neutral-100"
@@ -142,7 +144,6 @@ export default function Navbar() {
                             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-2xl font-bold text-emerald-700 border border-emerald-100">
                                 {user?.nome?.charAt(0)?.toUpperCase()}
                             </div>
-
                             <div className="flex flex-col">
                                 <span className="font-medium text-neutral-900">{user.nome}</span>
                                 <span className="text-sm text-neutral-500">{user.email}</span>
@@ -154,43 +155,35 @@ export default function Navbar() {
                 <div className="flex-1 overflow-y-auto px-3 py-4">
                     <div className="flex flex-col gap-1">
                         <ResponsiveNavLink href={route("home")} active={route().current("home")}>
-                            <div className="flex items-center gap-3">
-                                <HouseIcon size={20} />
-                                Início
-                            </div>
+                            <div className="flex items-center gap-3"><HouseIcon size={20} /> Início</div>
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink href={route("eventos.publico.view")} active={route().current("eventos.publico.view")}>
-                            <div className="flex items-center gap-3">
-                                <CalendarBlankIcon size={20} />
-                                Eventos
-                            </div>
+                            <div className="flex items-center gap-3"><CalendarBlankIcon size={20} /> Eventos</div>
                         </ResponsiveNavLink>
 
                         {user && (
-                            <ResponsiveNavLink href={route("dashboard")} active={route().current("dashboard")}>
-                                <div className="flex items-center gap-3">
-                                    <CalendarCheckIcon size={20} />
-                                    Meus Eventos
-                                </div>
-                            </ResponsiveNavLink>
+                            <>
+                                <ResponsiveNavLink href={route("dashboard")} active={route().current("dashboard")}>
+                                    <div className="flex items-center gap-3"><CalendarCheckIcon size={20} /> Meus Eventos</div>
+                                </ResponsiveNavLink> 
+                                <ResponsiveNavLink href={route("certificados.meus")} active={route().current("certificados.meus")}>
+                                    <div className="flex items-center gap-3 text-emerald-700">
+                                        <CertificateIcon size={20} /> Meus Certificados
+                                    </div>
+                                </ResponsiveNavLink>
+                            </>
                         )}
 
                         <ResponsiveNavLink href={route("profile.edit")} active={route().current("profile.edit")}>
-                            <div className="flex items-center gap-3">
-                                <UserCircleIcon size={20} />
-                                Perfil
-                            </div>
+                            <div className="flex items-center gap-3"><UserCircleIcon size={20} /> Perfil</div>
                         </ResponsiveNavLink>
                     </div>
                 </div>
 
                 <div className="border-t border-neutral-200 p-3">
                     <ResponsiveNavLink method="post" href={route("logout")} as="button">
-                        <div className="flex items-center gap-3 text-red-500">
-                            <SignOutIcon size={20} />
-                            Sair
-                        </div>
+                        <div className="flex items-center gap-3 text-red-500"><SignOutIcon size={20} /> Sair</div>
                     </ResponsiveNavLink>
                 </div>
             </div>

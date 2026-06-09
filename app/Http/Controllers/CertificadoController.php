@@ -159,7 +159,9 @@ class CertificadoController extends Controller
           ? $atividade->data_inicio->format('H:i') . ' às ' . $atividade->data_fim->format('H:i')
           : ($atividade?->data_inicio?->format('H:i') ?? ''),
       '{{carga_horaria}}' => $cargaFormatada,
-      '{{data_emissao}}' => $certificate->issued_at?->format('d/m/Y') ?? now()->format('d/m/Y'),
+      '{{data_emissao}}' => $certificate->issued_at
+    ? $certificate->issued_at->timezone('America/Porto_Velho')->format('d/m/Y H:i') 
+    : now()->timezone('America/Porto_Velho')->format('d/m/Y H:i'),
     ];
 
     $w = 1122;
@@ -200,29 +202,27 @@ class CertificadoController extends Controller
       $top = $y - $fontSize;
       $left = $x - ($fieldWidth / 2);
 
-      $textosHtml .= <<<HTML
-      <div style="position: absolute; top: {$top}px; left: {$left}px; width: {$fieldWidth}px; text-align: {$align}; font-size: {$fontSize}px; font-weight: {$fw}; color: {$color}; font-family: Georgia, 'Times New Roman', serif; line-height: 1.5; word-wrap: break-word;">
-          {$texto}
-      </div>
-      HTML;
+      $textosHtml .= "
+            <div style=\"position: absolute; top: {$top}px; left: {$left}px; width: {$fieldWidth}px; text-align: {$align}; font-size: {$fontSize}px; font-weight: {$fw}; color: {$color}; font-family: Georgia, 'Times New Roman', serif; line-height: 1.5; word-wrap: break-word;\">
+                {$texto}
+            </div>";
     }
 
-    $html = <<<HTML
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <meta charset="utf-8">
-        <style>
-            @page { margin: 0; size: {$w}px {$h}px; }
-            body { margin: 0; padding: 0; width: {$w}px; height: {$h}px; position: relative; }
-        </style>
-    </head>
-    <body>
-        {$bgImgHtml}
-        {$textosHtml}
-    </body>
-    </html>
-    HTML;
+    $html = "
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset=\"utf-8\">
+            <style>
+                @page { margin: 0; size: {$w}px {$h}px; }
+                body { margin: 0; padding: 0; width: {$w}px; height: {$h}px; position: relative; }
+            </style>
+        </head>
+        <body>
+            {$bgImgHtml}
+            {$textosHtml}
+        </body>
+        </html>";
 
     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html)
         ->setPaper([0, 0, $w, $h], 'landscape')
@@ -248,7 +248,7 @@ class CertificadoController extends Controller
       ->orderByDesc('issued_at')
       ->get();
 
-    return inertia('Certificados/MeusCertificados', [
+    return inertia('Organizacao/Certificado/MeusCertificados', [
       'certificates' => CertificateResource::collection($certificates),
     ]);
   }

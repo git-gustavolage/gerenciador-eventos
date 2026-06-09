@@ -26,10 +26,16 @@ class CertificadoTemplateController extends Controller
     {
         $evento = CurrentEvent::get();
         $template = CertificateTemplate::where('id_evento', $evento->id)->first();
+        $fieldsInput = $request->input('fields', []);
+        if (is_string($fieldsInput)) {
+            $fieldsInput = json_decode($fieldsInput, true) ?? [];
+        }
+
+        $fieldsFormatados = is_array($fieldsInput) ? array_values($fieldsInput) : [];
 
         $data = [
             'template_name' => 'Modelo Padrão',
-            'fields' => $request->input('fields', []),
+            'fields' => $fieldsFormatados,
         ];
 
         if ($request->hasFile('background')) {
