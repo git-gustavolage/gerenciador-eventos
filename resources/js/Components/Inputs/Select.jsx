@@ -7,7 +7,7 @@ export function Select({ invalid = false, className = "", children, ...props }) 
                 "w-full rounded-sm border px-3 py-3 pr-6 outline-none focus:ring-1",
                 "text-sm leading-5",
                 "transition-colors",
-                "disabled:bg-neutral-100 disabled:text-neutral-300",
+                "disabled:bg-neutral-100 disabled:text-neutral-400",
                 "*:text-medium",
 
                 invalid

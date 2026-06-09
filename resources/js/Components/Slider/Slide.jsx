@@ -1,8 +1,13 @@
-export default function Slide({ children }) {
+import { router } from "@inertiajs/react";
 
-  return (
-    <div className="min-w-full animate-fade-in-500 p-1">
-      {children}
-    </div>
-  )
+export default function Slide({ children, href = "" }) {
+    const handleClick = () => {
+        router.visit(href);
+    };
+
+    return (
+        <div onClick={handleClick} className="min-w-full animate-fade-in-500 p-1 hover:scale-100 scale-[0.99] transition-all duration-200 ease-in-out cursor-pointer">
+            {children}
+        </div>
+    );
 }

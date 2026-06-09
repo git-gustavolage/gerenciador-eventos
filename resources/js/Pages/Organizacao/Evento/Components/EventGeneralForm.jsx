@@ -1,5 +1,5 @@
 import { update } from "@/Actions/update";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import { Input } from "@/Components/Inputs/Input";
 import InputError from "@/Components/Inputs/InputError";
 import InputLabel from "@/Components/Inputs/InputLabel";
@@ -40,7 +40,7 @@ export function EventGeneralForm({ evento = {} }) {
             descricao: data.descricao,
         };
 
-        await action.execute(eventosRoutes.update(), payload);
+        await action.execute(routes.eventos.update(), payload);
     };
 
     return (

@@ -3,7 +3,7 @@ import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
 import { store } from "@/Actions/store";
 import { toast } from "sonner";
-import { ambientesRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import useData from "@/Hooks/useData";
 import InputError from "@/Components/Inputs/InputError";
 import InputLabel from "@/Components/Inputs/InputLabel";
@@ -44,7 +44,7 @@ export default function AmbienteModal({ id_local, onClose, onSuccess }) {
             id_local,
         };
 
-        await action.execute(ambientesRoutes.store(), payload);
+        await action.execute(routes.ambientes.store(), payload);
     };
 
     return (

@@ -1,8 +1,9 @@
 import { toFormData } from "@/Actions/toFormData";
 import { update } from "@/Actions/update";
 import { getCategorias } from "@/api/getCategorias";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import { CategoryOption } from "@/Components/Inputs/CategoryOption";
+import BannerCropModal from "@/Components/BannerCropModal";
 import InputError from "@/Components/Inputs/InputError";
 import InputImage from "@/Components/Inputs/InputImage";
 import InputLabel from "@/Components/Inputs/InputLabel";
@@ -21,6 +22,8 @@ export function EventDivulgationForm({ evento = {} }) {
     });
 
     const [preview, setPreview] = useState(evento.banner ?? null);
+    const [cropFile, setCropFile] = useState(null);
+    const [showCropModal, setShowCropModal] = useState(false);
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(update),
@@ -33,7 +36,7 @@ export function EventDivulgationForm({ evento = {} }) {
         },
     });
 
-    const disabled = action.loading || !data.categorias || data.categorias?.length < 1;
+    const disabled = action.loading || !data.categorias || data.categorias.length < 1;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -45,7 +48,7 @@ export function EventDivulgationForm({ evento = {} }) {
             banner: data.banner,
         };
 
-        await action.execute(eventosRoutes.update(), toFormData(payload));
+        await action.execute(routes.eventos.update(), toFormData(payload));
     };
 
     const handleBannerChange = (e) => {
@@ -53,24 +56,32 @@ export function EventDivulgationForm({ evento = {} }) {
 
         if (!file) return;
 
+        setCropFile(file);
+        setShowCropModal(true);
+
+        action.clearError("banner");
+    };
+
+    const handleCropConfirm = (file) => {
         setData("banner", file);
 
         const url = URL.createObjectURL(file);
 
         setPreview((old) => {
-            if (old) {
+            if (old?.startsWith?.("blob:")) {
                 URL.revokeObjectURL(old);
             }
 
             return url;
         });
 
-        action.clearError("banner");
+        setCropFile(null);
+        setShowCropModal(false);
     };
 
     useEffect(() => {
         return () => {
-            if (preview) {
+            if (preview?.startsWith?.("blob:")) {
                 URL.revokeObjectURL(preview);
             }
         };
@@ -80,6 +91,7 @@ export function EventDivulgationForm({ evento = {} }) {
 
     const toggleCategory = (category) => {
         const alreadySelected = data.categorias.includes(category);
+
         action.clearError("categorias");
 
         if (alreadySelected) {
@@ -95,50 +107,67 @@ export function EventDivulgationForm({ evento = {} }) {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="w-full flex flex-col items-center justify-center gap-4 border-t border-t-neutral-300 pt-8"
-        >
-            <div className="w-full text-start">
-                <h1 className="w-full font-medium text-3xl text-neutral-800 tracking-tight inline-flex gap-1 items-center">
-                    <TrendUpIcon size={32} />
-                    Divulgação
-                </h1>
-            </div>
+        <>
+            <form
+                onSubmit={handleSubmit}
+                className="w-full flex flex-col items-center justify-center gap-4 border-t border-t-neutral-300 pt-8"
+            >
+                <div className="w-full text-start">
+                    <h1 className="w-full font-medium text-3xl text-neutral-800 tracking-tight inline-flex gap-1 items-center">
+                        <TrendUpIcon size={32} />
+                        Divulgação
+                    </h1>
+                </div>
 
-            <div className="w-full flex flex-col gap-4">
-                <div className="space-y-2">
-                    <InputLabel htmlFor="banner" value="Imagem de capa do evento" />
+                <div className="w-full flex flex-col gap-4">
+                    <div className="space-y-2">
+                        <InputLabel htmlFor="banner" value="Imagem de capa do evento" />
+
+                        <div className="space-y-1">
+                            <InputImage preview={preview} onChange={handleBannerChange} />
+
+                            <p className="w-full text-end text-xs text-neutral-500">Proporção recomendada: 16:9 (1920x1080)</p>
+                        </div>
+
+                        <InputError message={action?.error?.errors?.banner} />
+                    </div>
+
                     <div className="space-y-1">
-                        <InputImage preview={preview} onChange={handleBannerChange} />
-                        <p className="w-full text-end text-xs text-neutral-500">Dimensões recomendadas: 1900x380px</p>
-                    </div>
-                    <InputError message={action?.error?.errors?.banner} />
-                </div>
+                        <InputLabel value="Categoria do evento" />
 
-                <div className="space-y-1">
-                    <InputLabel value="Categoria do evento" />
+                        <div className="flex flex-wrap gap-3">
+                            {categorias.map((category) => {
+                                const selected = data.categorias.includes(category);
 
-                    <div className="flex flex-wrap gap-3">
-                        {categorias.map((category) => {
-                            const selected = data.categorias.includes(category);
+                                return (
+                                    <CategoryOption
+                                        key={category}
+                                        value={category}
+                                        onSelect={() => toggleCategory(category)}
+                                        selected={selected}
+                                    />
+                                );
+                            })}
+                        </div>
 
-                            return (
-                                <CategoryOption
-                                    key={category}
-                                    value={category}
-                                    onSelect={() => toggleCategory(category)}
-                                    selected={selected}
-                                />
-                            );
-                        })}
+                        <InputError message={action?.error?.errors?.categorias} />
                     </div>
                 </div>
-            </div>
 
-            <div className="w-full">
-                <PrimaryButton disabled={disabled}>{action.loading ? "Enviando..." : "Salvar"}</PrimaryButton>
-            </div>
-        </form>
+                <div className="w-full">
+                    <PrimaryButton disabled={disabled}>{action.loading ? "Enviando..." : "Salvar"}</PrimaryButton>
+                </div>
+            </form>
+
+            <BannerCropModal
+                show={showCropModal}
+                file={cropFile}
+                onClose={() => {
+                    setCropFile(null);
+                    setShowCropModal(false);
+                }}
+                onConfirm={handleCropConfirm}
+            />
+        </>
     );
 }

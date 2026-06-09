@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Override;
 
+/**
+ * @deprecated
+ */
 class Inscricao extends Model
 {
     protected $table = 'inscricoes';
@@ -22,7 +25,7 @@ class Inscricao extends Model
     protected function casts(): array
     {
         return [
-            'status'     => InscricaoStatusEnum::class,
+            'status' => InscricaoStatusEnum::class,
             'compareceu' => 'boolean',
         ];
     }

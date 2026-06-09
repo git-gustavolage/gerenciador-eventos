@@ -10,7 +10,7 @@ import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorato
 import { toast } from "sonner";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { router, usePage } from "@inertiajs/react";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import { getCategorias } from "@/api/getCategorias";
 import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 import InputLabel from "@/Components/Inputs/InputLabel";
@@ -60,7 +60,7 @@ export default function Index() {
             ...data,
         };
 
-        await action.execute(eventosRoutes.store(), payload);
+        await action.execute(routes.eventos.store(), payload);
     };
 
     return (

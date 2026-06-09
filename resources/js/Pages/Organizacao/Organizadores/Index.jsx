@@ -1,4 +1,4 @@
-import { convitesRoutes, organizadoresRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import SecondaryButton from "@/Components/SecondaryButton";
 import useApi from "@/Hooks/useApi";
 import ManagerLayout from "@/Layouts/ManagerLayout";
@@ -18,8 +18,8 @@ import InputError from "@/Components/Inputs/InputError";
 import { PendingInviteCard } from "./Components/PendingInviteCard";
 
 export default function Index({ evento = {} }) {
-    const { data, reload: reloadData } = useApi(organizadoresRoutes.index(), { id_evento: evento.id });
-    const { data: convitesData, reload: reloadConvites } = useApi(convitesRoutes.pending(), { id_evento: evento.id });
+    const { data, reload: reloadData } = useApi(routes.organizadores.index(), { id_evento: evento.id });
+    const { data: convitesData, reload: reloadConvites } = useApi(routes.convites.pending(), { id_evento: evento.id });
 
     const [open, setOpen] = useState(false);
 
@@ -30,6 +30,7 @@ export default function Index({ evento = {} }) {
     };
 
     const organizadores = data?.data ?? [];
+
     const convites = convitesData ?? [];
 
     const empty = !convites.length || convites.length <= 0;
@@ -86,7 +87,7 @@ function InviteOrganizer({ open, onClose, reload = () => { } }) {
             onClose();
         },
         onError: (err) => {
-            toast.error(err.message || "Erro ao enivar o link. Tente novamente.");
+            toast.error(err.message || "Erro ao enviar o link. Tente novamente.");
         },
     });
 
@@ -102,7 +103,7 @@ function InviteOrganizer({ open, onClose, reload = () => { } }) {
             email: data.email,
         };
 
-        await action.execute(convitesRoutes.invite(), payload);
+        await action.execute(routes.convites.invite(), payload);
     };
 
     const handleClose = () => {

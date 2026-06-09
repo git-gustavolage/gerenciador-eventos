@@ -1,17 +1,18 @@
 import { update } from "@/Actions/update";
-import { eventosRoutes } from "@/api/routes";
+import { routes } from "@/api/routes";
 import DateTimeInput from "@/Components/Inputs/DateTimeInput";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
 import useData from "@/Hooks/useData";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
+import { formatDate } from "@/util/formatDate";
 import { CalendarBlankIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 export function EventDateForm({ evento = {} }) {
     const [data, setData] = useData({
-        data_inicio: evento.data_inicio,
-        data_fim: evento.data_fim,
+        data_inicio: formatDate(evento.data_inicio, "DD/MM/YYYY HH:ii:ss", "YYYY-MM-DD HH:ii:ss"),
+        data_fim: formatDate(evento.data_fim, "DD/MM/YYYY HH:ii:ss", "YYYY-MM-DD HH:ii:ss"),
     });
 
     const action = useAction({
@@ -37,7 +38,7 @@ export function EventDateForm({ evento = {} }) {
             data_fim: data.data_fim,
         };
 
-        await action.execute(eventosRoutes.update(), payload);
+        await action.execute(routes.eventos.update(), payload);
     };
 
     return (
@@ -56,7 +57,6 @@ export function EventDateForm({ evento = {} }) {
                     label="Data do início do evento"
                     value={data.data_inicio}
                     onChange={(e) => setData("data_inicio", e.target.value)}
-                    min={new Date().toISOString().split("T")[0]}
                     withTime={false}
                 />
 
@@ -65,7 +65,7 @@ export function EventDateForm({ evento = {} }) {
                     label="Data do término do evento"
                     value={data.data_fim}
                     onChange={(e) => setData("data_fim", e.target.value)}
-                    min={new Date().toISOString().split("T")[0]}
+                    min={formatDate(data.data_inicio, "YYYY-MM-DD HH:ii:ss", "YYYY-MM-DD")}
                     withTime={false}
                 />
             </div>

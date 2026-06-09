@@ -8,7 +8,7 @@ class UpdateAtividadeRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return auth('web')->check();
     }
 
     public function rules(): array
@@ -20,8 +20,6 @@ class UpdateAtividadeRequest extends FormRequest
             "data_inicio" => ["required", "date"],
             "data_fim" => ["required", "date", "after_or_equal:data_inicio"],
             "limite_participantes" => ["nullable", "integer", "min:1"],
-            "ministrantes" => ["nullable", "array"],
-            "ministrantes.*" => ["integer", "exists:ministrantes,id"],
         ];
     }
 }

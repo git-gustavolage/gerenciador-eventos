@@ -9,7 +9,6 @@ import { routes } from "@/api/routes";
 import { Menu } from "@/Components/Menu";
 import { FormAtividadeAmbiente } from "./FormAtividadeAmbiente";
 import { FormAtividadeGeneral } from "./FormAtividadeGeneral";
-import { FormAtividadeMinistrantes } from "./FormAtividadeMinistrantes";
 
 export default function ModalNewAtividade({ open, onClose, onSuccess }) {
     const { current_evento_id } = usePage().props.auth;
@@ -22,7 +21,6 @@ export default function ModalNewAtividade({ open, onClose, onSuccess }) {
         data_inicio: "",
         data_fim: "",
         limite_participantes: 1,
-        ministrantes: [],
     });
 
     const action = useAction({
@@ -77,16 +75,6 @@ export default function ModalNewAtividade({ open, onClose, onSuccess }) {
 
                     <Menu.Tab label="Ambiente">
                         <FormAtividadeAmbiente
-                            data={data}
-                            setData={setData}
-                            errors={action.error?.errors}
-                            onClose={handleClose}
-                            loading={action.loading}
-                        />
-                    </Menu.Tab>
-
-                    <Menu.Tab label="Ministrante">
-                        <FormAtividadeMinistrantes
                             data={data}
                             setData={setData}
                             errors={action.error?.errors}
