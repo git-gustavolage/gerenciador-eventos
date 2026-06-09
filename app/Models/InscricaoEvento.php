@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Enum\InscricaoStatusEnum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Override;
 
 class InscricaoEvento extends Model
 {
@@ -14,18 +12,7 @@ class InscricaoEvento extends Model
     protected $fillable = [
         'id_user',
         'id_evento',
-        'status',
-        'compareceu',
     ];
-
-    #[Override]
-    protected function casts(): array
-    {
-        return [
-            'status'     => InscricaoStatusEnum::class,
-            'compareceu' => 'boolean',
-        ];
-    }
 
     public function user(): BelongsTo
     {

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import Navbar from "@/Layouts/Common/Navbar";
-import ModalInscricao from "@/Components/ModalInscricao";
 import {
     CalendarBlankIcon,
     CalendarCheckIcon,
@@ -16,6 +15,15 @@ import {
     UserCircleIcon,
     CheckCircleIcon,
 } from "@phosphor-icons/react";
+import Modal from "@/Components/Modal";
+import InputLabel from "@/Components/Inputs/InputLabel";
+import { Input } from "@/Components/Inputs/Input";
+import { router, usePage } from "@inertiajs/react";
+import PrimaryButton from "@/Components/PrimaryButton";
+import { useAction } from "@/Hooks/useAction";
+import { store } from "@/Actions/store";
+import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
+import { routes } from "@/api/routes";
 
 function formatDate(dateStr) {
     if (!dateStr) return null;
@@ -51,8 +59,7 @@ function FormatoIcon({ formato }) {
 }
 
 function statusInfo(evento) {
-    if (evento.is_cancelado)
-        return { label: "Cancelado", className: "bg-red-50 text-red-600 border border-red-200" };
+    if (evento.is_cancelado) return { label: "Cancelado", className: "bg-red-50 text-red-600 border border-red-200" };
     if (!evento.is_publicado)
         return { label: "Rascunho", className: "bg-neutral-100 text-neutral-500 border border-neutral-200" };
     if (evento.data_fim_inscricoes && new Date(evento.data_fim_inscricoes) < new Date())
@@ -64,11 +71,7 @@ function statusInfo(evento) {
 
 function StatusBadge({ evento }) {
     const { label, className } = statusInfo(evento);
-    return (
-        <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${className}`}>
-            {label}
-        </span>
-    );
+    return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${className}`}>{label}</span>;
 }
 
 function InfoRow({ icon: Icon, children }) {
@@ -110,37 +113,26 @@ function MinhasInscricoes({ evento, atividadesInscritas, inscritoNoEvento }) {
     const temQualquer = inscritoNoEvento || atividadesInscritas.length > 0;
     if (!temQualquer) return null;
 
-    const atvsInscritas = (evento.atividades ?? []).filter((a) =>
-        atividadesInscritas.includes(a.id)
-    );
+    const atvsInscritas = (evento.atividades ?? []).filter((a) => atividadesInscritas.includes(a.id));
 
     return (
         <div className="flex flex-col gap-2 pt-1 border-t border-neutral-100">
-            <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">
-                Suas inscrições
-            </span>
+            <span className="text-xs font-medium text-neutral-400 uppercase tracking-wide">Suas inscrições</span>
 
             {/* Inscrição no evento geral */}
             {inscritoNoEvento && (
                 <div className="flex items-center gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2">
                     <CheckCircleIcon size={14} weight="fill" className="text-emerald-600 shrink-0" />
-                    <span className="text-xs font-medium text-emerald-800">
-                        Inscrito no evento geral
-                    </span>
+                    <span className="text-xs font-medium text-emerald-800">Inscrito no evento geral</span>
                 </div>
             )}
 
             {/* Atividades inscritas */}
             {atvsInscritas.map((a) => (
-                <div
-                    key={a.id}
-                    className="flex items-start gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2"
-                >
+                <div key={a.id} className="flex items-start gap-2 rounded-xl bg-emerald-50 border border-emerald-200 px-3 py-2">
                     <CheckCircleIcon size={14} weight="fill" className="text-emerald-600 shrink-0 mt-0.5" />
                     <div className="flex flex-col min-w-0">
-                        <span className="text-xs font-medium text-emerald-800 leading-snug">
-                            {a.titulo}
-                        </span>
+                        <span className="text-xs font-medium text-emerald-800 leading-snug">{a.titulo}</span>
                         <span className="text-xs text-emerald-600">
                             {formatTime(a.data_inicio)} – {formatTime(a.data_fim)}
                             {a.ambiente?.nome ? ` · ${a.ambiente.nome}` : ""}
@@ -148,8 +140,6 @@ function MinhasInscricoes({ evento, atividadesInscritas, inscritoNoEvento }) {
                     </div>
                 </div>
             ))}
-
-
         </div>
     );
 }
@@ -166,7 +156,7 @@ function AtividadeCard({ atividade }) {
             }`}
         >
             <div className="flex items-start justify-between gap-3 flex-wrap">
-                <h3 className="font-semibold text-neutral-900 leading-snug">{atividade.titulo}</h3>
+                <h3 className="font-semibold text-neutral-800 leading-snug">{atividade.titulo}</h3>
                 {atividade.is_cancelada && (
                     <span className="shrink-0 rounded-full bg-red-50 border border-red-200 px-2.5 py-0.5 text-xs font-medium text-red-600">
                         Cancelada
@@ -174,9 +164,7 @@ function AtividadeCard({ atividade }) {
                 )}
             </div>
 
-            {atividade.descricao && (
-                <p className="text-sm text-neutral-500 leading-relaxed">{atividade.descricao}</p>
-            )}
+            {atividade.descricao && <p className="text-sm text-neutral-500 leading-relaxed">{atividade.descricao}</p>}
 
             <div className="flex flex-wrap gap-3 text-xs text-neutral-500">
                 <span className="inline-flex items-center gap-1">
@@ -262,11 +250,8 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
 
             <div className="w-full bg-neutral-200 relative aspect-[21/9] md:h-[380px] overflow-hidden border-b border-neutral-200">
                 {evento.banner_path ? (
-                    <img
-                        src={`/midia/${evento.banner_path}`}
-                        alt="Banner do evento"
-                        className="w-full h-full object-cover"
-                    />                ) : (
+                    <img src={`/midia/${evento.banner_path}`} alt="Banner do evento" className="w-full h-full object-cover" />
+                ) : (
                     <div className="w-full h-full bg-gradient-to-br from-emerald-800 via-neutral-900 to-neutral-800" />
                 )}
             </div>
@@ -276,9 +261,7 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                     <div className="flex items-center">
                         <StatusBadge evento={ev} />
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-black text-neutral-900 leading-tight tracking-tight">
-                        {ev.titulo}
-                    </h1>
+                    <h1 className="text-3xl md:text-4xl font-black text-neutral-800 leading-tight tracking-tight">{ev.titulo}</h1>
                     <div className="flex flex-wrap items-center gap-y-2 gap-x-4 text-sm text-neutral-500 font-medium">
                         {ev.data_inicio && (
                             <span className="inline-flex items-center gap-1.5">
@@ -305,7 +288,10 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                     {ev.categorias?.length > 0 && (
                         <div className="flex flex-wrap gap-2 pt-1">
                             {ev.categorias.map((c) => (
-                                <span key={c} className="rounded-full bg-neutral-100 border border-neutral-200 px-3 py-0.5 text-xs font-semibold text-neutral-600">
+                                <span
+                                    key={c}
+                                    className="rounded-full bg-neutral-100 border border-neutral-200 px-3 py-0.5 text-xs font-semibold text-neutral-600"
+                                >
                                     {c}
                                 </span>
                             ))}
@@ -317,13 +303,13 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                     <div className="flex flex-col gap-8">
                         {ev.descricao && (
                             <section className="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm flex flex-col gap-3">
-                                <h2 className="font-bold text-neutral-900 text-lg">Sobre o evento</h2>
+                                <h2 className="font-bold text-neutral-800 text-lg">Sobre o evento</h2>
                                 <p className="text-sm text-neutral-600 leading-relaxed whitespace-pre-line">{ev.descricao}</p>
                             </section>
                         )}
                         {grupos.length > 0 && (
                             <section className="flex flex-col gap-4">
-                                <h2 className="font-bold text-neutral-900 text-lg">Programação</h2>
+                                <h2 className="font-bold text-neutral-800 text-lg">Programação</h2>
                                 {grupos.map((grupo) => (
                                     <div key={grupo.label} className="flex flex-col gap-3">
                                         <div className="flex items-center gap-3">
@@ -359,7 +345,10 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                                         <span>{ev.limite_inscricoes} vagas</span>
                                     </div>
                                     <div className="h-2 rounded-full bg-neutral-100 overflow-hidden">
-                                        <div className="h-full rounded-full bg-emerald-500 transition-all" style={{ width: `${inscritosPercent}%` }} />
+                                        <div
+                                            className="h-full rounded-full bg-emerald-500 transition-all"
+                                            style={{ width: `${inscritosPercent}%` }}
+                                        />
                                     </div>
                                     <p className="text-xs text-neutral-400">{100 - inscritosPercent}% das vagas disponíveis</p>
                                 </div>
@@ -410,9 +399,7 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                                         {ev.atividades.filter((a) => !a.is_cancelada).length} atividades na programação
                                     </InfoRow>
                                 )}
-                                {ev.categorias?.length > 0 && (
-                                    <InfoRow icon={TagIcon}>{ev.categorias.join(", ")}</InfoRow>
-                                )}
+                                {ev.categorias?.length > 0 && <InfoRow icon={TagIcon}>{ev.categorias.join(", ")}</InfoRow>}
                             </div>
                         </div>
 
@@ -426,12 +413,114 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                 </div>
             </div>
 
-            <ModalInscricao
-                eventoId={evento.id}
-                open={modalAberto}
-                onClose={() => setModalAberto(false)}
-                onSucesso={handleInscricaoSucesso}
-            />
+            <ModalInscricao evento={evento} show={modalAberto} onClose={() => setModalAberto(false)} center />
         </div>
+    );
+}
+
+function ModalInscricao({ evento = {}, show, onClose }) {
+    const { user = {} } = usePage().props.auth;
+
+    const action = useAction({
+        actionFn: actionErrorHandlingDecorator(store),
+        onSuccess: () => {
+            onClose();
+            router.visit(route("meus_eventos"));
+        },
+    });
+
+    const disabled = !user || action.loading;
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (disabled) return;
+
+        const payload = {
+            id_evento: evento.id,
+        };
+
+        await action.execute(routes.inscricoes.store(), payload);
+    };
+
+    return (
+        <Modal show={show} onClose={onClose} center>
+            <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="mb-6">
+                    <h2 className="text-2xl font-semibold text-neutral-800">Inscrever-se no evento</h2>
+
+                    <p className="mt-2 text-sm text-neutral-500">
+                        Garanta sua participação e tenha acesso aos certificados disponibilizados pelo evento.
+                    </p>
+                </div>
+
+                {user ? (
+                    <div className="space-y-5">
+                        <div className="grid gap-4">
+                            <div>
+                                <InputLabel value="Nome" />
+
+                                <Input value={user.nome} disabled />
+                            </div>
+
+                            <div>
+                                <InputLabel value="E-mail" />
+
+                                <Input value={user.email} disabled />
+                            </div>
+                        </div>
+
+                        <div className="rounded-sm border border-emerald-300 bg-emerald-50 p-4">
+                            <div className="flex items-start gap-3">
+                                <input type="checkbox" checked readOnly className="mt-1" />
+
+                                <div className="flex-1">
+                                    <div className="flex items-center justify-between">
+                                        <p className="font-medium text-neutral-800">Inscrição geral</p>
+
+                                        <span className="text-sm font-semibold text-emerald-700">Gratuita</span>
+                                    </div>
+
+                                    <p className="mt-1 text-sm text-neutral-600">
+                                        Acesso às atividades disponíveis no evento e emissão de certificados conforme as regras
+                                        estabelecidas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="border-t border-neutral-200 pt-5">
+                            <PrimaryButton className="w-full">Confirmar inscrição</PrimaryButton>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="flex flex-col gap-5">
+                        <div className="rounded-sm border border-neutral-200 bg-neutral-50 p-4">
+                            <p className="font-medium text-neutral-800">É necessário acessar sua conta</p>
+
+                            <p className="mt-1 text-sm text-neutral-600">
+                                Faça login ou crie uma conta para concluir sua inscrição no evento.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-3 py-2">
+                            <a
+                                href={route("login", { redirect: route("eventos.publico.show", { id: evento.id }) })}
+                                className="w-full text-center rounded-sm bg-emerald-600 px-4 py-2 font-medium text-white transition-colors hover:bg-emerald-700"
+                            >
+                                Entrar
+                            </a>
+
+                            <a
+                                href={route("register", { redirect: route("eventos.publico.show", { id: evento.id }) })}
+                                className="w-full text-center rounded-sm border border-neutral-300 px-4 py-2 font-medium text-neutral-700 transition-colors hover:bg-neutral-50"
+                            >
+                                Criar conta
+                            </a>
+                        </div>
+                    </div>
+                )}
+            </form>
+        </Modal>
     );
 }

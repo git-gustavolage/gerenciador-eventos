@@ -3,6 +3,13 @@ export const routes = {
         store: (params = {}) => route("eventos.store", params),
         update: (params = {}) => route("eventos.update", params),
     },
+    inscricoes: {
+        store: (params = {}) => route("inscricoes.store", params),
+        atividades: {
+            store: (params = {}) => route("inscricoes.atividades.store", params),
+            destroy: (params = {}) => route("inscricoes.atividades.destroy", params),
+        },
+    },
     convites: {
         invite: (params = {}) => route("convites.invite", params),
         accept: (params = {}) => route("convites.accept", params),

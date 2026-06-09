@@ -1,11 +1,15 @@
+import { Head } from "@inertiajs/react";
 import Navbar from "./Common/Navbar";
 
-export default function AuthenticatedLayout({ children }) {
+export default function AuthenticatedLayout({ titulo = "", children }) {
     return (
-        <div className="min-h-screen bg-gray-50">
-            <Navbar />
+        <>
+            <Head title={titulo} />
+            <div className="min-h-screen bg-gray-50">
+                <Navbar />
 
-            <main>{children}</main>
-        </div>
+                <main>{children}</main>
+            </div>
+        </>
     );
 }

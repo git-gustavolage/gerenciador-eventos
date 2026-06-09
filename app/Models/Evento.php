@@ -34,10 +34,10 @@ class Evento extends Model
         return [
             "formato" => EventoFormatoEnum::class,
             "categorias" => "array",
-            "data_inicio" => "datetime:Y-m-d H:i:s",
-            "data_fim" => "datetime:Y-m-d H:i:s",
-            "data_inicio_inscricoes" => "datetime:Y-m-d H:i:s",
-            "data_fim_inscricoes" => "datetime:Y-m-d H:i:s",
+            "data_inicio" => "datetime",
+            "data_fim" => "datetime",
+            "data_inicio_inscricoes" => "datetime",
+            "data_fim_inscricoes" => "datetime",
             "limite_inscricoes" => "int",
             "is_publicado" => "boolean",
             "is_cancelado" => "boolean",
@@ -59,7 +59,6 @@ class Evento extends Model
     {
         return $this->hasMany(Organizador::class, "id_evento", "id");
     }
-
 
     public function inscricoesEvento(): HasMany
     {

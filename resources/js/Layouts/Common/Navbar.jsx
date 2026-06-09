@@ -20,9 +20,11 @@ import { CaretDownIcon, PlusCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { useEffect, useState } from "react";
 
 export default function Navbar() {
-    const user = usePage().props.auth.user;
-    const admin = user?.is_admin ?? false;
+    const auth = usePage().props.auth;
     const { isMinistrante } = usePage().props;
+    const { user, is_organizador } = auth;
+    const admin = user?.is_admin ?? false;
+
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
     useEffect(() => {
@@ -75,13 +77,24 @@ export default function Navbar() {
                                         )}
 
                                         <NavLink
-                                            href={route("dashboard")}
+                                            href={route("meus_eventos")}
                                             prefetch
-                                            active={route().current("dashboard")}
+                                            active={route().current("meus_eventos")}
                                             className="h-14"
                                         >
                                             Meus Eventos
                                         </NavLink>
+
+                                        {is_organizador && (
+                                            <NavLink
+                                                href={route("dashboard")}
+                                                prefetch
+                                                active={route().current("dashboard")}
+                                                className="h-14"
+                                            >
+                                                Organizador
+                                            </NavLink>
+                                        )}
 
                                         {isMinistrante && (
                                             <NavLink
@@ -197,7 +210,7 @@ export default function Navbar() {
                         </ResponsiveNavLink>
 
                         {user && (
-                            <ResponsiveNavLink href={route("dashboard")} active={route().current("dashboard")}>
+                            <ResponsiveNavLink href={route("meus_eventos")} active={route().current("meus_eventos")}>
                                 <div className="flex items-center gap-2">
                                     <CalendarCheckIcon size={20} />
                                     Meus Eventos

@@ -11,7 +11,7 @@ use App\Http\Requests\Evento\UpdateEventoRequest;
 use App\Http\Resources\Evento\EventoResource;
 use App\Http\Resources\Local\LocalResource;
 use App\Models\Evento;
-use App\Models\Inscricao;
+use App\Models\InscricaoAtividade;
 use App\Models\InscricaoEvento;
 use App\Models\Local;
 use App\Support\CurrentEvent;
@@ -79,7 +79,7 @@ class EventoController extends Controller
 
         $evento = $action->execute(auth('web')->id(), $evento->id, $request->validated());
 
-        return response()->json(["success" => true]);
+        return response()->json(['success' => true]);
     }
 
     public function show(int $id)
@@ -106,7 +106,7 @@ class EventoController extends Controller
                 : false,
 
             'atividadesInscritas' => $userId
-                ? Inscricao::where('id_user', $userId)
+                ? InscricaoAtividade::where('id_user', $userId)
                     ->whereIn('id_atividade', $evento->atividades->pluck('id'))
                     ->pluck('id_atividade')
                 : [],

@@ -6,10 +6,12 @@ use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventoController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InscricaoAtividadeController;
 use App\Http\Controllers\InscricaoController;
 use App\Http\Controllers\MinistranteController;
 use App\Http\Controllers\OrganizacaoController;
 use App\Http\Controllers\OrganizadoresController;
+use App\Http\Controllers\ParticipanteController;
 use App\Http\Controllers\ProfileController;
 use App\Models\Evento;
 use App\Support\S3Manager;
@@ -28,11 +30,12 @@ Route::get('/api/eventos/publicos', function () {
 })->name('api.eventos.publicos');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/meus-eventos', [ParticipanteController::class, 'view'])->name('meus_eventos');
     Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
 
     Route::group(['prefix' => '/eventos', 'as' => 'eventos.', 'controller' => EventoController::class], function () {
-        Route::get('/create', 'create')->name('create');
-        Route::post('/store', 'store')->name('store');
+        Route::get('/create', 'create')->name('create')->middleware(['admin']);
+        Route::post('/store', 'store')->name('store')->middleware(['admin']);
         Route::put('/update', 'update')->name('update');
 
         Route::get('/minhas-atividades', [MinistranteController::class, 'minhasAtividades'])->name('ministrante.minhas-atividades');
@@ -57,25 +60,38 @@ Route::middleware('auth')->group(function () {
             Route::put('/atividades/inscricoes/{inscricaoAtividade}/toggle-presenca', [OrganizacaoController::class, 'togglePresencaAtividade'])->name('atividades.toggle-presenca');
         });
 
-        Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class], function () {
-            Route::get('/', 'index')->name('index');
-            Route::post('/', 'store')->name('store');
-            Route::put('/{id}', 'update')->name('update');
-            Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class], function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+    });
+
+    Route::group(['prefix' => '/inscricoes', 'as' => 'inscricoes.', 'controller' => InscricaoController::class], function () {
+        Route::post('/', 'store')->name('store');
+        Route::group(['prefix' => '/atividades', 'as' => 'atividades.', 'controller' => InscricaoAtividadeController::class], function () {
+            Route::post('/store', 'store')->name('store');
+            Route::delete('/destroy', 'destroy')->name('destroy');
         });
     });
 
-    Route::prefix('eventos/{evento}')->name('eventos.')->group(function () {
-        Route::get('inscricao/dados', [InscricaoController::class, 'dadosInscricao'])->name('inscricao.dados');
-        Route::post('inscricao', [InscricaoController::class, 'store'])->name('inscricao.store');
+    Route::group(['prefix' => '/participantes', 'as' => 'participantes.', 'controller' => ParticipanteController::class], function () {
+        Route::get('/evento/{id}', 'evento')->name('evento');
     });
+
+    // Route::prefix('eventos/{evento}')->name('eventos.')->group(function () {
+    //     Route::get('inscricao/dados', [InscricaoController::class, 'dadosInscricao'])->name('inscricao.dados');
+    //     Route::post('inscricao', [InscricaoController::class, 'store'])->name('inscricao.store');
+    // });
 
     Route::get('/atividades', [AtividadeController::class, 'index'])->name('atividades.index');
     Route::post('/atividades', [AtividadeController::class, 'store'])->name('atividades.store');
     Route::put('/atividades/{id}', [AtividadeController::class, 'update'])->name('atividades.update');
     Route::put('/atividades/cancel/{id}', [AtividadeController::class, 'cancel'])->name('atividades.cancel');
-    Route::post("/atividades/ministrantes/store", [AtividadeController::class, "addMinistrante"])->name("atividades.ministrantes.store");
-    Route::delete("/atividades/ministrantes/destroy", [AtividadeController::class, "removeMinistrante"])->name("atividades.ministrantes.destroy");
+    Route::post('/atividades/ministrantes/store', [AtividadeController::class, 'addMinistrante'])->name('atividades.ministrantes.store');
+    Route::delete('/atividades/ministrantes/destroy', [AtividadeController::class, 'removeMinistrante'])->name('atividades.ministrantes.destroy');
 
     Route::group(['prefix' => '/organizadores', 'as' => 'organizadores.'], function () {
         Route::get('/', [OrganizadoresController::class, 'view'])->name('view');
