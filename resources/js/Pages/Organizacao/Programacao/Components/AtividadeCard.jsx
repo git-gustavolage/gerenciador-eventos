@@ -11,7 +11,7 @@ export function AtividadeCard({ atividade = {}, onSuccess }) {
     const [showMinistranteModal, setShowMinistranteModal] = useState(false);
 
     const ministrantes = atividade.ministrantes ?? [];
-    const inscritos = length.inscritos ?? [];
+    const inscricoes = atividade.inscricoes ?? [];
 
     const handleDelete = () => {
         setShowCancelModal(true);
@@ -61,7 +61,7 @@ export function AtividadeCard({ atividade = {}, onSuccess }) {
                     <div className="inline-flex gap-2 items-center text-neutral-500">
                         <UsersIcon size={20} className="min-w-[20px]" />
                         <span className="text-sm font-medium">
-                            {inscritos?.length}/{atividade.limite_participantes}
+                            {inscricoes?.length}/{atividade.limite_participantes}
                         </span>
                     </div>
 
