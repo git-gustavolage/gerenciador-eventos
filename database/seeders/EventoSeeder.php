@@ -2,8 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\Local;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -17,10 +15,10 @@ class EventoSeeder extends Seeder
         $insert = [
             [
                 "id" => 1,
-                "titulo" => "Evento 01",
-                "descricao" => "Descrição 01",
+                "titulo" => "I Simpósio de Tecnologia da Informação",
+                "descricao" => "Um evento focado nas novas tendências do mercado de TI.",
                 "formato" => "presencial",
-                "categorias" => "outro",
+                "categorias" => "tecnologia",
                 "id_local" => 1,
                 "id_user" => 1,
                 "data_inicio" => "2026-06-01 00:00:00",
@@ -31,8 +29,8 @@ class EventoSeeder extends Seeder
             ],
             [
                 "id" => 2,
-                "titulo" => "Evento 02",
-                "descricao" => "Descrição 02",
+                "titulo" => "Congresso Regional de Saúde Pública",
+                "descricao" => "Debates e discussões sobre o futuro da saúde na região.",
                 "formato" => "remoto",
                 "categorias" => "saúde",
                 "id_local" => 1,
@@ -45,8 +43,8 @@ class EventoSeeder extends Seeder
             ],
             [
                 "id" => 3,
-                "titulo" => "Evento 03",
-                "descricao" => "Descrição 03",
+                "titulo" => "Encontro de Educadores da Amazônia",
+                "descricao" => "Metodologias ativas e o futuro da educação.",
                 "formato" => "hibrido",
                 "categorias" => "educação",
                 "id_local" => 2,
@@ -59,10 +57,10 @@ class EventoSeeder extends Seeder
             ],
             [
                 "id" => 4,
-                "titulo" => "Evento 04",
-                "descricao" => "Descrição 04",
+                "titulo" => "Jornada de Engenharia e Inovação",
+                "descricao" => "Construção civil, inovações sustentáveis e cidades inteligentes.",
                 "formato" => "presencial",
-                "categorias" => "educação, saúde",
+                "categorias" => "educação, engenharia",
                 "id_local" => 2,
                 "id_user" => 1,
                 "data_inicio" => "2026-05-01 00:00:00",
@@ -70,6 +68,20 @@ class EventoSeeder extends Seeder
                 "is_publicado" => true,
                 "is_cancelado" => false,
                 "is_encerrado" => true,
+            ],
+            [
+                "id" => 5,
+                "titulo" => "Semana Acadêmica de Desenvolvimento Web",
+                "descricao" => "O principal evento do ano focado em frameworks web modernos, boas práticas de código e deploy.",
+                "formato" => "presencial",
+                "categorias" => '["Tecnologia"]',
+                "id_local" => 1,
+                "id_user" => 2,
+                "data_inicio" => "2026-07-01 00:00:00",
+                "data_fim" => "2026-07-31 23:59:59",
+                "is_publicado" => false,
+                "is_cancelado" => false,
+                "is_encerrado" => false,
             ],
         ];
 

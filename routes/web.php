@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AmbienteController;
 use App\Http\Controllers\AtividadeController;
+use App\Http\Controllers\CertificadoController;
+use App\Http\Controllers\CertificadoTemplateController;
 use App\Http\Controllers\ConviteController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EventoController;
@@ -30,6 +32,7 @@ Route::get('/api/eventos/publicos', function () {
 })->name('api.eventos.publicos');
 
 Route::middleware('auth')->group(function () {
+    Route::get('/certificados/meus', [CertificadoController::class, 'meusCertificados'])->name('certificados.meus');
     Route::get('/meus-eventos', [ParticipanteController::class, 'view'])->name('meus_eventos');
     Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
 
@@ -58,8 +61,19 @@ Route::middleware('auth')->group(function () {
             Route::put('/atividades/inscricoes/{inscricaoAtividade}/confirmar', [OrganizacaoController::class, 'confirmarInscricaoAtividade'])->name('atividades.confirmar-inscricao');
             Route::put('/atividades/inscricoes/{inscricaoAtividade}/cancelar', [OrganizacaoController::class, 'cancelarInscricaoAtividade'])->name('atividades.cancelar-inscricao');
             Route::put('/atividades/inscricoes/{inscricaoAtividade}/toggle-presenca', [OrganizacaoController::class, 'togglePresencaAtividade'])->name('atividades.toggle-presenca');
-        });
 
+            Route::group(['prefix' => '/certificados', 'as' => 'certificados.'], function () {
+                // modelos de certificado
+                Route::get('/', [CertificadoTemplateController::class, 'edit'])->name('edit');
+                Route::post('/', [CertificadoTemplateController::class, 'store'])->name('store');
+                Route::post('/{certificado}/fundo', [CertificadoTemplateController::class, 'uploadFundo'])->name('fundo');
+                // Emissão
+                Route::get('/emissao', [CertificadoController::class, 'emissao'])->name('emissao');
+                Route::post('/issue', [CertificadoController::class, 'issue'])->name('issue');
+                Route::post('/batch', [CertificadoController::class, 'issueBatch'])->name('batch');
+                Route::get('/download/{id}', [CertificadoController::class, 'download'])->name('download');
+            });
+        });
     });
 
     Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class], function () {
@@ -80,11 +94,6 @@ Route::middleware('auth')->group(function () {
     Route::group(['prefix' => '/participantes', 'as' => 'participantes.', 'controller' => ParticipanteController::class], function () {
         Route::get('/evento/{id}', 'evento')->name('evento');
     });
-
-    // Route::prefix('eventos/{evento}')->name('eventos.')->group(function () {
-    //     Route::get('inscricao/dados', [InscricaoController::class, 'dadosInscricao'])->name('inscricao.dados');
-    //     Route::post('inscricao', [InscricaoController::class, 'store'])->name('inscricao.store');
-    // });
 
     Route::get('/atividades', [AtividadeController::class, 'index'])->name('atividades.index');
     Route::post('/atividades', [AtividadeController::class, 'store'])->name('atividades.store');

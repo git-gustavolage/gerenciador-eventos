@@ -15,6 +15,7 @@ import {
     UserCircleIcon,
     UserIcon,
     XIcon,
+    CertificateIcon,
 } from "@phosphor-icons/react";
 import { CaretDownIcon, PlusCircleIcon } from "@phosphor-icons/react/dist/ssr";
 import { useEffect, useState } from "react";
@@ -105,6 +106,14 @@ export default function Navbar() {
                                                 Ministrante
                                             </NavLink>
                                         )}
+
+                                        <NavLink
+                                            href={route("certificados.meus")}
+                                            active={route().current("certificados.meus")}
+                                            className="h-14"
+                                        >
+                                            Meus Certificados
+                                        </NavLink>
                                     </div>
                                 )}
 
@@ -134,7 +143,6 @@ export default function Navbar() {
 
                                         <Dropdown.Content>
                                             <Dropdown.Link href={route("profile.edit")}>Perfil</Dropdown.Link>
-
                                             <Dropdown.Link href={route("logout")} method="post" as="button">
                                                 Sair
                                             </Dropdown.Link>
@@ -162,13 +170,11 @@ export default function Navbar() {
                 <div className="flex items-center justify-between border-b border-neutral-200 px-5 py-4">
                     <div className="flex items-center gap-3">
                         <ApplicationLogo className="h-9 w-auto" />
-
                         <div className="flex flex-col">
                             <span className="font-semibold text-neutral-900">E-IFRO</span>
                             <span className="text-xs text-neutral-500">Plataforma de eventos</span>
                         </div>
                     </div>
-
                     <button
                         onClick={() => setShowingNavigationDropdown(false)}
                         className="rounded-sm p-2 text-neutral-500 hover:bg-neutral-100"
@@ -184,7 +190,6 @@ export default function Navbar() {
                                 {user?.nome?.charAt(0)?.toUpperCase()}
                                 {user?.nome?.charAt(1)?.toLowerCase()}
                             </div>
-
                             <div className="flex flex-col">
                                 <span className="font-medium text-neutral-900">{user.nome}</span>
                                 <span className="text-sm text-neutral-500">{user.email}</span>
@@ -230,6 +235,12 @@ export default function Navbar() {
                             </ResponsiveNavLink>
                         )}
 
+                        <ResponsiveNavLink href={route("certificados.meus")} active={route().current("certificados.meus")}>
+                            <div className="flex items-center gap-3 text-emerald-700">
+                                <CertificateIcon size={20} /> Meus Certificados
+                            </div>
+                        </ResponsiveNavLink>
+
                         <ResponsiveNavLink href={route("profile.edit")} active={route().current("profile.edit")}>
                             <div className="flex items-center gap-2">
                                 <UserCircleIcon size={20} />
@@ -242,8 +253,7 @@ export default function Navbar() {
                 <div className="border-t border-neutral-200 p-3">
                     <ResponsiveNavLink method="post" href={route("logout")} as="button">
                         <div className="flex items-center gap-3 text-red-500">
-                            <SignOutIcon size={20} />
-                            Sair
+                            <SignOutIcon size={20} /> Sair
                         </div>
                     </ResponsiveNavLink>
                 </div>

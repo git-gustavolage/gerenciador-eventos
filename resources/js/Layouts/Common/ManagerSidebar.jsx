@@ -100,9 +100,20 @@ function BeforeEvent() {
 function AfterEvent() {
     return (
         <SidebarModule title="Pós-evento">
-            <SideBarLink href="#">
+            <SideBarLink
+                href={route("eventos.organizacao.certificados.edit")}
+                active={route().current("eventos.organizacao.certificados.*")}
+            >
                 <CertificateIcon size={18} />
-                <span>Certificados</span>
+                <span>Configurar Certificado</span>
+            </SideBarLink>
+
+            <SideBarLink
+                href={route("eventos.organizacao.certificados.emissao")}
+                active={route().current("eventos.organizacao.certificados.emissao")}
+            >
+                <CertificateIcon size={18} />
+                <span>Emitir Certificados</span>
             </SideBarLink>
         </SidebarModule>
     );
