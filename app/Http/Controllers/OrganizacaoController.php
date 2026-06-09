@@ -74,7 +74,7 @@ class OrganizacaoController extends Controller
         $evento = CurrentEvent::get();
         $atividades = $evento
             ->atividades()
-            ->with(['ambiente', 'ministrantes'])
+            ->with(['ambiente', 'ministrantes', 'inscricoes'])
             ->where('is_cancelada', false)
             ->orderBy('data_inicio')
             ->get();
