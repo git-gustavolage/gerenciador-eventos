@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Ministrante;
+use App\Models\Organizador;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
@@ -25,24 +27,25 @@ class HandleInertiaRequests extends Middleware
 
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $is_organizador = $user ? Organizador::query()->where('id_user', $user?->id)->exists() ?? $user?->is_admin : false;
+        $is_ministrante = $user ? Ministrante::query()->where('conta_id', $user?->id)
+            ->whereHas('atividades', function ($q) {
+                $q->whereHas('evento', function ($q2) {
+                    $q2->where('is_publicado', true)
+                        ->where('is_cancelado', false);
+                });
+            })
+            ->exists() : false;
+
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $user,
                 'current_evento_id' => CurrentEvent::getId(),
+                'is_organizador' => $is_organizador,
             ],
-            'isMinistrante' => function () use ($request) {
-                if (!$request->user()) return false;
-
-                return \App\Models\Ministrante::where('conta_id', $request->user()->id)
-                    ->whereHas('atividades', function ($q) {
-                        $q->whereHas('evento', function ($q2) {
-                            $q2->where('is_publicado', true)
-                            ->where('is_cancelado', false);
-                        });
-                    })
-                    ->exists();
-            },
+            'isMinistrante' => $is_ministrante,
         ];
     }
 }
