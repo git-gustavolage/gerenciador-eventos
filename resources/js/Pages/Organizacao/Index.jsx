@@ -60,7 +60,7 @@ export default function Index({ evento }) {
 
                     <div className="flex flex-col gap-4 max-w-xl">
                         <span className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700 bg-emerald-50 rounded-full px-3 py-1 w-fit">
-                            <CalendarCheckIcon size={14} weight="fill" /> Panel do Organizador
+                            <CalendarCheckIcon size={14} weight="fill" /> Painel do Organizador
                         </span>
                         <h1 className="text-2xl sm:text-3xl font-black text-neutral-800 tracking-tight">Seja muito bem-vindo!</h1>
                         <p className="text-neutral-500 text-sm leading-relaxed">
