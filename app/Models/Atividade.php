@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Override;
 
 class Atividade extends Model
@@ -45,9 +44,9 @@ class Atividade extends Model
     }
 
     public function inscricoes(): HasMany
-{
-    return $this->hasMany(InscricaoAtividade::class, 'id_atividade', 'id');
-}
+    {
+        return $this->hasMany(InscricaoAtividade::class, 'id_atividade', 'id');
+    }
 
     public function ministrantes(): BelongsToMany
     {

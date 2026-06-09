@@ -7,21 +7,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class InscricaoAtividade extends Model
 {
-    protected $table = 'inscricoes'; // <-- aponta para a tabela correta
+    protected $table = 'inscricoes_atividades';
 
     protected $fillable = [
         'id_atividade',
         'id_user',
-        'status',
-        'compareceu',
     ];
-
-    protected function casts(): array
-    {
-        return [
-            'compareceu' => 'boolean',
-        ];
-    }
 
     public function atividade(): BelongsTo
     {
