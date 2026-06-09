@@ -6,8 +6,8 @@ use App\Actions\Inscricao\StoreInscricaoAction;
 use App\Http\Requests\Inscricao\StoreInscricaoRequest;
 use App\Models\Atividade;
 use App\Models\Evento;
+use App\Models\InscricaoAtividade;
 use App\Models\InscricaoEvento;
-use App\Models\Inscricao;
 use Illuminate\Http\JsonResponse;
 
 class InscricaoController extends Controller
@@ -29,46 +29,42 @@ class InscricaoController extends Controller
             ->where('id_evento', $eventoId)
             ->first();
 
-        $inscricoesAtividades = Inscricao::where('id_user', $userId)
+        $inscricoesAtividades = InscricaoAtividade::where('id_user', $userId)
             ->whereIn('id_atividade', $evento->atividades->pluck('id'))
-            ->pluck('status', 'id_atividade');
+            ->pluck('id_atividade');
 
         $atividades = $evento->atividades
             ->where('is_cancelada', false)
             ->map(function (Atividade $atividade) use ($inscricoesAtividades) {
                 $inscrito = $inscricoesAtividades->has($atividade->id);
-                $vagasOcupadas = Inscricao::where('id_atividade', $atividade->id)
-                    ->whereIn('status', ['pendente', 'confirmado'])
-                    ->count();
+                $vagasOcupadas = InscricaoAtividade::where('id_atividade', $atividade->id)->count();
 
                 return [
-                    'id'                  => $atividade->id,
-                    'titulo'              => $atividade->titulo,
-                    'descricao'           => $atividade->descricao,
-                    'data_inicio'         => $atividade->data_inicio,
-                    'data_fim'            => $atividade->data_fim,
-                    'ambiente'            => $atividade->ambiente?->nome,
-                    'ministrantes'        => $atividade->ministrantes->pluck('nome'),
-                    'limite_participantes'=> $atividade->limite_participantes,
-                    'vagas_restantes'     => $atividade->limite_participantes
+                    'id' => $atividade->id,
+                    'titulo' => $atividade->titulo,
+                    'descricao' => $atividade->descricao,
+                    'data_inicio' => $atividade->data_inicio,
+                    'data_fim' => $atividade->data_fim,
+                    'ambiente' => $atividade->ambiente?->nome,
+                    'ministrantes' => $atividade->ministrantes->pluck('nome'),
+                    'limite_participantes' => $atividade->limite_participantes,
+                    'vagas_restantes' => $atividade->limite_participantes
                         ? max(0, $atividade->limite_participantes - $vagasOcupadas)
                         : null,
-                    'inscrito'            => $inscrito,
-                    'status_inscricao'    => $inscrito ? $inscricoesAtividades[$atividade->id] : null,
+                    'inscrito' => $inscrito,
                 ];
             })
             ->values();
 
         return response()->json([
             'evento' => [
-                'id'     => $evento->id,
+                'id' => $evento->id,
                 'titulo' => $evento->titulo,
                 'data_inicio' => $evento->data_inicio,
-                'data_fim'    => $evento->data_fim,
-                'local'       => $evento->local?->nome,
+                'data_fim' => $evento->data_fim,
+                'local' => $evento->local?->nome,
                 'limite_inscricoes' => $evento->limite_inscricoes,
                 'inscrito_no_evento' => $inscricaoEvento !== null,
-                'status_inscricao_evento' => $inscricaoEvento?->status,
             ],
             'atividades' => $atividades,
         ]);
@@ -77,17 +73,10 @@ class InscricaoController extends Controller
     /**
      * Processa a inscrição: cria InscricaoEvento e/ou Inscricoes nas atividades selecionadas.
      */
-    public function store(StoreInscricaoRequest $request, StoreInscricaoAction $action, int $eventoId): JsonResponse
+    public function store(StoreInscricaoRequest $request, StoreInscricaoAction $action): JsonResponse
     {
-        $userId = auth('web')->id();
+        $action->execute(auth('web')->user(), $request->validated('id_evento'));
 
-        $result = $action->execute($userId, $eventoId, $request->validated());
-
-        return response()->json([
-            'success'                => true,
-            'inscrito_no_evento'     => $result['inscrito_no_evento'],
-            'atividades_inscritas'   => $result['atividades_inscritas'],
-            'atividades_ja_inscritas'=> $result['atividades_ja_inscritas'],
-        ]);
+        return response()->json(['success' => true], 201);
     }
 }
