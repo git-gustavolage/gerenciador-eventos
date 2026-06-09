@@ -2,6 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
 import { ArrowRightIcon, CalendarBlankIcon, CalendarIcon, MapPinIcon } from "@phosphor-icons/react";
 import { Link } from "@inertiajs/react";
 import PrimaryLink from "@/Components/PrimaryLink";
+import { formatDate } from "@/util/formatDate";
 
 export default function Index({ inscricoes = [] }) {
     const eventos = [...new Map(inscricoes.map((inscricao) => [inscricao.evento.id, inscricao.evento])).values()];
@@ -73,7 +74,8 @@ export default function Index({ inscricoes = [] }) {
                                             <CalendarIcon size={16} />
 
                                             <span>
-                                                {evento.data_inicio} - {evento.data_fim}
+                                                {formatDate(evento.data_inicio, "DD/MM/YYYY HH:ii:ss", "DD/MM/YYYY")} -{" "}
+                                                {formatDate(evento.data_fim, "DD/MM/YYYY HH:ii:ss", "DD/MM/YYYY")}
                                             </span>
                                         </div>
 

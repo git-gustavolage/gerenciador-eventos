@@ -4,6 +4,7 @@ import { CalendarIcon, MapPinIcon } from "@phosphor-icons/react";
 import { CertificadosSection } from "./Components/CertificadosSection";
 import { CronogramaSection } from "./Components/CronogramaSection";
 import { ProgramacaoGeralSection } from "./Components/ProgramacaoGeralSection";
+import { formatDate } from "@/util/formatDate";
 
 export default function Index({ evento = {}, inscricoes = [] }) {
     const atividades = evento.atividades ?? [];
@@ -21,7 +22,8 @@ export default function Index({ evento = {}, inscricoes = [] }) {
                             <div className="inline-flex items-center gap-2 text-neutral-500">
                                 <CalendarIcon size={18} />
                                 <span>
-                                    {evento.data_inicio} - {evento.data_fim}
+                                    {formatDate(evento.data_inicio, "DD/MM/YYYY HH:ii:ss", "DD/MM/YYYY")} -{" "}
+                                    {formatDate(evento.data_fim, "DD/MM/YYYY HH:ii:ss", "DD/MM/YYYY")}
                                 </span>
                             </div>
 
