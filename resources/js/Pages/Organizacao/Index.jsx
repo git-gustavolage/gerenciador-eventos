@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { router } from "@inertiajs/react";
 import ManagerLayout from "@/Layouts/ManagerLayout";
+import { toast } from "sonner";
 import {
     RocketLaunchIcon,
     MegaphoneIcon,
@@ -26,9 +27,9 @@ export default function Index({ evento }) {
             {
                 onSuccess: () => {
                     setOpenPublish(false);
-                    setProcessing(false);
+                    toast.success("Evento publicado com sucesso!");
                 },
-                onError: () => setProcessing(false),
+                onFinish: () => setProcessing(false),
             }
         );
     };
@@ -43,9 +44,9 @@ export default function Index({ evento }) {
             {
                 onSuccess: () => {
                     setOpenCancel(false);
-                    setProcessing(false);
+                    toast.error("O evento foi cancelado.");
                 },
-                onError: () => setProcessing(false),
+                onFinish: () => setProcessing(false),
             }
         );
     };

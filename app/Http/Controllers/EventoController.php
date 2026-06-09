@@ -79,7 +79,7 @@ class EventoController extends Controller
 
         $evento = $action->execute(auth('web')->id(), $evento->id, $request->validated());
 
-        return response()->json(['success' => true]);
+        return back()->with('success', 'Status do evento atualizado!');
     }
 
     public function show(int $id)
