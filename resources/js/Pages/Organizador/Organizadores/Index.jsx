@@ -86,7 +86,7 @@ function InviteOrganizer({ open, onClose, reload = () => { } }) {
             onClose();
         },
         onError: (err) => {
-            toast.error(err.message || "Erro ao enivar o link. Tente novamente.");
+            toast.error(err.message || "Erro ao enviar o link. Tente novamente.");
         },
     });
 
