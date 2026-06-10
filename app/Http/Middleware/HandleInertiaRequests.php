@@ -28,7 +28,7 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $is_organizador = $user ? Organizador::query()->where('id_user', $user?->id)->exists() ?? $user?->is_admin : false;
+        $is_organizador = $user ? Organizador::query()->where('id_user', $user?->id)->exists() ?? $user?->admin : false;
         $is_ministrante = $user ? Ministrante::query()->where('conta_id', $user?->id)
             ->whereHas('atividades', function ($q) {
                 $q->whereHas('evento', function ($q2) {

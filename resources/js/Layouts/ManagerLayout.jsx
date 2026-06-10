@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarOpen = true, children }) {
     const auth = usePage().props.auth;
     const { user, is_organizador } = auth;
-    const admin = user?.is_admin ?? false;
+    const admin = user?.admin ?? false;
 
     const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 

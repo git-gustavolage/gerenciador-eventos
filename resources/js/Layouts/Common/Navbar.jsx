@@ -24,7 +24,7 @@ export default function Navbar() {
     const auth = usePage().props.auth;
     const { isMinistrante } = usePage().props;
     const { user, is_organizador } = auth;
-    const admin = user?.is_admin ?? false;
+    const admin = user?.admin ?? false;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 

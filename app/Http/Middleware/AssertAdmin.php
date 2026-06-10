@@ -17,7 +17,7 @@ class AssertAdmin
     {
         $user = $request->user();
 
-        if(!isset($user) || !$user?->is_admin) {
+        if(!isset($user) || !$user?->admin) {
             return redirect()->to(route('home'));
         }
 
