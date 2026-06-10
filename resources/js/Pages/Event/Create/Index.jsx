@@ -1,4 +1,3 @@
-import { InputRadio } from "@/Components/Inputs/InputRadio";
 import { Input } from "@/Components/Inputs/Input";
 import useData from "@/Hooks/useData";
 import { useState } from "react";
@@ -23,7 +22,7 @@ export default function Index() {
         titulo: "",
         descricao: "",
         id_local: "",
-        formato: "",
+        formato: FormatosEnum.PRESENCIAL,
         categorias: [],
     });
 
@@ -180,17 +179,6 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
 
     const disabled = !data.formato || !data.categorias?.length || (should_have_local ? !data.id_local : false);
 
-    const handleChangeFormato = (formato) => {
-        setData((prev) => {
-            const id_local = formato == FormatosEnum.REMOTO ? "" : prev.id_local;
-            return {
-                ...prev,
-                formato,
-                id_local,
-            };
-        });
-    };
-
     return (
         <Container>
             <div className="flex flex-col gap-2 w-full items-start">
@@ -199,26 +187,9 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
                 <p className="text-sm text-neutral-500">Categorize seu evento e facilite sua busca.</p>
             </div>
 
-            <div className="w-full flex items-start justify-center flex-col gap-2">
-                <span className="text-dark text-sm font-normal">Qual o formato do evento?</span>
-
-                <div className="w-full flex items-center gap-4 flex-wrap">
-                    {format_options.map((formato) => (
-                        <InputRadio
-                            key={formato.value}
-                            id={formato.label}
-                            label={formato.label}
-                            onClick={() => handleChangeFormato(formato.value)}
-                            value={data.formato}
-                            selected={data.formato === formato.value}
-                        />
-                    ))}
-                </div>
-            </div>
-
             {show_local_input && (
                 <div className="w-full space-y-2">
-                    <InputLabel htmlFor="id_local" value={`Qual o local do evento? ${should_have_local ? "" : "(opcional)"}`} />
+                    <InputLabel htmlFor="id_local" value={`Onde será o evento? ${should_have_local ? "" : "(opcional)"}`} />
                     <Select id="id_local" value={data.id_local} onChange={(e) => setData("id_local", e.target.value)}>
                         <option value="">Selecione o local do evento</option>
                         {locais.map((local) => (
