@@ -4,7 +4,6 @@ import { usePage } from "@inertiajs/react";
 import {
     CalendarBlankIcon,
     CertificateIcon,
-    GearIcon,
     HouseIcon,
     LaptopIcon,
     LayoutIcon,
@@ -24,7 +23,6 @@ export default function ManagerSidebar({ open, setOpen }) {
                         <Manage />
                         <BeforeEvent />
                         <AfterEvent />
-                        <Configuration />
                     </div>
                 </div>
             </div>
@@ -58,6 +56,24 @@ function Manage() {
                 <span>Informações do Evento</span>
             </SideBarLink>
 
+            <SideBarLink
+                href={route("eventos.organizacao.organizadores")}
+                active={route().current("eventos.organizacao.organizadores")}
+                prefetch
+            >
+                <UsersIcon size={18} />
+                <span>Organizadores</span>
+            </SideBarLink>
+
+            <SideBarLink
+                href={route("eventos.organizacao.ministrantes")}
+                active={route().current("eventos.organizacao.ministrantes")}
+                prefetch
+            >
+                <UserIcon size={18} />
+                <span>Ministrantes</span>
+            </SideBarLink>
+
             <SideBarLink href={evento?.id ? route("eventos.publico.show", evento.id) : "#"} target="_blank">
                 <LaptopIcon size={18} />
                 <span>Página do Evento</span>
@@ -78,16 +94,7 @@ function BeforeEvent() {
             </SideBarLink>
 
             <SideBarLink
-                href={route("eventos.organizacao.ministrantes")}
-                active={route().current("eventos.organizacao.ministrantes")}
-                prefetch
-            >
-                <UserIcon size={18} />
-                <span>Cadastrar Ministrante</span>
-            </SideBarLink>
-
-            <SideBarLink 
-                href={route("eventos.organizacao.inscricoes")} 
+                href={route("eventos.organizacao.inscricoes")}
                 active={route().current("eventos.organizacao.inscricoes")}
             >
                 <TicketIcon size={18} />
@@ -114,26 +121,6 @@ function AfterEvent() {
             >
                 <CertificateIcon size={18} />
                 <span>Emitir Certificados</span>
-            </SideBarLink>
-        </SidebarModule>
-    );
-}
-
-function Configuration() {
-    return (
-        <SidebarModule title="Configuração">
-            <SideBarLink href="#">
-                <GearIcon size={18} />
-                <span>Configurações</span>
-            </SideBarLink>
-
-            <SideBarLink
-                href={route("eventos.organizacao.organizadores")}
-                active={route().current("eventos.organizacao.organizadores")}
-                prefetch
-            >
-                <UsersIcon size={18} />
-                <span>Organizadores</span>
             </SideBarLink>
         </SidebarModule>
     );

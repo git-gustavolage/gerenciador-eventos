@@ -1,13 +1,14 @@
+import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import ManagerSidebar from "@/Layouts/Common/ManagerSidebar";
 import { Head, usePage } from "@inertiajs/react";
+import { CaretDownIcon, PlusIcon, UserIcon } from "@phosphor-icons/react";
 import { ListIcon } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 
 export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarOpen = true, children }) {
     const auth = usePage().props.auth;
     const { user, is_organizador } = auth;
-    const admin = user?.is_admin ?? false;
 
     const [sidebarOpen, setSidebarOpen] = useState(defaultSidebarOpen);
 
@@ -33,16 +34,7 @@ export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarO
                             </div>
                         </div>
 
-                        <div className="hidden md:flex gap-8 h-14 me-4">
-                            {admin && (
-                                <NavLink href={route("eventos.create")} prefetch active={route().current("eventos.create")}>
-                                    <span className="inline-flex gap-2 items-center">
-                                        <PlusIcon size={20} />
-                                        Criar
-                                    </span>
-                                </NavLink>
-                            )}
-
+                        <div className="flex gap-8 max-md:gap-2 h-14 me-4">
                             {is_organizador && (
                                 <NavLink
                                     href={route("dashboard")}
@@ -53,6 +45,31 @@ export default function ManagerLayout({ title = "Gerenciamento", defaultSidebarO
                                     Organizador
                                 </NavLink>
                             )}
+
+                            <div className="flex items-center gap-3">
+                                {user && (
+                                    <div className="flex">
+                                        <Dropdown>
+                                            <Dropdown.Trigger>
+                                                <button
+                                                    type="button"
+                                                    className="inline-flex items-center gap-2 rounded-sm px-4 py-2 text-sm font-medium text-neutral-600 transition-all hover:border-neutral-300 hover:text-neutral-900"
+                                                >
+                                                    <UserIcon size={20} />
+                                                    <CaretDownIcon size={12} weight="bold" />
+                                                </button>
+                                            </Dropdown.Trigger>
+    
+                                            <Dropdown.Content>
+                                                <Dropdown.Link href={route("profile.edit")}>Perfil</Dropdown.Link>
+                                                <Dropdown.Link href={route("logout")} method="post" as="button">
+                                                    Sair
+                                                </Dropdown.Link>
+                                            </Dropdown.Content>
+                                        </Dropdown>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </header>
