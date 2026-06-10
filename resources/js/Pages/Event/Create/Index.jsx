@@ -16,6 +16,7 @@ import { CategoryOption } from "@/Components/Inputs/CategoryOption";
 import InputLabel from "@/Components/Inputs/InputLabel";
 import { Select } from "@/Components/Inputs/Select";
 import { getFormatos } from "@/api/getFormatos";
+import { FormatosEnum } from "@/Enums/FormatosEnum";
 
 export default function Index() {
     const [data, setData] = useData({
@@ -49,7 +50,10 @@ export default function Index() {
         },
     });
 
-    const disabled = !data.titulo || !data.id_local || !data.formato || !data.categorias?.length || action.loading;
+    const should_have_local = data.formato == FormatosEnum.PRESENCIAL;
+
+    const disabled =
+        !data.titulo || (should_have_local ? false : false) || !data.formato || !data.categorias?.length || action.loading;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -106,8 +110,6 @@ export default function Index() {
 }
 
 function EventFormBasicsSection({ data, setData, onNext }) {
-    const { locais } = usePage().props;
-
     return (
         <Container>
             <div className="flex flex-col gap-2 w-full items-start">
@@ -141,18 +143,6 @@ function EventFormBasicsSection({ data, setData, onNext }) {
                         className="w-full rounded-sm border border-neutral-300 resize-none text-sm outline-none focus:ring-green-300 focus:border-emerald-500"
                     ></textarea>
                 </div>
-
-                <div className="w-full space-y-2">
-                    <InputLabel htmlFor="id_local" value="Local do evento" />
-                    <Select id="id_local" value={data.id_local} onChange={(e) => setData("id_local", e.target.value)}>
-                        <option value="">Selecione o local do evento</option>
-                        {locais.map((local) => (
-                            <option key={local.id} value={local.id}>
-                                {local.nome}
-                            </option>
-                        ))}
-                    </Select>
-                </div>
             </div>
 
             <div className="w-full text-start">
@@ -166,6 +156,7 @@ function EventFormBasicsSection({ data, setData, onNext }) {
 
 function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
     const format_options = getFormatos();
+    const { locais } = usePage().props;
 
     const category_options = getCategorias();
 
@@ -184,12 +175,26 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
         setData("categorias", [...data.categorias, category]);
     };
 
-    const disabled = !data.formato || !data.categorias?.length;
+    const should_have_local = FormatosEnum.PRESENCIAL == data.formato;
+    const show_local_input = data.formato == FormatosEnum.HIBRIDO || should_have_local;
+
+    const disabled = !data.formato || !data.categorias?.length || (should_have_local ? !data.id_local : false);
+
+    const handleChangeFormato = (formato) => {
+        setData((prev) => {
+            const id_local = formato == FormatosEnum.REMOTO ? "" : prev.id_local;
+            return {
+                ...prev,
+                formato,
+                id_local,
+            };
+        });
+    };
 
     return (
         <Container>
             <div className="flex flex-col gap-2 w-full items-start">
-                <h2 className="w-full font-semibold text-3xl text-medium">Categoria do evento</h2>
+                <h2 className="w-full font-semibold text-3xl text-medium">Identificação do evento</h2>
 
                 <p className="text-sm text-neutral-500">Categorize seu evento e facilite sua busca.</p>
             </div>
@@ -203,13 +208,27 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
                             key={formato.value}
                             id={formato.label}
                             label={formato.label}
-                            onClick={() => setData("formato", formato.value)}
+                            onClick={() => handleChangeFormato(formato.value)}
                             value={data.formato}
                             selected={data.formato === formato.value}
                         />
                     ))}
                 </div>
             </div>
+
+            {show_local_input && (
+                <div className="w-full space-y-2">
+                    <InputLabel htmlFor="id_local" value={`Qual o local do evento? ${should_have_local ? "" : "(opcional)"}`} />
+                    <Select id="id_local" value={data.id_local} onChange={(e) => setData("id_local", e.target.value)}>
+                        <option value="">Selecione o local do evento</option>
+                        {locais.map((local) => (
+                            <option key={local.id} value={local.id}>
+                                {local.nome}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
+            )}
 
             <div className="w-full flex flex-col gap-3">
                 <label className="text-dark text-sm font-normal">Qual a categoria do evento?</label>
@@ -250,9 +269,12 @@ function EventFormCategorySection({ data, setData, onPrevius, onNext }) {
 function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
     const { locais } = usePage().props;
 
-    const disabled = loading || !data.titulo || !data.id_local || !data.formato || !data.categorias?.length;
+    const should_have_local = data.formato == FormatosEnum.PRESENCIAL;
 
     const selected_local = locais.find((local) => local.id == data.id_local);
+
+    const disabled =
+        loading || !data.titulo || (should_have_local ? !data.id_local : false) || !data.formato || !data.categorias?.length;
 
     return (
         <Container>
@@ -289,14 +311,6 @@ function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
                     </div>
 
                     <div className="grid grid-cols-[180px_1fr] max-md:grid-cols-1 gap-2 px-5 py-4">
-                        <span className="text-sm font-medium text-neutral-500">Local</span>
-
-                        <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line break-words">
-                            {selected_local?.nome || "Nenhuma local informado."}
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-[180px_1fr] max-md:grid-cols-1 gap-2 px-5 py-4">
                         <span className="text-sm font-medium text-neutral-500">Formato</span>
 
                         <div>
@@ -305,6 +319,16 @@ function EventFormConfirmationSection({ loading = false, data, onPrevius }) {
                             </span>
                         </div>
                     </div>
+
+                    {should_have_local && (
+                        <div className="grid grid-cols-[180px_1fr] max-md:grid-cols-1 gap-2 px-5 py-4">
+                            <span className="text-sm font-medium text-neutral-500">Local</span>
+
+                            <p className="text-sm text-neutral-700 leading-relaxed whitespace-pre-line break-words">
+                                {selected_local?.nome || "Nenhuma local informado."}
+                            </p>
+                        </div>
+                    )}
 
                     <div className="grid grid-cols-[180px_1fr] max-md:grid-cols-1 gap-2 px-5 py-4">
                         <span className="text-sm font-medium text-neutral-500">Categorias</span>
