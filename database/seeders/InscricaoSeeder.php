@@ -36,6 +36,6 @@ class InscricaoSeeder extends Seeder
       ];
     }
 
-    DB::table('inscricoes')->insert($inscricoes);
+    DB::table('inscricoes_atividades')->insert($inscricoes);
   }
 }
