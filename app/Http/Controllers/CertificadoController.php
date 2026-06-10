@@ -19,6 +19,7 @@ class CertificadoController extends Controller
     $evento = CurrentEvent::get();
 
     $atividades = \App\Models\Atividade::where('id_evento', $evento->id)
+      ->where('is_cancelada', false)
       ->with(['inscricoes.user'])
       ->get()
       ->map(function ($ativ) {
