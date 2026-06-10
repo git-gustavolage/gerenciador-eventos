@@ -13,6 +13,11 @@ use App\Http\Requests\Atividade\UpdateAtividadeRequest;
 use App\Http\Resources\AtividadeResource;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
+use App\Models\Atividade;
+use App\Models\User;
+use App\Mail\AtividadeCanceladaMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AtividadeController extends Controller
 {
@@ -47,7 +52,22 @@ class AtividadeController extends Controller
 
     public function cancel(int $id, CancelAtividadeAction $action)
     {
+        $atividade = Atividade::with('evento')->findOrFail($id);
         $action->execute(auth('web')->id(), $id);
+        $userIds = DB::table('inscricoes_atividades')
+            ->where('id_atividade', $id)
+            ->pluck('id_user');
+
+        if ($userIds->isNotEmpty()) {
+            $inscritos = User::whereIn('id', $userIds)->get();
+            foreach ($inscritos as $inscrito) {
+                Mail::to($inscrito->email)->send(new AtividadeCanceladaMail($atividade, $atividade->evento, $inscrito));
+            }
+        }
+
+        DB::table('inscricoes_atividades')
+            ->where('id_atividade', $id)
+            ->delete();
 
         return response()->noContent();
     }

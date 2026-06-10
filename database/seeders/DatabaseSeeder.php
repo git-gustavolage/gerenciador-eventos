@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'test@example.com',
                 'password' => $senhaPadrao,
                 'ativo' => 1,
-                'admin' => 0,
+                'admin' => 1,
                 'email_verified_at' => now(),
             ],
             [
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'barbaracmercez@gmail.com',
                 'password' => '$2y$12$zqyUE89Y20lkBcyU6UNEnuPkxOocn5ma9wA.A.cyIuqiXNfQ/Al76',
                 'ativo' => 1,
-                'admin' => 0,
+                'admin' => 1,
                 'email_verified_at' => now(),
             ],
             [
