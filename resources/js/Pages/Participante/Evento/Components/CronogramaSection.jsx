@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useMenu } from "@/Components/Menu";
 import PrimaryButton from "@/Components/PrimaryButton";
-import { PlusIcon, TrashIcon } from "@phosphor-icons/react";
+import { CalendarSlashIcon, InfoIcon, MapPinIcon, NotePencilIcon, PlusIcon, TrashIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useAction } from "@/Hooks/useAction";
 import { destroy } from "@/Actions/destroy";
@@ -12,6 +12,7 @@ import SecondaryButton from "@/Components/SecondaryButton";
 import DangerButton from "@/Components/DangerButton";
 import { toast } from "sonner";
 import { router } from "@inertiajs/react";
+import { ModalDetalhes } from "./ModalDetalhes";
 
 export function CronogramaSection({ inscricoes = [] }) {
     const { setMenuIndex } = useMenu();
@@ -110,6 +111,7 @@ function InscricaoCard({ inscricao }) {
     const fim = inscricao.atividade.data_fim.slice(11, 16);
 
     const [confirmandoCancelamento, setConfirmandoCancelamento] = useState(false);
+    const [open, setOpen] = useState(false);
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(destroy),
@@ -130,26 +132,61 @@ function InscricaoCard({ inscricao }) {
 
     return (
         <>
-            <div className="p-5">
+            <div className="w-full flex flex-col gap-2 rounded-sm bg-white px-5 py-4 text-left transition-all hover:border-emerald-400 hover:bg-neutral-50 hover:shadow-sm outline-none">
                 <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <h4 className="font-medium text-neutral-800">{inscricao.atividade.titulo}</h4>
+                    <div className="flex flex-col gap-2">
+                        <div className="min-w-0 flex-1">
+                            <div className="inline-flex items-center gap-2 text-sm">
+                                <span className="size-2 rounded-full bg-emerald-500" />
 
-                        <p className="text-sm text-neutral-500 mt-1">
-                            {inicio} às {fim}
-                        </p>
+                                <span className="font-medium text-neutral-800">
+                                    {inicio} - {fim}
+                                </span>
+                                <span className="font-medium text-neutral-800">{inscricao.atividade.titulo}</span>
+                            </div>
+                        </div>
 
-                        {inscricao.atividade.descricao && (
-                            <p className="text-sm text-neutral-500 mt-2">{inscricao.atividade.descricao}</p>
-                        )}
+                        <div className="min-w-0 flex-1">
+                            <div className="inline-flex items-center gap-2 text-sm">
+                                <MapPinIcon />
+                                <span className="text-neutral-500">{inscricao.atividade?.ambiente?.nome}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="inline-flex gap-2 items-center justify-start">
+                    <div className="relative group">
+                        <button
+                            onClick={() => setOpen(true)}
+                            className="inline-flex items-center gap-1 text-sm py-1.5 px-2 bg-neutral-100 rounded-sm text-neutral-500 hover:bg-neutral-200 focus:ring-1 focus:ring-neutral-300"
+                        >
+                            <InfoIcon size={18} /> Detalhes
+                        </button>
+
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
+                            Ver detalhes
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
+                        </div>
                     </div>
 
-                    <SecondaryButton onClick={() => setConfirmandoCancelamento(true)}>
-                        <TrashIcon />
-                        Cancelar inscrição
-                    </SecondaryButton>
+                    <div className="relative group">
+                        <button
+                            onClick={() => setConfirmandoCancelamento(true)}
+                            className="inline-flex items-center gap-1 text-sm py-1.5 px-2 bg-neutral-100 rounded-sm text-red-600 hover:bg-red-200 focus:ring-1 focus:ring-red-300"
+                        >
+                            <CalendarSlashIcon size={18} /> Cancelar
+                        </button>
+
+                        <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
+                            Cancelar inscrição
+                            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <ModalDetalhes open={open} onClose={() => setOpen(false)} atividade={inscricao.atividade} inscrito={true} />
 
             <Modal show={confirmandoCancelamento} onClose={() => setConfirmandoCancelamento(false)} center maxWidth="md">
                 <div className="space-y-4">
@@ -159,7 +196,7 @@ function InscricaoCard({ inscricao }) {
                         Deseja realmente cancelar sua inscrição na atividade <strong>{inscricao.atividade.titulo}</strong>?
                     </p>
 
-                    <div className="space-x-4">
+                    <div className="w-full inline-flex gap-4 max-md:flex-col">
                         <DangerButton onClick={handleDelete} disabled={disabled}>
                             Confirmar cancelamento
                         </DangerButton>

@@ -25,7 +25,7 @@ class ParticipanteController extends Controller
         $evento = Evento::query()->with(['atividades.ministrantes', 'atividades.ambiente', 'local'])->findOrFail($id);
 
         $inscricoes = InscricaoAtividade::query()
-            ->with(['atividade'])
+            ->with(['atividade.ministrantes', 'atividade.ambiente'])
             ->where('id_user', auth('web')->id())
             ->get();
 
