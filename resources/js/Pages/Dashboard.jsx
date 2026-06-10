@@ -138,7 +138,7 @@ function VistaOrganizador({ stats, eventos }) {
                     icon={UsersIcon}
                     label="Total de inscrições"
                     value={stats.total_inscricoes}
-                    sub="Em todas as atividades"
+                    sub="Em todos os seus eventos"
                     accent="violet"
                 />
             </div>
