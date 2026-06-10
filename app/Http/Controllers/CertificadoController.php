@@ -81,7 +81,7 @@ class CertificadoController extends Controller
     $idAtividade = $request->input('id_atividade');
     $sendEmail = $request->boolean('send_email', true);
 
-    $query = Inscricao::query()
+    $query = InscricaoAtividade::query()
       ->with('user', 'atividade')
       ->whereHas('atividade', function ($q) use ($evento) {
           $q->where('id_evento', $evento->id);
