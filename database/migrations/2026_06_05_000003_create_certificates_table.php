@@ -11,7 +11,7 @@ return new class extends Migration {
       $table->id();
       $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
       $table->foreignId('id_evento')->constrained('eventos')->cascadeOnDelete();
-      $table->foreignId('id_atividade')->constrained('atividades')->cascadeOnDelete(); // <-- GARANTA QUE ESTA LINHA EXISTE
+      $table->foreignId('id_atividade')->constrained('atividades')->cascadeOnDelete();
       $table->foreignId('template_id')->constrained('certificate_templates')->cascadeOnDelete();
       $table->string('generated_file')->nullable();
       $table->timestamp('issued_at')->nullable();
