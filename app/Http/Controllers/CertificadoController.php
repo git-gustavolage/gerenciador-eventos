@@ -19,6 +19,7 @@ class CertificadoController extends Controller
     $evento = CurrentEvent::get();
 
     $atividades = \App\Models\Atividade::where('id_evento', $evento->id)
+      ->where('is_cancelada', false)
       ->with(['inscricoes.user'])
       ->get()
       ->map(function ($ativ) {
@@ -81,7 +82,7 @@ class CertificadoController extends Controller
     $idAtividade = $request->input('id_atividade');
     $sendEmail = $request->boolean('send_email', true);
 
-    $query = Inscricao::query()
+    $query = InscricaoAtividade::query()
       ->with('user', 'atividade')
       ->whereHas('atividade', function ($q) use ($evento) {
           $q->where('id_evento', $evento->id);

@@ -7,6 +7,7 @@ use App\Models\Atividade;
 use App\Models\InscricaoAtividade;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class StoreInscricaoAtividadeAction
@@ -38,6 +39,30 @@ class StoreInscricaoAtividadeAction
 
     private function validate(User $user, Atividade $atividade): void
     {
-        // TODO: validar se user esta incrito no evento
+
+        $conflito = InscricaoAtividade::where('id_user', $user->id)
+            ->whereHas('atividade', fn($q) => $q->where('id_evento', $atividade->id_evento)
+                ->where('id', '!=', $atividade->id))
+            ->with('atividade')
+            ->get()
+            ->first(fn($inscricao) =>
+                $atividade->data_inicio < $inscricao->atividade->data_fim &&
+                $atividade->data_fim > $inscricao->atividade->data_inicio
+            );
+
+        if ($conflito) {
+            throw ValidationException::withMessages([
+                'conflito' => [json_encode([
+                    'message' => 'Você já está inscrito em uma atividade neste horário.',
+                    'atividade_conflito' => [
+                        'id'           => $conflito->atividade->id,
+                        'titulo'       => $conflito->atividade->titulo,
+                        'data_inicio'  => $conflito->atividade->data_inicio,
+                        'data_fim'     => $conflito->atividade->data_fim,
+                        'id_inscricao' => $conflito->id,
+                    ],
+                ])],
+            ]);
+        }
     }
 }

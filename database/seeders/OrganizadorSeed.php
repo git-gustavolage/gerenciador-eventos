@@ -37,6 +37,12 @@ class OrganizadorSeed extends Seeder
                 'id_evento' => 4,
                 'perfil' => 'gestor',
             ],
+            [
+                'id' => 5,
+                'id_user' => 2,
+                'id_evento' => 5,
+                'perfil' => 'gestor',
+            ],
         ];
 
         DB::table('organizadores')->insert($insert);

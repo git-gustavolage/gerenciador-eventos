@@ -3,7 +3,7 @@ import Dropdown from "@/Components/Dropdown";
 import NavLink from "@/Components/NavLink";
 import Overlay from "@/Components/Overlay";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink";
-import { ChalkboardTeacherIcon } from "@phosphor-icons/react";
+import { ChalkboardTeacherIcon, GearIcon } from "@phosphor-icons/react";
 import { Link, usePage } from "@inertiajs/react";
 import {
     CalendarBlankIcon,
@@ -12,7 +12,6 @@ import {
     ListIcon,
     PlusIcon,
     SignOutIcon,
-    UserCircleIcon,
     UserIcon,
     XIcon,
     CertificateIcon,
@@ -24,7 +23,7 @@ export default function Navbar() {
     const auth = usePage().props.auth;
     const { isMinistrante } = usePage().props;
     const { user, is_organizador } = auth;
-    const admin = user?.is_admin ?? false;
+    const admin = user?.admin ?? false;
 
     const [showingNavigationDropdown, setShowingNavigationDropdown] = useState(false);
 
@@ -236,15 +235,14 @@ export default function Navbar() {
                         )}
 
                         <ResponsiveNavLink href={route("certificados.meus")} active={route().current("certificados.meus")}>
-                            <div className="flex items-center gap-3 text-emerald-700">
+                            <div className="flex items-center gap-2">
                                 <CertificateIcon size={20} /> Meus Certificados
                             </div>
                         </ResponsiveNavLink>
-
-                        <ResponsiveNavLink href={route("profile.edit")} active={route().current("profile.edit")}>
+                        
+                        <ResponsiveNavLink href={route("dashboard")} active={route().current("dashboard")}>
                             <div className="flex items-center gap-2">
-                                <UserCircleIcon size={20} />
-                                Perfil
+                                <GearIcon size={20} /> Organização
                             </div>
                         </ResponsiveNavLink>
                     </div>

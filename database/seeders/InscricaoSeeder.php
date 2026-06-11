@@ -8,34 +8,42 @@ use Carbon\Carbon;
 
 class InscricaoSeeder extends Seeder
 {
-  public function run(): void
-  {
-    $inscricoes = [];
-    $idInscricao = 1;
+    public function run(): void
+    {
+        $inscricoesEvento = [];
+        $inscricoesAtividade = [];
+        $idInscricaoAtividade = 1; 
+        $idEvento = 1; 
 
-    for ($userId = 1; $userId <= 12; $userId++) {
+        for ($userId = 2; $userId <= 13; $userId++) {
+            $inscricoesEvento[] = [
+                'id_user' => $userId,
+                'id_evento' => $idEvento,
+                'status' => 'confirmado',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+            
+            $inscricoesAtividade[] = [
+                'id' => $idInscricaoAtividade++,
+                'id_user' => $userId,
+                'id_atividade' => 1,
+                'status' => 'confirmado',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
 
-      $inscricoes[] = [
-        'id' => $idInscricao++,
-        'id_user' => $userId,
-        'id_atividade' => 9,
-        'status' => 'pendente',
-        'compareceu' => 1,
-        'created_at' => Carbon::now(),
-        'updated_at' => Carbon::now(),
-      ];
+            $inscricoesAtividade[] = [
+                'id' => $idInscricaoAtividade++,
+                'id_user' => $userId,
+                'id_atividade' => 2,
+                'status' => 'confirmado',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ];
+        }
 
-      $inscricoes[] = [
-        'id' => $idInscricao++,
-        'id_user' => $userId,
-        'id_atividade' => 10,
-        'status' => 'pendente',
-        'compareceu' => 1,
-        'created_at' => Carbon::now(),
-        'updated_at' => Carbon::now(),
-      ];
+        DB::table('inscricoes_evento')->insert($inscricoesEvento);
+        DB::table('inscricoes_atividades')->insert($inscricoesAtividade);
     }
-
-    DB::table('inscricoes')->insert($inscricoes);
-  }
 }

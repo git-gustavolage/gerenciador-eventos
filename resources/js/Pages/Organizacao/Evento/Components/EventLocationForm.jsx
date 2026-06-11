@@ -1,9 +1,7 @@
 import { update } from "@/Actions/update";
-import { getFormatos } from "@/api/getFormatos";
 import { routes } from "@/api/routes";
 import InputError from "@/Components/Inputs/InputError";
 import InputLabel from "@/Components/Inputs/InputLabel";
-import { InputRadio } from "@/Components/Inputs/InputRadio";
 import { Select } from "@/Components/Inputs/Select";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
@@ -14,11 +12,9 @@ import { MapPinLineIcon } from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 export function EventLocationForm({ evento = {} }) {
-    const formatos = getFormatos();
     const { locais } = usePage().props;
 
     const [data, setData] = useData({
-        formato: evento.formato ?? "",
         id_local: evento.id_local ?? "",
     });
 
@@ -33,7 +29,7 @@ export function EventLocationForm({ evento = {} }) {
         },
     });
 
-    const disabled = !data.formato || !data.id_local || action.loading;
+    const disabled = !data.id_local || action.loading;
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -41,7 +37,6 @@ export function EventLocationForm({ evento = {} }) {
         if (disabled) return;
 
         const payload = {
-            formato: data.formato,
             id_local: data.id_local,
         };
 
@@ -59,27 +54,6 @@ export function EventLocationForm({ evento = {} }) {
             </h1>
 
             <div className="w-full flex flex-col gap-4">
-                <div className="w-full flex items-start justify-center flex-col gap-2">
-                    <span className="text-neutral-600 text-sm font-normal">Formato</span>
-
-                    <div className="w-full flex items-center justify-center gap-4">
-                        {formatos.map((formato, index) => (
-                            <InputRadio
-                                key={index}
-                                label={formato.label}
-                                id={formato.value}
-                                value={data.formato}
-                                onClick={() => {
-                                    setData("formato", formato.value);
-                                    action.clearError("formato");
-                                }}
-                                selected={formato.value == data.formato}
-                            />
-                        ))}
-                    </div>
-                    <InputError message={action.error?.errors?.formato} />
-                </div>
-
                 <div className="space-y-2">
                     <InputLabel htmlFor="id_local" value="Informe o local do evento" />
 

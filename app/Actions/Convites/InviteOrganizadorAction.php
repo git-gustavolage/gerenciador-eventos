@@ -49,7 +49,7 @@ class InviteOrganizadorAction
 
                 $mail = (new InviteOrganizadorMail($user->nome, $evento->titulo, $link))->afterCommit();
 
-                Mail::to($email)->queue($mail);
+                Mail::to($email)->send($mail);
             });
         } catch (Exception $e) {
             throw new CreationFailedException("Ocorreu um erro ao gerar o convite. Tente novamente.", [

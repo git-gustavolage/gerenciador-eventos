@@ -3,7 +3,7 @@ import { ArrowSquareOutIcon } from "@phosphor-icons/react";
 
 export default function NewEventSection() {
     const { user } = usePage().props.auth;
-    const admin = user?.is_admin ?? false;
+    const admin = user?.admin ?? false;
 
     return (
         <section className="w-full py-32 max-md:py-16 bg-white overflow-hidden">
@@ -14,7 +14,7 @@ export default function NewEventSection() {
 
                         <div className="relative z-10 flex flex-col gap-7">
                             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2">
-                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                <div clais_adminssName="w-2 h-2 rounded-full bg-emerald-500" />
 
                                 <span className="text-sm font-medium text-emerald-700">
                                     {admin ? "Plataforma de gerenciamento de eventos" : "Plataforma de participação em eventos"}
