@@ -98,7 +98,6 @@ function InviteOrganizer({ open, onClose, reload = () => {} }) {
     };
 
     const handleClose = () => {
-        action.clearError("message");
         clear();
         onClose();
     };
