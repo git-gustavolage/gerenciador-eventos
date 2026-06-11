@@ -15,7 +15,7 @@ class InscricaoSeeder extends Seeder
         $idInscricaoAtividade = 1; 
         $idEvento = 5; 
 
-        for ($userId = 1; $userId <= 12; $userId++) {
+        for ($userId = 1; $userId <= 13; $userId++) {
             $inscricoesEvento[] = [
                 'id_user' => $userId,
                 'id_evento' => $idEvento,

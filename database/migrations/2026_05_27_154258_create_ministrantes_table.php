@@ -12,14 +12,14 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
             $table->string('nome');
-            $table->string('email')->nullable();
-            $table->string('telefone')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('telefone')->unique()->nullable();
             $table->text('bio')->nullable();
             $table->string('foto_path')->nullable();
             $table->timestamps();
             $table->foreignId('conta_id')->nullable()->constrained('users')->nullOnDelete()->after('id_user');
             $table->string('cargo')->nullable();
-        $table->string('instituicao')->nullable();
+            $table->string('instituicao')->nullable();
         });
     }
 
