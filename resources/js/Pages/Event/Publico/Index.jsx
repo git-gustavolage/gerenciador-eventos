@@ -24,6 +24,7 @@ import { useAction } from "@/Hooks/useAction";
 import { store } from "@/Actions/store";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { routes } from "@/api/routes";
+import { toast } from "sonner";
 
 function formatDate(dateStr) {
     if (!dateStr) return null;
@@ -83,19 +84,33 @@ function InfoRow({ icon: Icon, children }) {
     );
 }
 
-function InscricaoButton({ evento, onAbrirModal }) {
+function InscricaoButton({ evento, inscrito = false, onAbrirModal }) {
     const { label } = statusInfo(evento);
     const ativa = label === "Inscrições abertas";
 
-    if (!ativa) {
+    if (evento.is_cancelado) {
         return (
             <button
                 disabled
                 className="w-full rounded-2xl bg-neutral-100 px-6 py-3.5 text-sm font-semibold text-neutral-400 cursor-not-allowed"
             >
-                {label}
+                Cancelado
             </button>
         );
+    }
+
+    if (inscrito) {
+        return (
+            <button
+                disabled
+                className="w-full rounded-2xl bg-neutral-100 px-6 py-3.5 text-sm font-semibold text-neutral-400 cursor-not-allowed"
+            >
+                Inscrito
+            </button>
+        );
+    }
+
+    if (!ativa) {
     }
 
     return (
@@ -354,7 +369,7 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                                 </div>
                             )}
 
-                            <InscricaoButton evento={ev} onAbrirModal={() => setModalAberto(true)} />
+                            <InscricaoButton evento={ev} inscrito={inscritoNoEvento} onAbrirModal={() => setModalAberto(true)} />
 
                             {/* ── Inscrições do usuário ── */}
                             <MinhasInscricoes
@@ -413,19 +428,28 @@ export default function EventoPublico({ evento, isOwner, inscritoNoEvento = fals
                 </div>
             </div>
 
-            <ModalInscricao evento={evento} show={modalAberto} onClose={() => setModalAberto(false)} center />
+            <ModalInscricao
+                evento={evento}
+                inscrito={inscritoNoEvento}
+                show={modalAberto}
+                onClose={() => setModalAberto(false)}
+                center
+            />
         </div>
     );
 }
 
-function ModalInscricao({ evento = {}, show, onClose }) {
+function ModalInscricao({ evento = {}, inscrito = false, show, onClose }) {
     const { user = {} } = usePage().props.auth;
 
     const action = useAction({
         actionFn: actionErrorHandlingDecorator(store),
         onSuccess: () => {
+            toast.success("Solicitação enviada com sucesso. Aguade a confirmação do seu pedido de inscrição.");
             onClose();
-            router.visit(route("meus_eventos"));
+            setTimeout(() => {
+                window.open(route("meus_eventos"), "_self");
+            }, 1000);
         },
     });
 
@@ -436,12 +460,25 @@ function ModalInscricao({ evento = {}, show, onClose }) {
 
         if (disabled) return;
 
+        if (evento.is_cancelado) {
+            toast.error("Este evento foi cancelado.");
+            return;
+        }
+
+        if (inscrito) {
+            toast.info("Já inscrito no evento.");
+            return;
+        }
+
         const payload = {
             id_evento: evento.id,
         };
 
         await action.execute(routes.inscricoes.store(), payload);
+        router.reload();
     };
+
+    if (inscrito) return;
 
     return (
         <Modal show={show} onClose={onClose} center>

@@ -40,6 +40,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/create', 'create')->name('create')->middleware(['admin']);
         Route::post('/store', 'store')->name('store')->middleware(['admin']);
         Route::put('/update', 'update')->name('update');
+        Route::patch('/cancel', 'cancel')->name('cancel');
+        Route::patch('/publish', 'publish')->name('publish');
 
         Route::get('/minhas-atividades', [MinistranteController::class, 'minhasAtividades'])->name('ministrante.minhas-atividades');
 

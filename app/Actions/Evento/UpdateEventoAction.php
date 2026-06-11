@@ -22,29 +22,29 @@ class UpdateEventoAction
 
         $oldBanner = $evento->banner_path;
 
-        if ($banner = $input["banner"] ?? null) {
+        if ($banner = $input['banner'] ?? null) {
             try {
-                $input["banner_path"] = StoreImage::save(StoragePathEnum::BANNERS->value, $banner);
+                $input['banner_path'] = StoreImage::save(StoragePathEnum::BANNERS->value, $banner);
 
-                unset($input["banner"]);
+                unset($input['banner']);
             } catch (Exception $e) {
-                throw new UpdateFailedException("Ocorreu um erro ao salvar a nova imagem. Tente novamente.", [
-                    "message" => $e->getMessage(),
+                throw new UpdateFailedException('Ocorreu um erro ao salvar a nova imagem. Tente novamente.', [
+                    'message' => $e->getMessage(),
                 ]);
             }
         }
 
         $evento->update($input);
 
-        if (isset($input["banner_path"]) && $oldBanner && $oldBanner !== $input["banner_path"]) {
+        if (isset($input['banner_path']) && $oldBanner && $oldBanner !== $input['banner_path']) {
             S3Manager::delete($oldBanner);
         }
 
         return $evento->fresh();
     }
 
-    private function validate(User $user, Evento $evento)
+    private function validate(User $user, Evento $evento): void
     {
-        Gate::forUser($user)->authorize("update", $evento);
+        Gate::forUser($user)->authorize('update', $evento);
     }
 }

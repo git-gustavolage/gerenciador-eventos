@@ -13,12 +13,13 @@ class InscricaoSeeder extends Seeder
         $inscricoesEvento = [];
         $inscricoesAtividade = [];
         $idInscricaoAtividade = 1; 
-        $idEvento = 5; 
+        $idEvento = 1; 
 
-        for ($userId = 1; $userId <= 13; $userId++) {
+        for ($userId = 2; $userId <= 13; $userId++) {
             $inscricoesEvento[] = [
                 'id_user' => $userId,
                 'id_evento' => $idEvento,
+                'status' => 'confirmado',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
@@ -26,7 +27,8 @@ class InscricaoSeeder extends Seeder
             $inscricoesAtividade[] = [
                 'id' => $idInscricaoAtividade++,
                 'id_user' => $userId,
-                'id_atividade' => 9,
+                'id_atividade' => 1,
+                'status' => 'confirmado',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];
@@ -34,7 +36,8 @@ class InscricaoSeeder extends Seeder
             $inscricoesAtividade[] = [
                 'id' => $idInscricaoAtividade++,
                 'id_user' => $userId,
-                'id_atividade' => 10,
+                'id_atividade' => 2,
+                'status' => 'confirmado',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ];

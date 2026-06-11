@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Evento\CancelEventoAction;
+use App\Actions\Evento\PublishEventoAction;
 use App\Actions\Evento\StoreEventoAction;
 use App\Actions\Evento\UpdateEventoAction;
 use App\DataTransferObjects\EventoData;
 use App\Enum\EventoFormatoEnum;
+use App\Enum\InscricaoStatusEnum;
 use App\Http\Requests\Evento\StoreEventoRequest;
 use App\Http\Requests\Evento\UpdateEventoRequest;
 use App\Http\Resources\Evento\EventoResource;
@@ -15,8 +18,7 @@ use App\Models\InscricaoAtividade;
 use App\Models\InscricaoEvento;
 use App\Models\Local;
 use App\Support\CurrentEvent;
-use App\Models\User;
-use App\Mail\EventoCanceladoMail;
+use Illuminate\Http\Request;
 
 class EventoController extends Controller
 {
@@ -79,52 +81,25 @@ class EventoController extends Controller
     {
         $evento = CurrentEvent::get();
 
-        $estavaCancelado = $evento->is_cancelado;
-        $eventoAtualizado = $action->execute(auth('web')->id(), $evento->id, $request->validated());
+        $action->execute(auth('web')->id(), $evento->id, $request->validated());
 
-        // Pra notificar que foi cancelado
-        if ($request->input('is_cancelado') == true && !$estavaCancelado) {
-
-            $userIdsEvento = \DB::table('inscricoes_evento')
-                ->where('id_evento', $evento->id)
-                ->pluck('id_user');
-
-            $userIdsAtividades = \DB::table('inscricoes_atividades')
-                ->join('atividades', 'atividades.id', '=', 'inscricoes_atividades.id_atividade')
-                ->where('atividades.id_evento', $evento->id)
-                ->pluck('id_user');
-
-            $userIdsUnicos = $userIdsEvento->merge($userIdsAtividades)->unique();
-
-            if ($userIdsUnicos->isNotEmpty()) {
-                $inscritos = User::whereIn('id', $userIdsUnicos)->get();
-                foreach ($inscritos as $inscrito) {
-                    \Illuminate\Support\Facades\Mail::to($inscrito->email)->send(new EventoCanceladoMail($eventoAtualizado, $inscrito));
-                }
-            }
-
-            // Pra apagar as inscrições
-            \DB::table('inscricoes_evento')
-                ->where('id_evento', $evento->id)
-                ->delete();
-
-            $atividadesDoEvento = \DB::table('atividades')->where('id_evento', $evento->id)->pluck('id');
-            if ($atividadesDoEvento->isNotEmpty()) {
-                \DB::table('inscricoes_atividades')
-                    ->whereIn('id_atividade', $atividadesDoEvento)
-                    ->delete();
-            }
-            
-            return back()->with('success', 'Evento cancelado! Inscrições foram desfeitas e participantes notificados.');
-        }
-
-        return back()->with('success', 'Status do evento atualizado!');
+        return response()->json(['success' => true]);
     }
 
     public function show(int $id)
     {
-        $user = auth('web')->user();
         $evento = Evento::with(['atividades.ministrantes', 'atividades.ambiente', 'local'])->findOrFail($id);
+
+        if (! auth('web')->check()) {
+            return inertia('Event/Publico/Index', [
+                'evento' => $evento,
+                'isOwner' => false,
+                'inscritoNoEvento' => false,
+                'atividadesInscritas' => [],
+            ]);
+        }
+
+        $user = auth('web')->user();
 
         if (! $evento->is_publicado || $evento->is_cancelado) {
             if (! $user->can('show', $evento)) {
@@ -139,16 +114,31 @@ class EventoController extends Controller
             'isOwner' => true,
 
             'inscritoNoEvento' => $userId
-                ? InscricaoEvento::where('id_user', $userId)
+                ? InscricaoEvento::query()->where('id_user', $userId)
                     ->where('id_evento', $id)
+                    ->where('status', '!=', InscricaoStatusEnum::Cancelado)
                     ->exists()
                 : false,
 
             'atividadesInscritas' => $userId
-                ? InscricaoAtividade::where('id_user', $userId)
+                ? InscricaoAtividade::query()->where('id_user', $userId)
                     ->whereIn('id_atividade', $evento->atividades->pluck('id'))
                     ->pluck('id_atividade')
                 : [],
         ]);
+    }
+
+    public function cancel(Request $request, CancelEventoAction $action)
+    {
+        $action->execute(auth('web')->id(), $request->input('id_evento'));
+
+        return response()->noContent();
+    }
+    
+    public function publish(Request $request, PublishEventoAction $action)
+    {
+        $action->execute(auth('web')->id(), $request->input('id_evento'));
+
+        return response()->noContent();
     }
 }

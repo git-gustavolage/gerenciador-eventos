@@ -2,6 +2,8 @@ export const routes = {
     eventos: {
         store: (params = {}) => route("eventos.store", params),
         update: (params = {}) => route("eventos.update", params),
+        cancel: (params = {}) => route("eventos.cancel", params),
+        publish: (params = {}) => route("eventos.publish", params),
     },
     inscricoes: {
         store: (params = {}) => route("inscricoes.store", params),

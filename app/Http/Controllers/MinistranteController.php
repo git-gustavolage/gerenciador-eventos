@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Ministrante\DestroyMinistranteAction;
+use App\Actions\Ministrante\StoreMinistranteAction;
 use App\Actions\Ministrante\UpdateMinistranteAction;
 use App\Http\Requests\Ministrante\StoreMinistranteRequest;
 use App\Http\Requests\Ministrante\UpdateMinistranteRequest;
 use App\Models\Ministrante;
-use App\Models\User;
 
 class MinistranteController extends Controller
 {
@@ -23,42 +23,11 @@ class MinistranteController extends Controller
         ]);
     }
 
-    public function store(StoreMinistranteRequest $request)
+    public function store(StoreMinistranteRequest $request, StoreMinistranteAction $action)
     {
-        $validated = $request->validated();
-        $email = $validated['email'] ?? null;
-        $userExistente = null;
+        $action->execute(auth('web')->id(), $request->validated());
 
-        if ($email) {
-            $userExistente = User::where('email', $email)->first();
-        }
-
-        if ($userExistente) {
-            Ministrante::create([
-                'nome' => $validated['nome'],
-                'email' => $email,
-                'telefone' => $validated['telefone'] ?? null,
-                'cargo' => $validated['cargo'] ?? null,
-                'instituicao' => $validated['instituicao'] ?? null,
-                'id_user' => auth('web')->id(),
-                'conta_id' => $userExistente->id,
-            ]);
-
-            return redirect()->back()->with('success', 'Usuário encontrado! O ministrante foi vinculado com sucesso.');
-
-        } else {
-            Ministrante::create([
-                'nome' => $validated['nome'],
-                'email' => $email,
-                'telefone' => $validated['telefone'] ?? null,
-                'cargo' => $validated['cargo'] ?? null,
-                'instituicao' => $validated['instituicao'] ?? null,
-                'id_user' => auth('web')->id(),
-                'conta_id' => null,
-            ]);
-
-            return redirect()->back()->with('success', 'Ministrante cadastrado com sucesso!');
-        }
+        return redirect()->back()->with('success', 'Ministrante cadastrado com sucesso!');
     }
 
     public function minhasAtividades()
