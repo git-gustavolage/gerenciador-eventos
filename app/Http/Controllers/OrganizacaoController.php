@@ -14,6 +14,8 @@ use App\Models\Local;
 use App\Models\Ministrante;
 use App\Support\CurrentEvent;
 use Illuminate\Http\Request;
+use App\Mail\InscricaoEventoConfirmadaMail;
+use Illuminate\Support\Facades\Mail;
 
 class OrganizacaoController extends Controller
 {
@@ -136,8 +138,13 @@ class OrganizacaoController extends Controller
         $inscricaoEvento->update([
             'status' => 'confirmado',
         ]);
+        $user = $inscricaoEvento->user;
 
-        return back()->with('success', 'Inscrição confirmada com sucesso!');
+        if ($user) {
+            Mail::to($user->email)->send(new \App\Mail\InscricaoEventoConfirmadaMail($evento, $user));
+        }
+
+        return back()->with('success', 'Inscrição confirmada e participante notificado por e-mail!');
     }
 
     public function cancelarInscricao(InscricaoEvento $inscricaoEvento)

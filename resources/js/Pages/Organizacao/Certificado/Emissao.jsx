@@ -44,7 +44,7 @@ export default function Emissao() {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => toast.success("Certificado emitido!"),
-                onError: () => toast.error("Erro ao emitir individualmente."),
+                onError: (erros) => toast.error(erros.error || "Erro ao emitir individualmente."),
                 onFinish: () => setProcessando(false)
             }
         );
@@ -72,7 +72,7 @@ export default function Emissao() {
                 preserveState: true,
                 preserveScroll: true,
                 onSuccess: () => toast.success("Emissão em lote concluída!", { id: toastId }),
-                onError: () => toast.error("Houve um erro no envio.", { id: toastId }),
+                onError: (erros) => toast.error(erros.error || "Houve um erro no envio.", { id: toastId }),
                 onFinish: () => {
                     setProcessando(false);
                     toast.dismiss(toastId);

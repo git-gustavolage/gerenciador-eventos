@@ -9,6 +9,8 @@ use App\Models\Evento;
 use App\Models\InscricaoAtividade;
 use App\Models\InscricaoEvento;
 use Illuminate\Http\JsonResponse;
+use App\Mail\InscricaoEventoConfirmadaMail;
+use Illuminate\Support\Facades\Mail;
 
 class InscricaoController extends Controller
 {
@@ -75,7 +77,13 @@ class InscricaoController extends Controller
      */
     public function store(StoreInscricaoRequest $request, StoreInscricaoAction $action): JsonResponse
     {
-        $action->execute(auth('web')->user(), $request->validated('id_evento'));
+        $user = auth('web')->user();
+        $eventoId = $request->validated('id_evento');
+
+        $action->execute($user, $eventoId);
+
+        $evento = Evento::findOrFail($eventoId);
+        Mail::to($user->email)->send(new \App\Mail\InscricaoSolicitadaMail($evento, $user));
 
         return response()->json(['success' => true], 201);
     }
