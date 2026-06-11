@@ -16,15 +16,16 @@ class AtividadeResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            "id" => $this->id,
-            "titulo" => $this->titulo,
-            "descricao" => $this->descricao,
-            "data_inicio" => $this->data_inicio->format("d/m/Y H:i:s"),
-            "data_fim" => $this->data_fim->format("d/m/Y H:i:s"),
-            "limite_participantes" => $this->limite_participantes ?? 0,
-            "inscricoes" => $this->whenLoaded("inscricoes", fn() => $this->inscricoes),
-            "ambiente" => $this->whenLoaded("ambiente", fn() => AmbienteResource::make($this->ambiente)),
-            "ministrantes" => $this->whenLoaded("ministrantes", fn() => MinistranteResource::collection($this->ministrantes)),
+            'id' => $this->id,
+            'titulo' => $this->titulo,
+            'descricao' => $this->descricao,
+            'data_inicio' => $this->data_inicio->format('d/m/Y H:i:s'),
+            'data_fim' => $this->data_fim->format('d/m/Y H:i:s'),
+            'limite_participantes' => $this->limite_participantes ?? 0,
+            'is_cancelada' => $this->is_cancelada,
+            'inscricoes' => $this->whenLoaded('inscricoes', fn () => $this->inscricoes),
+            'ambiente' => $this->whenLoaded('ambiente', fn () => AmbienteResource::make($this->ambiente)),
+            'ministrantes' => $this->whenLoaded('ministrantes', fn () => MinistranteResource::collection($this->ministrantes)),
         ];
     }
 }

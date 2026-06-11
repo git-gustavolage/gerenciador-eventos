@@ -102,7 +102,7 @@ class EventoController extends Controller
         $user = auth('web')->user();
 
         if (! $evento->is_publicado || $evento->is_cancelado) {
-            if (! $user->can('show', $evento)) {
+            if (! $user->can('gerenciar', $evento)) {
                 abort(403, 'Este evento não está disponível publicamente.');
             }
         }

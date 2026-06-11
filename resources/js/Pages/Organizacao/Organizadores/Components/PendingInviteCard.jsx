@@ -42,7 +42,8 @@ export function PendingInviteCard({ convite = {}, reload = () => {} }) {
                 <div className="min-w-0 flex-1">
                     <h2 className="truncate text-sm font-semibold text-neutral-800">{convite.email}</h2>
 
-                    <p className="truncate text-xs text-neutral-500">Convite enviado em {convite.created_at}</p>
+                    <p className="truncate text-xs text-neutral-500">Convite enviado em: {convite.enviado_em}</p>
+                    {convite.expirado && <p className="text-xs text-neutral-500">Expirado em: {convite.expira_em}</p>}
 
                     <div className="mt-2 flex items-center gap-2">
                         <span

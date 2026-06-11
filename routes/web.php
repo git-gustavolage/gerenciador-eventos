@@ -34,18 +34,18 @@ Route::get('/api/eventos/publicos', function () {
 Route::middleware('auth')->group(function () {
     Route::get('/certificados/meus', [CertificadoController::class, 'meusCertificados'])->name('certificados.meus');
     Route::get('/meus-eventos', [ParticipanteController::class, 'view'])->name('meus_eventos');
-    Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'view'])->name('dashboard')->middleware(['organizador']);
 
     Route::group(['prefix' => '/eventos', 'as' => 'eventos.', 'controller' => EventoController::class], function () {
         Route::get('/create', 'create')->name('create')->middleware(['admin']);
         Route::post('/store', 'store')->name('store')->middleware(['admin']);
-        Route::put('/update', 'update')->name('update');
-        Route::patch('/cancel', 'cancel')->name('cancel');
-        Route::patch('/publish', 'publish')->name('publish');
+        Route::put('/update', 'update')->name('update')->middleware(['organizador']);
+        Route::patch('/cancel', 'cancel')->name('cancel')->middleware(['organizador']);;
+        Route::patch('/publish', 'publish')->name('publish')->middleware(['organizador']);;
 
         Route::get('/minhas-atividades', [MinistranteController::class, 'minhasAtividades'])->name('ministrante.minhas-atividades');
 
-        Route::group(['prefix' => '/organizacao', 'as' => 'organizacao.'], function () {
+        Route::group(['prefix' => '/organizacao', 'as' => 'organizacao.', 'middleware' => ['organizador']], function () {
             Route::get('/', [OrganizacaoController::class, 'view'])->name('view');
             Route::get('/evento', [OrganizacaoController::class, 'evento'])->name('evento');
             Route::get('/organizadores', [OrganizacaoController::class, 'organizadores'])->name('organizadores');
@@ -78,7 +78,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class], function () {
+    Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class, 'middleware' => ['organizador']], function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'update')->name('update');
@@ -105,8 +105,6 @@ Route::middleware('auth')->group(function () {
     Route::delete('/atividades/ministrantes/destroy', [AtividadeController::class, 'removeMinistrante'])->name('atividades.ministrantes.destroy');
 
     Route::group(['prefix' => '/organizadores', 'as' => 'organizadores.'], function () {
-        Route::get('/', [OrganizadoresController::class, 'view'])->name('view');
-        Route::get('/index', [OrganizadoresController::class, 'index'])->name('index');
         Route::delete('/destoy/{id}', [OrganizadoresController::class, 'destroy'])->name('destroy');
     });
 

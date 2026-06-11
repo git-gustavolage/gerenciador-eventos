@@ -19,7 +19,6 @@ export const routes = {
         cancel: (params = {}) => route("convites.cancel", params),
     },
     organizadores: {
-        index: (params = {}) => route("organizadores.index", params),
         destroy: (params = {}) => route("organizadores.destroy", params),
     },
     atividades: {

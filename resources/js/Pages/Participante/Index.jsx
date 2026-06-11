@@ -55,7 +55,6 @@ function EventoCard({ inscricao }) {
 
     const handleClick = () => {
         if (cancelado) {
-            router.visit(route("eventos.publico.show", { id: evento.id }));
             return;
         }
 

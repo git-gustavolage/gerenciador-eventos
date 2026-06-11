@@ -13,27 +13,18 @@ import useData from "@/Hooks/useData";
 import { useAction } from "@/Hooks/useAction";
 import { store } from "@/Actions/store";
 import { toast } from "sonner";
-import { usePage } from "@inertiajs/react";
+import { router, usePage } from "@inertiajs/react";
 import InputError from "@/Components/Inputs/InputError";
 import { PendingInviteCard } from "./Components/PendingInviteCard";
 
-export default function Index({ evento = {} }) {
-    const { data, reload: reloadData } = useApi(routes.organizadores.index(), { id_evento: evento.id });
-    const { data: convitesData, reload: reloadConvites } = useApi(routes.convites.pending(), { id_evento: evento.id });
-
+export default function Index({ organizadores = [], convites = [] }) {
     const [open, setOpen] = useState(false);
 
-    const reload = () => {
-        reloadData();
-        reloadConvites();
-        console.log("reload");
-    };
-
-    const organizadores = data?.data ?? [];
-
-    const convites = convitesData ?? [];
-
     const empty = !convites.length || convites.length <= 0;
+
+    const handleSuccess = () => {
+        router.reload({ only: ["organizadores", "convites"] });
+    };
 
     return (
         <>
@@ -48,7 +39,7 @@ export default function Index({ evento = {} }) {
 
                     <div className="grid grid-cols-3 max-lg:grid-cols-1 max-2xl:grid-cols-2 gap-4">
                         {organizadores.map((organizador) => (
-                            <OrganizerCard key={organizador.id} organizer={organizador} reload={reload} />
+                            <OrganizerCard key={organizador.id} organizer={organizador} reload={handleSuccess} />
                         ))}
                     </div>
 
@@ -58,7 +49,7 @@ export default function Index({ evento = {} }) {
 
                             <div className="grid grid-cols-3 max-lg:grid-cols-1 max-2xl:grid-cols-2 gap-4">
                                 {convites.map((convite) => (
-                                    <PendingInviteCard key={convite.id} convite={convite} reload={reload} />
+                                    <PendingInviteCard key={convite.id} convite={convite} reload={handleSuccess} />
                                 ))}
                             </div>
                         </div>
@@ -66,12 +57,12 @@ export default function Index({ evento = {} }) {
                 </div>
             </ManagerLayout>
 
-            <InviteOrganizer open={open} onClose={() => setOpen(false)} reload={reload} />
+            <InviteOrganizer open={open} onClose={() => setOpen(false)} reload={handleSuccess} />
         </>
     );
 }
 
-function InviteOrganizer({ open, onClose, reload = () => { } }) {
+function InviteOrganizer({ open, onClose, reload = () => {} }) {
     const id_evento = usePage().props.auth.current_evento_id;
 
     const [data, setData, clear] = useData({
