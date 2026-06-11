@@ -26,10 +26,6 @@ export default function Index({ organizadores = [], convites = [] }) {
         router.reload({ only: ["organizadores", "convites"] });
     };
 
-    const handleClose = () => {
-        
-    }
-
     return (
         <>
             <ManagerLayout title="Pessoal" defaultSidebarOpen>
@@ -100,8 +96,6 @@ function InviteOrganizer({ open, onClose, reload = () => {} }) {
 
         await action.execute(routes.convites.invite(), payload);
     };
-
-    console.log(action);
 
     const handleClose = () => {
         action.clearError("message");
