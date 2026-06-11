@@ -3,13 +3,15 @@ import { routes } from "@/api/routes";
 import Modal from "@/Components/Modal";
 import PrimaryButton from "@/Components/PrimaryButton";
 import { useAction } from "@/Hooks/useAction";
-import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { formatDate } from "@/util/formatDate";
 import { router } from "@inertiajs/react";
-import { CalendarBlankIcon, CheckCircleIcon, ClockIcon, MapPinIcon, UsersIcon } from "@phosphor-icons/react";
+import { CalendarBlankIcon, CheckCircleIcon, ClockIcon, MapPinIcon, UsersIcon, WarningIcon } from "@phosphor-icons/react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export function ModalDetalhes({ open, onClose, atividade, inscrito = false }) {
+    const [conflito, setConflito] = useState(null);
+
     if (!atividade) return null;
 
     const inscricoes = atividade.inscricoes ?? [];
@@ -25,11 +27,24 @@ export function ModalDetalhes({ open, onClose, atividade, inscrito = false }) {
     });
 
     const action = useAction({
-        actionFn: actionErrorHandlingDecorator(store),
+        actionFn: store,
         onSuccess: () => {
             toast.success("Inscrição realizada com sucesso!");
             router.reload();
             onClose();
+        },
+        onError: (error) => {
+            const conflito = error?.errors?.conflito?.[0];
+            if (conflito) {
+                try {
+                    const dados = JSON.parse(conflito);
+                    setConflito(dados.atividade_conflito);
+                } catch {
+                    toast.error("Erro ao processar resposta do servidor.");
+                }
+                return;
+            }
+            toast.error("Não foi possível realizar a inscrição.");
         },
     });
 
@@ -40,15 +55,20 @@ export function ModalDetalhes({ open, onClose, atividade, inscrito = false }) {
 
         if (disabled || inscrito) return;
 
-        const payload = {
-            id_atividade: atividade.id,
-        };
+        setConflito(null);
 
-        await action.execute(routes.inscricoes.atividades.store(), payload);
+        await action.execute(routes.inscricoes.atividades.store(), {
+            id_atividade: atividade.id,
+        });
+    };
+
+    const handleClose = () => {
+        setConflito(null);
+        onClose();
     };
 
     return (
-        <Modal show={open} onClose={onClose} maxWidth="4xl">
+        <Modal show={open} onClose={handleClose} maxWidth="4xl">
             <div className="space-y-4">
                 <div className="border-b border-neutral-300 pb-4">
                     <h2 className="text-xl font-semibold text-neutral-800">{atividade.titulo}</h2>
@@ -81,6 +101,8 @@ export function ModalDetalhes({ open, onClose, atividade, inscrito = false }) {
                         )}
                     </div>
                 </div>
+
+                {conflito && <ConflitoBanner conflito={conflito} onClose={() => setConflito(null)} />}
 
                 {atividade.ministrantes?.length > 0 && (
                     <section>
@@ -135,5 +157,22 @@ function MinistranteIcon({ ministrante }) {
         <span className="w-fit min-w-10 min-h-10 flex items-center justify-center p-2 bg-blue-200 rounded-full font-bold text-neutral-800 cursor-default">
             {initial || "?"}
         </span>
+    );
+}
+
+function ConflitoBanner({ conflito, onClose }) {
+    return (
+        <div className="rounded-sm border border-amber-300 bg-amber-50 px-4 py-3 space-y-2">
+            <div className="flex items-start gap-2 text-amber-800">
+                <WarningIcon size={18} className="mt-0.5 shrink-0" weight="fill" />
+                <p className="text-sm font-medium leading-snug">
+                    Você já está inscrito em{" "}
+                    <span className="font-semibold">"{conflito?.titulo}"</span> que ocorre no mesmo horário.
+                </p>
+            </div>
+            <p className="text-xs text-amber-700 pl-6">
+                Para se inscrever nesta atividade, cancele sua inscrição na outra e tente novamente.
+            </p>
+        </div>
     );
 }
