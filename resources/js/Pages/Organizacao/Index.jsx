@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { router } from "@inertiajs/react";
 import ManagerLayout from "@/Layouts/ManagerLayout";
 import { toast } from "sonner";
 import {
@@ -15,23 +14,27 @@ import { useAction } from "@/Hooks/useAction";
 import { update } from "@/Actions/update";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { routes } from "@/api/routes";
+import { patch } from "@/Actions/patch";
+import { router } from "@inertiajs/react";
 
 export default function Index({ evento }) {
     const [openPublish, setOpenPublish] = useState(false);
     const [openCancel, setOpenCancel] = useState(false);
 
     const publishAction = useAction({
-        actionFn: actionErrorHandlingDecorator(update),
+        actionFn: actionErrorHandlingDecorator(patch),
         onSuccess: () => {
             setOpenPublish(false);
+            router.reload();
             toast.success("Evento publicado com sucesso!");
         },
     });
 
     const cancelAction = useAction({
-        actionFn: actionErrorHandlingDecorator(update),
+        actionFn: actionErrorHandlingDecorator(patch),
         onSuccess: () => {
             setOpenCancel(false);
+            router.reload();
             toast.error("O evento foi cancelado.");
         },
     });
@@ -41,16 +44,16 @@ export default function Index({ evento }) {
     const handlePublish = async () => {
         if (publishAction.loading) return;
 
-        await publishAction.execute(routes.eventos.update, {
-            is_publicado: true,
+        await publishAction.execute(routes.eventos.publish(), {
+            id_evento: evento.id,
         });
     };
 
     const handleCancel = async () => {
         if (publishAction.loading) return;
 
-        await cancelAction.execute(routes.eventos.update, {
-            is_cancelado: true,
+        await cancelAction.execute(routes.eventos.cancel(), {
+            id_evento: evento.id,
         });
     };
 

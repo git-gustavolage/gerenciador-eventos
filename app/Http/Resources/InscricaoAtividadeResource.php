@@ -18,6 +18,8 @@ class InscricaoAtividadeResource extends JsonResource
             'id' => $this->id,
             'id_atividade' => $this->id_atividade,
             'id_user' => $this->id_user,
+            'status' => $this->status,
+            'presenca_confirmada' => $this->compareceu ?? false,
             'data_inscricao' => $this->created_at->format('d/m/Y H:i:s'),
             'atividade' => $this->whenLoaded('atividade', AtividadeResource::make($this->atividade)),
         ];
