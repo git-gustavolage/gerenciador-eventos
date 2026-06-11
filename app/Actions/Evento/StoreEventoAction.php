@@ -58,7 +58,7 @@ class StoreEventoAction
 
     private function validate(User $user): void
     {
-        if ($user->admin) {
+        if (!$user->admin) {
             throw new AuthorizationException('Não autorizado.');
         }
     }

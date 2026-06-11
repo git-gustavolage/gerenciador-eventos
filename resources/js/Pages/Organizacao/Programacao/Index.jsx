@@ -6,7 +6,7 @@ import { useState } from "react";
 import { router } from "@inertiajs/react";
 import ModalNewAtividade from "./Components/ModalNewAtividade";
 
-export default function Index({ atividades = [] }) {
+export default function Index({ evento = {}, atividades = [] }) {
     const [open, setOpen] = useState(false);
 
     const groups = atividades.reduce((acc, atividade) => {
@@ -40,12 +40,14 @@ export default function Index({ atividades = [] }) {
         <>
             <ManagerLayout title="Programação" defaultSidebarOpen>
                 <div className="p-8 flex flex-col gap-8 max-md:p-2">
-                    <div className="p-4 border border-neutral-300 rounded-sm bg-white">
-                        <SecondaryButton onClick={() => setOpen(true)}>
-                            Adicionar atividade
-                            <PlusIcon size={20} />
-                        </SecondaryButton>
-                    </div>
+                    {!evento.is_cancelado && (
+                        <div className="p-4 border border-neutral-300 rounded-sm bg-white">
+                            <SecondaryButton onClick={() => setOpen(true)}>
+                                Adicionar atividade
+                                <PlusIcon size={20} />
+                            </SecondaryButton>
+                        </div>
+                    )}
 
                     <div className="max-w-full overflow-x-auto inline-flex gap-4">
                         <div className="w-full overflow-x-auto">

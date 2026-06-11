@@ -67,7 +67,7 @@ export default function Index() {
     };
 
     return (
-        <AuthenticatedLayout>
+        <AuthenticatedLayout titulo="Novo Evento">
             <div className="w-full flex justify-center">
                 <form
                     onSubmit={(e) => handleSubmit(e)}

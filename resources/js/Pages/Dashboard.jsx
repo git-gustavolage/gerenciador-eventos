@@ -367,7 +367,7 @@ export default function Dashboard({ stats, eventos, eventosParticipante = [] }) 
     const isOrg = modo === "organizador";
 
     return (
-        <AuthenticatedLayout title="Meus Eventos" defaultSidebarOpen={false}>
+        <AuthenticatedLayout titulo="Gerenciamento" defaultSidebarOpen={false}>
             <div className="border-b border-neutral-200 bg-white">
                 <div className="mx-auto max-w-6xl px-6 py-8 max-md:px-4">
                     <div className="flex items-center justify-between gap-4 flex-wrap">

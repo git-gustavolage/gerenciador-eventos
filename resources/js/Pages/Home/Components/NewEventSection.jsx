@@ -14,7 +14,7 @@ export default function NewEventSection() {
 
                         <div className="relative z-10 flex flex-col gap-7">
                             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-4 py-2">
-                                <div clais_adminssName="w-2 h-2 rounded-full bg-emerald-500" />
+                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
 
                                 <span className="text-sm font-medium text-emerald-700">
                                     {admin ? "Plataforma de gerenciamento de eventos" : "Plataforma de participação em eventos"}
@@ -54,7 +54,7 @@ export default function NewEventSection() {
                             {admin && (
                                 <Link
                                     href={route("eventos.create")}
-                                    className="px-8 py-3 rounded-sm bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm"
+                                    className="px-8 py-3 rounded-sm bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm inline-flex items-center justify-center"
                                 >
                                     Criar evento
                                 </Link>
