@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_EXTENSIONS: "gd intl"
+
+    restart: unless-stopped
+
+    ports:
+      - "8000:8000"
+
+    working_dir: /var/www/html
+
+    env_file:
+      - ${APP_ENV_FILE}
+
+    volumes:
+      - storage_data:/var/www/html/storage
+      - cache_data:/var/www/html/bootstrap/cache
+
+    networks:
+      - app_network
+
+volumes:
+  storage_data:
+  cache_data:
+
+networks:
+  app_network:
+    driver: bridge

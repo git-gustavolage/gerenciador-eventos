@@ -11,6 +11,7 @@ use App\Support\CurrentEvent;
 use App\Support\S3Manager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use \Illuminate\Support\Facades\DB;
 
 class CertificadoController extends Controller
 {
@@ -20,7 +21,9 @@ class CertificadoController extends Controller
 
     $atividades = \App\Models\Atividade::where('id_evento', $evento->id)
       ->where('is_cancelada', false)
-      ->with(['inscricoes.user'])
+      ->with(['inscricoes' => function ($query) {
+          $query->where('compareceu', true)->with('user');
+      }])
       ->get()
       ->map(function ($ativ) {
           return [
@@ -30,7 +33,7 @@ class CertificadoController extends Controller
                   'id_user' => $ins->id_user,
                   'nome' => $ins->user->nome,
                   'email' => $ins->user->email,
-              ])
+              ])->values()
           ];
       });
 
@@ -51,6 +54,15 @@ class CertificadoController extends Controller
     ]);
 
     $evento = CurrentEvent::get();
+
+    $temTemplate = DB::table('certificate_templates')
+        ->where('id_evento', $evento->id)
+        ->exists();
+
+    if (!$temTemplate) {
+        return back()->withErrors(['error' => 'Não é possível emitir: Você precisa criar e salvar o Modelo do Certificado primeiro.']);
+    }
+
     $sendEmail = $request->boolean('send_email', true);
 
     try {
@@ -79,11 +91,21 @@ class CertificadoController extends Controller
     ]);
 
     $evento = CurrentEvent::get();
+
+    $temTemplate = DB::table('certificate_templates')
+        ->where('id_evento', $evento->id)
+        ->exists();
+
+    if (!$temTemplate) {
+        return back()->withErrors(['error' => 'Não é possível emitir em lote: Você precisa criar e salvar o Modelo do Certificado primeiro.']);
+    }
+
     $idAtividade = $request->input('id_atividade');
     $sendEmail = $request->boolean('send_email', true);
 
     $query = InscricaoAtividade::query()
       ->with('user', 'atividade')
+      ->where('compareceu', true)
       ->whereHas('atividade', function ($q) use ($evento) {
           $q->where('id_evento', $evento->id);
       });

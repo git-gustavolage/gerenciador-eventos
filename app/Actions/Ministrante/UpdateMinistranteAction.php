@@ -13,9 +13,10 @@ class UpdateMinistranteAction
     {
         $ministrante = Ministrante::query()->findOrFail($id);
 
-        if ($ministrante->id_user !== $id_user) {
-            throw new InvalidStateException('Você não tem permissão para editar este ministrante.');
-        }
+        //todo: validar por evento e nao por usuario
+        // if ($ministrante->id_user !== $id_user) {
+        //     throw new InvalidStateException('Você não tem permissão para editar este ministrante.');
+        // }
 
         try {
             $ministrante->update([

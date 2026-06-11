@@ -15,7 +15,7 @@ class EventoPolicy
         //
     }
 
-    public function show(User $user, Evento $evento): bool
+    public function gerenciar(User $user, Evento $evento): bool
     {
         return $user->id === $evento->id_user || $evento->organizadores()->where('id_user', $user->id)->exists();
     }
@@ -65,7 +65,7 @@ class EventoPolicy
             return false;
         }
 
-        return $user->id === $evento->id_user || $evento->organizadores()->where('id_user', $user->id)->exists();
+        return $user->id === $evento->id_user;
     }
 
     public function publish(User $user, Evento $evento): bool
@@ -78,6 +78,6 @@ class EventoPolicy
             return false;
         }
 
-        return $user->id === $evento->id_user || $evento->organizadores()->where('id_user', $user->id)->exists();
+        return $user->id === $evento->id_user;
     }
 }

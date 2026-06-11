@@ -17,8 +17,8 @@ return new class extends Migration {
             $table->string("email");
             $table->string("token")->unique();
 
+            $table->timestamp("expira_em");
             $table->timestamp("aceito_em")->nullable();
-            $table->timestamp("expira_em")->nullable();
             $table->timestamp("cancelado_em")->nullable();
 
             $table->timestamps();

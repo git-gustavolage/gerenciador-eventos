@@ -40,7 +40,7 @@ export function ModalEditAtividade({ atividade = {}, open, onClose, onSuccess })
     }
 
     const loading = action.loading;
-    const disabled = loading;
+    const disabled = loading || atividade.is_cancelada;
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -53,6 +53,8 @@ export function ModalEditAtividade({ atividade = {}, open, onClose, onSuccess })
 
         await action.execute(routes.atividades.update({ id: atividade.id }), payload);
     }
+
+    if (atividade.is_cancelada) return;
 
     return (
         <Modal show={open} onClose={handleClose} maxWidth="4xl">
