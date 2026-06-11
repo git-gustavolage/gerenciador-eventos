@@ -11,44 +11,47 @@ import {
     CalendarCheckIcon,
 } from "@phosphor-icons/react";
 import Modal from "@/Components/Modal";
+import { useAction } from "@/Hooks/useAction";
+import { update } from "@/Actions/update";
+import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
+import { routes } from "@/api/routes";
 
 export default function Index({ evento }) {
     const [openPublish, setOpenPublish] = useState(false);
     const [openCancel, setOpenCancel] = useState(false);
-    const [processing, setProcessing] = useState(false);
 
-    const handlePublish = () => {
-        setProcessing(true);
-        router.put(
-            route("eventos.update"),
-            {
-                is_publicado: true,
-            },
-            {
-                onSuccess: () => {
-                    setOpenPublish(false);
-                    toast.success("Evento publicado com sucesso!");
-                },
-                onFinish: () => setProcessing(false),
-            }
-        );
+    const publishAction = useAction({
+        actionFn: actionErrorHandlingDecorator(update),
+        onSuccess: () => {
+            setOpenPublish(false);
+            toast.success("Evento publicado com sucesso!");
+        },
+    });
+
+    const cancelAction = useAction({
+        actionFn: actionErrorHandlingDecorator(update),
+        onSuccess: () => {
+            setOpenCancel(false);
+            toast.error("O evento foi cancelado.");
+        },
+    });
+
+    const loading = publishAction.loading || cancelAction.loading;
+
+    const handlePublish = async () => {
+        if (publishAction.loading) return;
+
+        await publishAction.execute(routes.eventos.update, {
+            is_publicado: true,
+        });
     };
 
-    const handleCancel = () => {
-        setProcessing(true);
-        router.put(
-            route("eventos.update"),
-            {
-                is_cancelado: true,
-            },
-            {
-                onSuccess: () => {
-                    setOpenCancel(false);
-                    toast.error("O evento foi cancelado.");
-                },
-                onFinish: () => setProcessing(false),
-            }
-        );
+    const handleCancel = async () => {
+        if (publishAction.loading) return;
+
+        await cancelAction.execute(routes.eventos.update, {
+            is_cancelado: true,
+        });
     };
 
     return (
@@ -152,14 +155,14 @@ export default function Index({ evento }) {
 
                         <div className="flex items-center gap-4 mt-2">
                             <button
-                                disabled={processing}
+                                disabled={loading}
                                 onClick={handlePublish}
                                 className="flex-1 rounded-sm bg-emerald-600 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50 transition-all"
                             >
-                                {processing ? "Publicando..." : "Sim, publicar evento"}
+                                {loading ? "Publicando..." : "Sim, publicar evento"}
                             </button>
                             <button
-                                disabled={processing}
+                                disabled={loading}
                                 onClick={() => setOpenPublish(false)}
                                 className="flex-1 rounded-sm border border-neutral-300 bg-white py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 transition-all"
                             >
@@ -181,14 +184,14 @@ export default function Index({ evento }) {
 
                 <div className="flex items-center gap-4 mt-2">
                     <button
-                        disabled={processing}
+                        disabled={loading}
                         onClick={handleCancel}
                         className="flex-1 rounded-sm bg-red-600 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 transition-all"
                     >
-                        {processing ? "Cancelando..." : "Sim, cancelar evento"}
+                        {loading ? "Cancelando..." : "Sim, cancelar evento"}
                     </button>
                     <button
-                        disabled={processing}
+                        disabled={loading}
                         onClick={() => setOpenCancel(false)}
                         className="flex-1 rounded-sm border border-neutral-300 bg-white py-2 text-sm font-semibold text-neutral-600 hover:bg-neutral-50 disabled:opacity-50 transition-all"
                     >

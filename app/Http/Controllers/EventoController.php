@@ -17,6 +17,8 @@ use App\Models\Local;
 use App\Support\CurrentEvent;
 use App\Models\User;
 use App\Mail\EventoCanceladoMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class EventoController extends Controller
 {
@@ -79,46 +81,9 @@ class EventoController extends Controller
     {
         $evento = CurrentEvent::get();
 
-        $estavaCancelado = $evento->is_cancelado;
-        $eventoAtualizado = $action->execute(auth('web')->id(), $evento->id, $request->validated());
+        $action->execute(auth('web')->id(), $evento->id, $request->validated());
 
-        // Pra notificar que foi cancelado
-        if ($request->input('is_cancelado') == true && !$estavaCancelado) {
-
-            $userIdsEvento = \DB::table('inscricoes_evento')
-                ->where('id_evento', $evento->id)
-                ->pluck('id_user');
-
-            $userIdsAtividades = \DB::table('inscricoes_atividades')
-                ->join('atividades', 'atividades.id', '=', 'inscricoes_atividades.id_atividade')
-                ->where('atividades.id_evento', $evento->id)
-                ->pluck('id_user');
-
-            $userIdsUnicos = $userIdsEvento->merge($userIdsAtividades)->unique();
-
-            if ($userIdsUnicos->isNotEmpty()) {
-                $inscritos = User::whereIn('id', $userIdsUnicos)->get();
-                foreach ($inscritos as $inscrito) {
-                    \Illuminate\Support\Facades\Mail::to($inscrito->email)->send(new EventoCanceladoMail($eventoAtualizado, $inscrito));
-                }
-            }
-
-            // Pra apagar as inscrições
-            \DB::table('inscricoes_evento')
-                ->where('id_evento', $evento->id)
-                ->delete();
-
-            $atividadesDoEvento = \DB::table('atividades')->where('id_evento', $evento->id)->pluck('id');
-            if ($atividadesDoEvento->isNotEmpty()) {
-                \DB::table('inscricoes_atividades')
-                    ->whereIn('id_atividade', $atividadesDoEvento)
-                    ->delete();
-            }
-            
-            return back()->with('success', 'Evento cancelado! Inscrições foram desfeitas e participantes notificados.');
-        }
-
-        return back()->with('success', 'Status do evento atualizado!');
+        return response()->json(['success' => true]);
     }
 
     public function show(int $id)
