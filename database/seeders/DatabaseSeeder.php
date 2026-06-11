@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
         $users = [
             [
                 'id' => 1,
-                'nome' => 'Test User',
-                'email' => 'test@example.com',
+                'nome' => 'ADMIN',
+                'email' => 'admin@admin.com',
                 'password' => $senhaPadrao,
                 'ativo' => 1,
                 'admin' => 1,
@@ -133,7 +133,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'kassandra.olv.rodrigues@gmail.com',
                 'password' => $senhaPadrao,
                 'ativo' => 1,
-                'admin' => 1,
+                'admin' => 0,
                 'email_verified_at' => now(),
             ],
         ];

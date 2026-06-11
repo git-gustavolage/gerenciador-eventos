@@ -12,6 +12,8 @@ class InscricaoAtividade extends Model
     protected $fillable = [
         'id_atividade',
         'id_user',
+        'status',
+        'compareceu',
     ];
 
     public function atividade(): BelongsTo
