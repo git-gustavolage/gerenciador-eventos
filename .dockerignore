@@ -1,0 +1,17 @@
+**/node_modules/
+**/vendor/
+/public/hot
+/public/build
+/public/storage
+/storage/*.key
+/tests/
+.git/
+.vscode/
+.editorconfig
+.prettierrc.json
+.phpunit.cache/
+CHANGELOG.md
+README.md
+storage/app/public
+storage/debugbar
+d
