@@ -1,4 +1,4 @@
-CREATE DATAVASE eventos;
+CREATE DATABASE eventos;
 
 USE eventos;
 
@@ -162,13 +162,16 @@ CREATE TABLE certificates (
 	sent_at datetime,
 
 	CONSTRAINT certificates_id_user_foreign FOREIGN KEY (id_user)
-	REFERENCES users(id) ON DELETE SET NULL,
+	REFERENCES users(id) ON DELETE CASCADE,
 
-	CONSTRAINT certificates_id_evento_foreign  FOREIGN KEY (id_evento)
-	REFERENCES eventos(id) ON DELETE SET NULL,
+	CONSTRAINT certificates_id_evento_foreign FOREIGN KEY (id_evento)
+	REFERENCES eventos(id) ON DELETE CASCADE,
 
 	CONSTRAINT certificates_id_atividade_foreign  FOREIGN KEY (id_atividade)
-	REFERENCES atividades(id) ON DELETE SET NULL
+	REFERENCES atividades(id) ON DELETE CASCADE,
+    
+    CONSTRAINT certificates_template_id_foreign  FOREIGN KEY (template_id)
+	REFERENCES certificate_templates(id) ON DELETE CASCADE
 );
 
 CREATE TABLE atividades_ministrantes (
