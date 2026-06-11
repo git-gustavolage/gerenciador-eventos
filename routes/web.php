@@ -78,7 +78,7 @@ Route::middleware('auth')->group(function () {
         });
     });
 
-    Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class], function () {
+    Route::group(['prefix' => '/ministrantes', 'as' => 'ministrantes.', 'controller' => MinistranteController::class, 'middleware' => ['organizador']], function () {
         Route::get('/', 'index')->name('index');
         Route::post('/', 'store')->name('store');
         Route::put('/{id}', 'update')->name('update');
