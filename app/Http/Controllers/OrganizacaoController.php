@@ -64,8 +64,8 @@ class OrganizacaoController extends Controller
     {
         $evento = CurrentEvent::get();
 
+        //todo: adicionar id_evento
         $ministrantes = Ministrante::query()
-            ->where('id_user', auth('web')->id())
             ->get(['id', 'nome', 'email', 'telefone', 'cargo', 'instituicao']);
 
         return inertia('Ministrantes/Index', [
