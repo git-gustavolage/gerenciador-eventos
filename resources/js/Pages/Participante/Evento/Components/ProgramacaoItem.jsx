@@ -1,5 +1,4 @@
 import { formatDate } from "@/util/formatDate";
-import { MapPinIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { ModalDetalhes } from "./ModalDetalhes";
 import { CheckCircleIcon, MapPinIcon } from "@phosphor-icons/react";
