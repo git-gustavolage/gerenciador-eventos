@@ -14,6 +14,10 @@ return new class extends Migration
             $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_evento')->constrained('eventos')->cascadeOnDelete();
 
+            $table->string('status')->default('pendente');
+
+            $table->boolean('compareceu')->nullable()->default(null);
+
             $table->unique(['id_user', 'id_evento']);
 
             $table->timestamps();
@@ -24,6 +28,10 @@ return new class extends Migration
 
             $table->foreignId('id_user')->constrained('users')->cascadeOnDelete();
             $table->foreignId('id_atividade')->constrained('atividades')->cascadeOnDelete();
+
+            $table->string('status')->default('pendente');
+
+            $table->boolean('compareceu')->nullable()->default(null);
 
             $table->unique(['id_user', 'id_atividade']);
 
