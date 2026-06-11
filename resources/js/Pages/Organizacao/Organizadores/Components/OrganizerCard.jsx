@@ -4,16 +4,18 @@ import DangerButton from "@/Components/DangerButton";
 import Modal from "@/Components/Modal";
 import SecondaryButton from "@/Components/SecondaryButton";
 import { useAction } from "@/Hooks/useAction";
+import { usePage } from "@inertiajs/react";
 import { XIcon } from "@phosphor-icons/react";
 import { useState } from "react";
 import { toast } from "sonner";
 
 export function OrganizerCard({ organizer = {}, reload = () => {} }) {
+    const { user } = usePage().props.auth;
     const [open, setOpen] = useState(false);
 
     const action = useAction({
         actionFn: destroy,
-        onSuccess: (res) => {
+        onSuccess: () => {
             toast.success("Oranizador removido com sucesso!");
             reload();
             setOpen(false);
@@ -24,10 +26,11 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
         },
     });
 
+    const canDelete = !(organizer.perfil == "gestor" || organizer.email == user.email);
     const disabled = action.loading;
 
     const handleRemove = async () => {
-        if (disabled) return;
+        if (disabled || !canDelete) return;
 
         await action.execute(routes.organizadores.destroy({ id: organizer.id }));
     };
@@ -50,7 +53,7 @@ export function OrganizerCard({ organizer = {}, reload = () => {} }) {
                     </span>
                 </div>
 
-                {organizer.perfil !== "gestor" && (
+                {canDelete && (
                     <button
                         type="button"
                         onClick={() => setOpen(true)}

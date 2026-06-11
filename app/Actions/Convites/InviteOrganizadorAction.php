@@ -2,6 +2,7 @@
 
 namespace App\Actions\Convites;
 
+use App\Exceptions\ApplicationException;
 use App\Exceptions\CreationFailedException;
 use App\Mail\InviteOrganizadorMail;
 use App\Models\Convite;
@@ -21,7 +22,7 @@ class InviteOrganizadorAction
         $user = User::query()->findOrFail($id_inviter);
         $evento = Evento::query()->findOrFail($id_evento);
 
-        $this->validate($user, $evento);
+        $this->validate($user, $evento, $email);
 
         try {
             DB::transaction(function () use ($evento, $user, $email) {
@@ -30,38 +31,45 @@ class InviteOrganizadorAction
                 $token = Str::uuid()->toString();
 
                 Convite::query()
-                    ->where("id_evento", $evento->id)
-                    ->where("email", $email)
-                    ->whereNull("aceito_em")
-                    ->whereNull("cancelado_em")
+                    ->where('id_evento', $evento->id)
+                    ->where('email', $email)
+                    ->whereNull('aceito_em')
+                    ->whereNull('cancelado_em')
                     ->update([
-                        "cancelado_em" => now(),
+                        'cancelado_em' => now(),
                     ]);
 
                 Convite::create([
-                    "id_evento" => $evento->id,
-                    "email" => $email,
-                    "token" => $token,
-                    "expira_em" => $ttl,
+                    'id_evento' => $evento->id,
+                    'email' => $email,
+                    'token' => $token,
+                    'expira_em' => $ttl,
                 ]);
 
-                $link = route("convites.view", ["token" => $token]);
+                $link = route('convites.view', ['token' => $token]);
 
                 $mail = (new InviteOrganizadorMail($user->nome, $evento->titulo, $link))->afterCommit();
 
                 Mail::to($email)->send($mail);
             });
         } catch (Exception $e) {
-            throw new CreationFailedException("Ocorreu um erro ao gerar o convite. Tente novamente.", [
-                "message" => $e->getMessage(),
-                "payload" => ["id_inviter" => $id_inviter, "id_evento" => $id_evento, "email" => $email],
+            throw new CreationFailedException('Ocorreu um erro ao gerar o convite. Tente novamente.', [
+                'message' => $e->getMessage(),
+                'payload' => ['id_inviter' => $id_inviter, 'id_evento' => $id_evento, 'email' => $email],
             ]);
         }
     }
 
-    private function validate(User $user, Evento $evento): void
+    private function validate(User $user, Evento $evento, string $email): void
     {
-        Gate::forUser($user)->authorize("inviteOrganizador", $evento);
+        Gate::forUser($user)->authorize('inviteOrganizador', $evento);
+
+        $organizadores = $evento->organizadores()->with('user')->get();
+        foreach ($organizadores as $organizador) {
+            if ($organizador->user?->email == $email) {
+                throw new ApplicationException('Este usuário já faz parte da organização do evento.');
+            }
+        }
     }
 
     private function ttl(): Carbon

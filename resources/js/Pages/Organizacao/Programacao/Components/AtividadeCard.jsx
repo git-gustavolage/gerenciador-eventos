@@ -31,12 +31,13 @@ export function AtividadeCard({ atividade = {}, onSuccess }) {
             <div className="bg-white border border-neutral-300 rounded-sm p-5 transition-all duration-200 hover:shadow-md shadow-neutral-300">
                 <div className="w-full flex flex-col items-start justify-between">
                     <div className="w-full inline-flex items-center justify-between mb-2">
-                        <span className="text-xs font-medium px-2 py-1 rounded-sm bg-emerald-100 text-emerald-800">
-                            {atividade.tipo ?? "Palestra"}
-                        </span>
                         <p className="font-semibold text-emerald-600">
                             {atividade.data_inicio.slice(11, 16)} - {atividade.data_fim.slice(11, 16)}
                         </p>
+
+                        {atividade.is_cancelada && (
+                            <span className="text-xs font-medium px-2 py-1 rounded-sm bg-red-300 text-red-800">Cancelada</span>
+                        )}
                     </div>
 
                     <h3 className="text-lg font-bold text-neutral-800 tracking-wide">{atividade.titulo}</h3>
@@ -57,61 +58,63 @@ export function AtividadeCard({ atividade = {}, onSuccess }) {
                     </div>
                 )}
 
-                <div className="w-full inline-flex items-center justify-between border-t border-neutral-300 pt-3">
-                    <div className="inline-flex gap-2 items-center text-neutral-500">
-                        <UsersIcon size={20} className="min-w-[20px]" />
-                        <span className="text-sm font-medium">
-                            {inscricoes?.length}/{atividade.limite_participantes}
-                        </span>
+                {!atividade.is_cancelada && (
+                    <div className="w-full inline-flex items-center justify-between border-t border-neutral-300 pt-3">
+                        <div className="inline-flex gap-2 items-center text-neutral-500">
+                            <UsersIcon size={20} className="min-w-[20px]" />
+                            <span className="text-sm font-medium">
+                                {inscricoes?.length}/{atividade.limite_participantes}
+                            </span>
+                        </div>
+
+                        <div className="inline-flex gap-2 items-center justify-start">
+                            <div className="relative group">
+                                <button
+                                    onClick={() => setShowMinistranteModal(true)}
+                                    className="p-1.5 bg-neutral-100 rounded-sm text-neutral-500 hover:bg-neutral-200 focus:ring-1 focus:ring-neutral-300"
+                                >
+                                    <UserPlusIcon size={18} />
+                                </button>
+
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
+                                    Add Ministrante
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
+                                </div>
+                            </div>
+
+                            <div className="relative group">
+                                <button
+                                    onClick={() => setShowEditModal(true)}
+                                    className="p-1.5 bg-neutral-100 rounded-sm text-neutral-500 hover:bg-neutral-200 focus:ring-1 focus:ring-neutral-300"
+                                >
+                                    <NotePencilIcon size={18} />
+                                </button>
+
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
+                                    Editar
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
+                                </div>
+                            </div>
+
+                            <div className="relative group">
+                                <button
+                                    onClick={handleDelete}
+                                    className="p-1.5 bg-neutral-100 rounded-sm text-red-600 hover:bg-red-200 focus:ring-1 focus:ring-red-300"
+                                >
+                                    <CalendarSlashIcon size={18} />
+                                </button>
+
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
+                                    Cancelar
+                                    <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
-
-                    <div className="inline-flex gap-2 items-center justify-start">
-                        <div className="relative group">
-                            <button
-                                onClick={() => setShowMinistranteModal(true)}
-                                className="p-1.5 bg-neutral-100 rounded-sm text-neutral-500 hover:bg-neutral-200 focus:ring-1 focus:ring-neutral-300"
-                            >
-                                <UserPlusIcon size={18} />
-                            </button>
-
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
-                                Add Ministrante
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
-                            </div>
-                        </div>
-
-                        <div className="relative group">
-                            <button
-                                onClick={() => setShowEditModal(true)}
-                                className="p-1.5 bg-neutral-100 rounded-sm text-neutral-500 hover:bg-neutral-200 focus:ring-1 focus:ring-neutral-300"
-                            >
-                                <NotePencilIcon size={18} />
-                            </button>
-
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
-                                Editar
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
-                            </div>
-                        </div>
-
-                        <div className="relative group">
-                            <button
-                                onClick={handleDelete}
-                                className="p-1.5 bg-neutral-100 rounded-sm text-red-600 hover:bg-red-200 focus:ring-1 focus:ring-red-300"
-                            >
-                                <CalendarSlashIcon size={18} />
-                            </button>
-
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 translate-y-1 mb-2 px-2 py-1 text-xs text-white bg-neutral-900 rounded whitespace-nowrap opacity-0 pointer-events-none transition-all duration-200 group-focus-within:opacity-100 group-focus-within:translate-y-0 group-hover:opacity-100 group-hover:translate-y-0">
-                                Cancelar
-                                <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-900" />
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
 
-            {showEditModal && atividade && (
+            {showEditModal && atividade && !atividade.is_cancelada && (
                 <ModalEditAtividade open={showEditModal} atividade={atividade} onClose={handleClose} onSuccess={handleSuccess} />
             )}
 

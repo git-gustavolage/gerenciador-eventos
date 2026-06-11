@@ -31,7 +31,6 @@ class CancelEventoAction
                 ->update([
                     'is_cancelada' => 1,
                     'data_cancelamento' => now(),
-                    'cancelada_por' => $id_user,
                 ]);
 
             $evento->update([

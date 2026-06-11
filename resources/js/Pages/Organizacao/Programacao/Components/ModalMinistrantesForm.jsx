@@ -36,6 +36,9 @@ export function ModalMinistrantesForm({ atividade = {}, show, onClose, onSuccess
     };
 
     const handleAdd = async (idMinistrante) => {
+        if (atividade.is_cancelada) {
+            toast.info("Não é possível alterar atividades canceladas.");
+        }
         await storeAction.execute(routes.atividades.addMinistrante(), {
             id_atividade: atividade.id,
             id_ministrante: idMinistrante,
@@ -43,6 +46,9 @@ export function ModalMinistrantesForm({ atividade = {}, show, onClose, onSuccess
     };
 
     const handleRemove = async (idMinistrante) => {
+        if (atividade.is_cancelada) {
+            toast.info("Não é possível alterar atividades canceladas.");
+        }
         await destroyAction.execute(routes.atividades.removeMinistrante(), {
             id_atividade: atividade.id,
             id_ministrante: idMinistrante,

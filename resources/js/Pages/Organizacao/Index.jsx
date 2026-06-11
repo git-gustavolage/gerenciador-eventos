@@ -11,7 +11,6 @@ import {
 } from "@phosphor-icons/react";
 import Modal from "@/Components/Modal";
 import { useAction } from "@/Hooks/useAction";
-import { update } from "@/Actions/update";
 import { actionErrorHandlingDecorator } from "@/util/actionErrorHandlingDecorator";
 import { routes } from "@/api/routes";
 import { patch } from "@/Actions/patch";

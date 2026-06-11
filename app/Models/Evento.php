@@ -66,4 +66,9 @@ class Evento extends Model
     {
         return $this->hasMany(InscricaoEvento::class, 'id_evento', 'id');
     }
+
+    public function convites(): HasMany
+    {
+        return $this->hasMany(Convite::class, 'id_evento');
+    }
 }
