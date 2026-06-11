@@ -54,7 +54,7 @@ export default function NewEventSection() {
                             {admin && (
                                 <Link
                                     href={route("eventos.create")}
-                                    className="px-8 py-3 rounded-sm bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm"
+                                    className="px-8 py-3 rounded-sm bg-emerald-500 hover:bg-emerald-600 text-white font-semibold transition-colors shadow-sm inline-flex items-center justify-center"
                                 >
                                     Criar evento
                                 </Link>
