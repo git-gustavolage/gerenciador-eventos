@@ -16,7 +16,7 @@ services:
     working_dir: /var/www/html
 
     env_file:
-      - ${APP_ENV_FILE}
+      - .env.example
 
     volumes:
       - storage_data:/var/www/html/storage
