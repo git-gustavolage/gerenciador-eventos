@@ -1,7 +1,7 @@
 import { test, expect } from "@playwright/test";
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CT05 — Cadastro com e-mail inválido
+// CT05 — Cadastro de um usuário com e-mail inválido
 // ─────────────────────────────────────────────────────────────────────────────
 test("CT05 - não deve cadastrar usuário com e-mail inválido", async ({ page }) => {
     await page.goto("/register");
@@ -14,7 +14,7 @@ test("CT05 - não deve cadastrar usuário com e-mail inválido", async ({ page }
     await page.fill("#password", "Senha@123");
     await page.fill("#password_confirmation", "Senha@123");
 
-    await page.getByRole("button", { name: "Enviar" }).press("Enter");
+    await page.getByRole("button", { name: "Enviar" }).dispatchEvent("click");
     await page.waitForTimeout(1500);
 
     await expect(page).toHaveURL(/\/register/);
@@ -34,7 +34,7 @@ test("CT06 - não deve cadastrar usuário com confirmação de senha divergente"
     await page.fill("#password", "Senha@123");
     await page.fill("#password_confirmation", "OutraSenha@456");
 
-    await page.getByRole("button", { name: "Enviar" }).press("Enter");
+    await page.getByRole("button", { name: "Enviar" }).dispatchEvent("click");
     await page.waitForTimeout(2000);
 
     await expect(page).toHaveURL(/\/register/);
@@ -54,7 +54,7 @@ test("CT07 - não deve cadastrar usuário com campo de email vazio", async ({ pa
     await page.fill("#password", "Senha@123");
     await page.fill("#password_confirmation", "Senha@123");
 
-    await page.getByRole("button", { name: "Enviar" }).press("Enter");
+    await page.getByRole("button", { name: "Enviar" }).dispatchEvent("click");
     await page.waitForTimeout(1500);
 
     await expect(page).toHaveURL(/\/register/);

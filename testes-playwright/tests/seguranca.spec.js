@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CT08 — Tentativa de XSS no campo e-mail do login
+// CT08 — Bloqueio na execução do script XXS inserido no campo de nome na página de cadastro
 // ─────────────────────────────────────────────────────────────────────────────
 test("CT08 - não deve executar script XSS inserido no campo nome do cadastro", async ({ page }) => {
   let xssExecutado = false; 
@@ -29,7 +29,7 @@ test("CT08 - não deve executar script XSS inserido no campo nome do cadastro", 
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// CT09 — Tentativa de XSS via parâmetro de URL
+// CT09 — Bloqueio na execução do XSS refletido via parâmetro de URL
 // ─────────────────────────────────────────────────────────────────────────────
 test('CT09 - não deve executar XSS refletido via parâmetro de URL', async ({ page }) => {
   let xssExecutado = false; 
