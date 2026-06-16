@@ -136,6 +136,15 @@ class DatabaseSeeder extends Seeder
                 'admin' => 0,
                 'email_verified_at' => now(),
             ],
+              [
+                'id' => 14,
+                'nome' => 'Usuário Teste',
+                'email' => 'teste@email.com',
+                'password' => Hash::make('Senha@123'),
+                'ativo' => 1,
+                'admin' => 1,
+                'email_verified_at' => now(),
+            ],
         ];
 
         DB::table('users')->insert($users);
