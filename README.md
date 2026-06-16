@@ -8,24 +8,29 @@ Breve descrição
 
 A opção recomendada para rodar o projeto é via Docker
 
+Certifique-se de que possui o Docker instalado e rodando na sua máquina.
+
 Para rodar o projeto utilizando docker, rode o seguinte comando:
 
 ```bash
 docker compose up -d --build --no-cache
 ```
 
-Após isso o sistema estára disponível no endereço:  **http://localhost:8000**
+Após isso o sistema estará disponível no endereço:  **http://localhost:8000**
 
-### 1.2 Via XAMPP
+### 1.2 Sem Docker
 
-Caso opte por rodar o projeto utilizando o XAMPP, siga os seguintes passos:
+Caso opte por não utilizar o Docker, é possível executar o projeto diretamente no sistema operacional.
 
-#### Pré requisitos:
+#### Pré-requisitos:
 
-- XAMPP
-- Composer
 - PHP
-- Node
+- Composer
+- Node.js
+- npm
+
+> [!NOTE]
+Observação: o projeto requer apenas PHP, Composer, Node.js e npm. O XAMPP é opcional e pode ser utilizado apenas como uma forma prática de instalar e executar o PHP localmente.
 
 Instale as dependências do projeto com os comandos:
 
@@ -37,42 +42,78 @@ composer install
 npm install
 ```
 
-Após instaladas as depencências, copie o arquivo .env.example e crie o arquivo .env
+Após instaladas as dependências, copie o arquivo **.env.example** e crie o arquivo **.env**
+
+**Linux:**
+
+```bash
+cp .env.example .env
+```
+
+**Windows:**
+
+```powershell
+copy .env.example .env
+```
 
 Então Rode o seguinte comando:
 
 ```bash
 php artisan key:generate
-`````
+```
 
 Builde o código do frontend utilizando o seguinte comando:
 
 ```bash
 npm run build
-`````
+```
 
 Execute o projeto com o comando
 
 ```bash
 php artisan serve --port=8000 --host=0.0.0.0
-`````
+```
 
+Após isso o sistema estará disponível no endereço:  **http://localhost:8000**
 
-### 1.2.1 Populando o banco
+## 2. Configurando o banco de dados
 
-Caso tenha optado por rodar o sistema via XAMPP, é preciso manualmente rodar o comando para popular o banco com dados de exemplo
+O sistema está configurado para utilizar SQLite, não sendo necessária nenhuma configuração adicional para a conexão com o banco de dados. Caso opte pela conexão com outro SGBD, consulte a documentação oficial do Laravel: https://laravel.com/docs/12.x/database
+
+> [!WARNING]
+Caso tenha optado por rodar o sistema utilizando o Docker, esta configuração foi feita automaticamente. Ignore este tópico.
+
+Caso não tenha optado por utilizar o docker, é preciso criar as tabelas iniciais no banco de dados para que o sistema funcione corretamente.
+
+```bash
+php artisan migrate
+```
+
+> [!NOTE]
+Para facilitar a navegação e os testes do sistema, recomenda-se executar as migrations com a flag `--seed`, que cria registros iniciais de exemplo.
+
+Caso deseje que o seu banco de dados já inicie com alguns registros para teste, utilize a flag "--seed":
 
 ```bash
 php artisan migrate --seed
 ```
 
-Após isso o sistema estára disponível no endereço:  **http://localhost:8000**
+## 3. Rodando os testes
 
-## 2. Rodando os testes
+### 3.1 Testes com Playwright
 
-### 2.1 Testes com Playright
+Para rodar os testes do sistema utilizando o Playwright, certifique-se que as dependências estejam instaladas e que o projeto esteja rodando.
 
-Para rodar os testes do sistema utilizando o Playright, certifique-se que as dependências estejam instaladas e então rode o seguinte comando:
+> [!WARNING]
+Caso você esteja utilizando uma porta diferente de "8000", atualize o arquivo "playwright.config.js" e aponte para a URL correta.
+
+Na primeira execução, instale os navegadores utilizados pelo Playwright:
+
+```bash
+npx playwright install
+```
+
+E então execute os testes com o seguinte comando:
 
 ```bash
 npx playwright test
