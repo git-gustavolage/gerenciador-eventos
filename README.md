@@ -13,7 +13,7 @@ Certifique-se de que possui o Docker instalado e rodando na sua máquina.
 Para rodar o projeto utilizando docker, rode o seguinte comando:
 
 ```bash
-docker compose up -d --build --no-cache
+docker compose up -d --build
 ```
 
 Após isso o sistema estará disponível no endereço:  **http://localhost:8000**
