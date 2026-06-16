@@ -50,7 +50,7 @@ test("CT03 - não deve permitir login com campos obrigatórios vazios", async ({
     await page.getByRole("button", { name: "Entrar" }).press("Enter");
 
     await expect(page.getByText("O campo email é obrigatório.")).toBeVisible();
-    await expect(page.getByText("O campo email é obrigatório.")).toBeVisible();
+    await expect(page.getByText("O campo senha é obrigatório.")).toBeVisible();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
