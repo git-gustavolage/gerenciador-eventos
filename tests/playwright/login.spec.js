@@ -13,10 +13,8 @@ test("CT01 - deve permitir login com credenciais válidas", async ({ page }) => 
     await page.fill("#email", EMAIL_VALIDO);
     await page.fill("#password", SENHA_VALIDA);
 
-    await page.getByRole("button", { name: "Entrar" }).press("Enter");
-    await page.waitForURL((url) => !url.pathname.includes("/login"), {
-        timeout: 15_000,
-    });
+    await page.getByRole("button", { name: "Entrar" }).click();
+    await page.waitForURL((url) => !url.pathname.includes("/login"));
 
     await expect(page).not.toHaveURL(/\/login/);
     await expect(page.locator("body")).not.toContainText("Acesse sua conta");
@@ -32,14 +30,11 @@ test("CT02 - não deve permitir login com senha incorreta", async ({ page }) => 
     await page.fill("#email", EMAIL_VALIDO);
     await page.fill("#password", "senhaerrada");
 
-    await page.getByRole("button", { name: "Entrar" }).press("Enter");
-    await page.waitForTimeout(2000);
+    await page.getByRole("button", { name: "Entrar" }).click();
 
     await expect(page).toHaveURL(/\/login/);
 
-    const body = page.locator("body");
-    const temErro = (await body.getByText(/credenciais|inválid|senha|credentials|not match/i).count()) > 0;
-    expect(temErro).toBe(true);
+    await expect(page.getByText("Essas credenciais não foram encontradas em nossos registros.")).toBeVisible();
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -47,7 +42,7 @@ test("CT02 - não deve permitir login com senha incorreta", async ({ page }) => 
 // ─────────────────────────────────────────────────────────────────────────────
 test("CT03 - não deve permitir login com campos obrigatórios vazios", async ({ page }) => {
     await page.goto("/login");
-    await page.getByRole("button", { name: "Entrar" }).press("Enter");
+    await page.getByRole("button", { name: "Entrar" }).click();
 
     await expect(page.getByText("O campo email é obrigatório.")).toBeVisible();
     await expect(page.getByText("O campo senha é obrigatório.")).toBeVisible();
@@ -58,7 +53,7 @@ test("CT03 - não deve permitir login com campos obrigatórios vazios", async ({
 // ─────────────────────────────────────────────────────────────────────────────
 test("CT04 - deve redirecionar para login ao acessar rota protegida sem autenticação", async ({ page }) => {
     await page.goto("/dashboard");
-    await page.waitForURL(/\/login/, { timeout: 10_000 });
+    await page.waitForURL(/\/login/);
 
     await expect(page).toHaveURL(/\/login/);
     await expect(page.locator("body")).toContainText("Acesse sua conta");
