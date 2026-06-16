@@ -1,6 +1,10 @@
 # E-IFRO - Sistema de gerenciamento de eventos
 
-Breve descrição
+O E-IFRO é um sistema web voltado exclusivamente para a **Gestão de Eventos do IFRO**, desenvolvido para oferecer uma interface acessível e processos simplificados aos diversos públicos envolvidos, incluindo coordenadores de eventos institucionais, professores, servidores do IFRO, discentes e membros da comunidade externa.
+
+Seu principal objetivo é centralizar as informações relacionadas aos **eventos da instituição**, mantendo os dados em um único repositório acessível, organizado e seguro. Dessa forma, usuários autorizados podem consultar, cadastrar, editar e gerenciar eventos e atividades com maior agilidade e eficiência.
+
+---
 
 ## 1. Rodando o projeto
 
@@ -113,8 +117,24 @@ Na primeira execução, instale os navegadores utilizados pelo Playwright:
 npx playwright install
 ```
 
-E então execute os testes com o seguinte comando:
+E então rode todos os testes com o seguinte comando:
 
 ```bash
 npx playwright test
+```
+
+Caso queira rodar os testes individualmente:
+
+```bash
+// Login:
+npx playwright test tests/playwright/login.spec.js
+
+// Cadastro:
+npx playwright test tests/playwright/cadastro.spec.js
+
+// Restrição de acesso:
+npx playwright test tests/playwright/seguranca.spec.js
+
+// Fluxo completo no sistama: login -> area protegida -> logout
+npx playwright test tests/playwright/fluxo-completo.spec.js
 ```
